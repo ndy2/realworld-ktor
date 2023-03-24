@@ -1,0 +1,4 @@
+http -j -v post :8080/api/users \
+ user[username]=haha \
+ user[email]=haha@gmail.com \
+ user[password]=password \
