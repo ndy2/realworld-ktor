@@ -1,6 +1,8 @@
 package ndy.infra.tables
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.PropertyTesting
@@ -12,33 +14,39 @@ import ndy.test.spec.TableTestSpec
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class UserTableTest : TableTestSpec() {
-    init {
-        val sut = UserTable()
+class UserTableTest : TableTestSpec({
+    val sut = UserTable()
 
-        test("returns saved user and find it by id") {
-            checkAll<Username, Email, Password> { username, email, password ->
-                val savedUser = sut.save(username, email, password)
-                assertSoftly(savedUser) {
-                    this.id shouldNotBe null
-                    this.username shouldBe username
-                    this.email shouldBe email
-                    this.password shouldBe password
-                }
-
-                val foundUser = sut.findUserById(savedUser.id)
-                assertSoftly(foundUser!!) {
-                    this.id shouldBe savedUser.id
-                    this.username shouldBe savedUser.username
-                    this.email shouldBe savedUser.email
-                    this.password shouldBe savedUser.password
-                }
+    test("returns saved user and find it by id") {
+        checkAll<Username, Email, Password> { username, email, password ->
+            val savedUser = sut.save(username, email, password)
+            assertSoftly(savedUser) {
+                this.id shouldNotBe null
+                this.username shouldBe username
+                this.email shouldBe email
+                this.password shouldBe password
             }
 
-            transaction {
-                val count = UserTable.Users.selectAll().count()
-                count shouldBe PropertyTesting.defaultIterationCount
+            val foundUser = sut.findUserById(savedUser.id)
+            assertSoftly(foundUser!!) {
+                this.id shouldBe savedUser.id
+                this.username shouldBe savedUser.username
+                this.email shouldBe savedUser.email
+                this.password shouldBe savedUser.password
             }
         }
+
+        transaction {
+            val count = UserTable.Users.selectAll().count()
+            count shouldBe PropertyTesting.defaultIterationCount
+        }
     }
-}
+})
+
+
+class MyTests : FunSpec({
+    test("String length should return the length of the string") {
+        "sammy".length shouldBe 5
+        "".length shouldBe 0
+    }
+})

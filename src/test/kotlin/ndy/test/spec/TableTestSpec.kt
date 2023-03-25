@@ -11,7 +11,7 @@ import ndy.domain.user.domain.Username
 import ndy.plugins.configureDatabases
 import ndy.test.generator.UserArbs
 
-abstract class TableTestSpec : FunSpec() {
+abstract class TableTestSpec(body: FunSpec.() -> Unit = {}) : FunSpec(body) {
 
     override suspend fun beforeSpec(spec: Spec) {
         PropertyTesting.defaultIterationCount = 10

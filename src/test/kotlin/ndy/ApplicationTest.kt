@@ -2,10 +2,11 @@ package ndy
 
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.server.testing.*
-import kotlin.test.*
 import io.ktor.http.*
-import ndy.plugins.*
+import io.ktor.server.testing.*
+import ndy.plugins.configureRouting
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApplicationTest {
 
@@ -18,6 +19,5 @@ class ApplicationTest {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
         }
-
     }
 }
