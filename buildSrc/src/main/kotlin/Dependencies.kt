@@ -7,6 +7,7 @@ object Versions {
     const val exposedVersion = "0.41.1"
     const val h2Version = "2.1.214"
     const val koinVersion = "3.3.0"
+    const val kotestVersion = "5.5.5"
 }
 
 sealed class Dependencies {
@@ -43,6 +44,11 @@ sealed class Dependencies {
         const val KOIN_KTOR = "io.insert-koin:koin-ktor:${Versions.koinVersion}"
         const val KOIN_LOGGER = "io.insert-koin:koin-logger-slf4j:${Versions.koinVersion}"
         const val KOIN_TEST = "io.insert-koin:koin-test:${Versions.koinVersion}"
+    }
+
+    object KOTEST: Dependencies(){
+        const val KOTEST_RUNNER = "io.kotest:kotest-runner-junit5:${Versions.kotestVersion}"
+        const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:${Versions.kotestVersion}"
     }
 }
 
