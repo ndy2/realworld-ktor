@@ -8,6 +8,7 @@ import io.ktor.http.*
 import ndy.plugins.*
 
 class ApplicationTest {
+
     @Test
     fun testRoot() = testApplication {
         application {
@@ -17,5 +18,6 @@ class ApplicationTest {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
         }
+
     }
 }
