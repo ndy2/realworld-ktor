@@ -1,7 +1,6 @@
 package ndy.test.generator
 
 import io.kotest.property.Arb
-import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.ArbitraryBuilder
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
@@ -13,31 +12,32 @@ import ndy.test.util.ascii
 
 object UserArbs {
 
-    object UsernameGenerator : Arb<Username>() {
-        override fun edgecase(rs: RandomSource) = null
-        override fun sample(rs: RandomSource) = Arb
+    object UsernameValueArb : ArbNullEdgecase<String>({
+        Arb
             .string(0..10)
-            .map { name -> Username(name) }
-            .sample(rs)
-    }
+            .sample(it)
+    })
 
-    object EmailGenerator : Arb<Email>() {
-        override fun edgecase(rs: RandomSource) = null
-        override fun sample(rs: RandomSource) = ArbitraryBuilder.create {
+    object UsernameArb : ArbNullEdgecase<Username>({ UsernameValueArb.map(::Username).sample(it) })
+
+    object EmailValueArb : ArbNullEdgecase<String>({ rs ->
+        ArbitraryBuilder.create {
             val username = rs.alphaNumericString(0..10)
             val domainName = rs.alphaNumericString(0..5)
             val domainExtension = listOf("com", "org", "edu", "ac.kr", "net").random()
-            Email("$username@$domainName.$domainExtension")
+            "$username@$domainName.$domainExtension"
         }.build().sample(rs)
-    }
+    })
 
-    object PasswordGenerator : Arb<Password>() {
-        override fun edgecase(rs: RandomSource) = null
-        override fun sample(rs: RandomSource) = ArbitraryBuilder.create {
-            Password(rs.ascii(8..15))
+    object EmailArb : ArbNullEdgecase<Email>({ EmailValueArb.map(::Email).sample(it) })
 
+    object PasswordValueArb : ArbNullEdgecase<String>({ rs ->
+        ArbitraryBuilder.create {
+            rs.ascii(8..15)
         }.build().sample(rs)
-    }
+    })
+
+    object PasswordArb : ArbNullEdgecase<Password>({ PasswordValueArb.map(::Password).sample(it) })
 }
 
 

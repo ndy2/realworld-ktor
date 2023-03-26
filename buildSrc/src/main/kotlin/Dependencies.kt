@@ -13,7 +13,9 @@ object Versions {
 
 sealed class Dependencies {
 
-    fun list() = this::class.declaredMemberProperties.map { it.getter.call().toString() }
+    fun map() = this::class.declaredMemberProperties.map {
+        it.name to it.getter.call().toString()
+    }.groupBy({ it.first }, { it.second }).mapValues { it.value[0] }
 
     object Ktor : Dependencies() {
         // core
@@ -25,10 +27,13 @@ sealed class Dependencies {
         const val SERVER_AUTH_JWT = "io.ktor:ktor-server-auth-jwt-jvm:${Versions.ktorVersion}"
         const val SERVER_CORS = "io.ktor:ktor-server-cors-jvm:${Versions.ktorVersion}"
 
-        // wheb
+        // server
         const val KTOR_SERVER_NETTY = "io.ktor:ktor-server-netty-jvm:${Versions.ktorVersion}"
         const val KTOR_SERVER_CONTENT = "io.ktor:ktor-server-content-negotiation-jvm:${Versions.ktorVersion}"
         const val KTOR_SERVER_SERIALIZATION = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Versions.ktorVersion}"
+
+        // client
+        const val KTOR_CLIENT_CONTENT_TEST = "io.ktor:ktor-client-content-negotiation-jvm:${Versions.ktorVersion}" // test
     }
 
     object Persistence : Dependencies() {

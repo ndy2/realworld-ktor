@@ -1,8 +1,6 @@
 package ndy.infra.tables
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.spec.style.BehaviorSpec
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.PropertyTesting
@@ -40,13 +38,5 @@ class UserTableTest : TableTestSpec({
             val count = UserTable.Users.selectAll().count()
             count shouldBe PropertyTesting.defaultIterationCount
         }
-    }
-})
-
-
-class MyTests : FunSpec({
-    test("String length should return the length of the string") {
-        "sammy".length shouldBe 5
-        "".length shouldBe 0
     }
 })

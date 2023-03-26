@@ -15,9 +15,9 @@ abstract class TableTestSpec(body: FunSpec.() -> Unit = {}) : FunSpec(body) {
 
     override suspend fun beforeSpec(spec: Spec) {
         PropertyTesting.defaultIterationCount = 10
-        GlobalArbResolver.register<Username>(UserArbs.UsernameGenerator)
-        GlobalArbResolver.register<Email>(UserArbs.EmailGenerator)
-        GlobalArbResolver.register<Password>(UserArbs.PasswordGenerator)
+        GlobalArbResolver.register<Username>(UserArbs.UsernameArb)
+        GlobalArbResolver.register<Email>(UserArbs.EmailArb)
+        GlobalArbResolver.register<Password>(UserArbs.PasswordArb)
 
         testApplication { application { configureDatabases() } }
     }

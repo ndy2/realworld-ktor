@@ -18,7 +18,6 @@ fun Route.userRouting() {
 
         // authentication
         post("/login") {
-            call.receive<LoginRequest>()
             call.respond("login request received!")
         }
 

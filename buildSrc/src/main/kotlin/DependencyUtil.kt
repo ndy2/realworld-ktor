@@ -10,8 +10,9 @@ fun DependencyHandler.applyAll() {
 // 기본적으로 implementation 적용, 이름에 test 가 있는 경우 testImplementation 적용
 fun DependencyHandler.applyDependencies(dependencies: Dependencies) {
 
-    dependencies.list().forEach {
-        if (it.contains("test")) add("testImplementation", it)
-        else add("implementation", it)
+    dependencies.map().forEach { key, value ->
+        val isTestDependency = value.contains("test", true) || key.contains("test", true)
+        if (isTestDependency) add("testImplementation", value)
+        else add("implementation", value)
     }
 }
