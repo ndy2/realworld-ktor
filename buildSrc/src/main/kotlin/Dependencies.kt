@@ -22,18 +22,18 @@ sealed class Dependencies {
         const val SERVER_CORE = "io.ktor:ktor-server-core-jvm:${Versions.ktorVersion}"
         const val SERVER_TEST = "io.ktor:ktor-server-tests-jvm:${Versions.ktorVersion}"
 
-        // auth
+        // server
+        const val SERVER_NETTY = "io.ktor:ktor-server-netty-jvm:${Versions.ktorVersion}"
+        const val SERVER_CONTENT = "io.ktor:ktor-server-content-negotiation-jvm:${Versions.ktorVersion}"
+        const val SERVER_SERIALIZATION = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Versions.ktorVersion}"
+
+        // server-auth
         const val SERVER_AUTH = "io.ktor:ktor-server-auth-jvm:${Versions.ktorVersion}"
         const val SERVER_AUTH_JWT = "io.ktor:ktor-server-auth-jwt-jvm:${Versions.ktorVersion}"
         const val SERVER_CORS = "io.ktor:ktor-server-cors-jvm:${Versions.ktorVersion}"
 
-        // server
-        const val KTOR_SERVER_NETTY = "io.ktor:ktor-server-netty-jvm:${Versions.ktorVersion}"
-        const val KTOR_SERVER_CONTENT = "io.ktor:ktor-server-content-negotiation-jvm:${Versions.ktorVersion}"
-        const val KTOR_SERVER_SERIALIZATION = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Versions.ktorVersion}"
-
         // client
-        const val KTOR_CLIENT_CONTENT_TEST = "io.ktor:ktor-client-content-negotiation-jvm:${Versions.ktorVersion}" // test
+        const val CLIENT_CONTENT_TEST = "io.ktor:ktor-client-content-negotiation-jvm:${Versions.ktorVersion}" // test
     }
 
     object Persistence : Dependencies() {
@@ -43,20 +43,20 @@ sealed class Dependencies {
     }
 
     object Logging : Dependencies() {
-        const val LOGBACK = "ch.qos.logback:logback-classic:${Versions.logbackVersion}"
+        const val CLASSIC = "ch.qos.logback:logback-classic:${Versions.logbackVersion}"
     }
 
     object KOIN : Dependencies() {
-        const val KOIN_KTOR = "io.insert-koin:koin-ktor:${Versions.koinVersion}"
-        const val KOIN_LOGGER = "io.insert-koin:koin-logger-slf4j:${Versions.koinVersion}"
-        const val KOIN_TEST = "io.insert-koin:koin-test:${Versions.koinVersion}"
+        const val KTOR = "io.insert-koin:koin-ktor:${Versions.koinVersion}"
+        const val LOGGER_SLFJ = "io.insert-koin:koin-logger-slf4j:${Versions.koinVersion}"
+        const val TEST = "io.insert-koin:koin-test:${Versions.koinVersion}"
     }
 
     object KOTEST : Dependencies() {
-        const val KOTEST_RUNNER = "io.kotest:kotest-runner-junit5:${Versions.kotestVersion}"
-        const val KOTEST_ASSERTIONS = "io.kotest:kotest-assertions-core:${Versions.kotestVersion}"
-        const val KOTEST_KTOR = "io.kotest.extensions:kotest-assertions-ktor:${Versions.kotestKtorVersion}"
-        const val KOTEST_PROPERTY = "io.kotest:kotest-property:${Versions.kotestVersion}"
+        const val RUNNER = "io.kotest:kotest-runner-junit5:${Versions.kotestVersion}"
+        const val ASSERTIONS_CORE = "io.kotest:kotest-assertions-core:${Versions.kotestVersion}"
+        const val ASSERTIONS_KTOR = "io.kotest.extensions:kotest-assertions-ktor:${Versions.kotestKtorVersion}"
+        const val PROPERTY = "io.kotest:kotest-property:${Versions.kotestVersion}"
     }
 }
 

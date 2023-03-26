@@ -18,5 +18,9 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 //see buildSrc/src/main/kotlin/Dependencies
 dependencies { applyAll() }

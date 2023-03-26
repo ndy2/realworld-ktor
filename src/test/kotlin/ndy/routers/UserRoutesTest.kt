@@ -9,10 +9,11 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.UserArbs.usernameValueArb
 import ndy.test.generator.registerArb
+
 import ndy.test.spec.BaseSpec
 import ndy.test.util.integrationTest
 
-class UserRoutesKtTest : BaseSpec({
+class UserRoutesTest : BaseSpec({
     integrationTest("authentication") { client ->
         client.post("/api/users/login").apply {
             assertEquals(HttpStatusCode.OK, status)
