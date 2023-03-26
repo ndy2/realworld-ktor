@@ -5,9 +5,7 @@ import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 
-@KtorDsl
 fun FunSpec.integrationTest(name: String, block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
     test(name) {
         testApplication {

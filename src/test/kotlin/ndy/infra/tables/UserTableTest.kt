@@ -8,11 +8,11 @@ import io.kotest.property.checkAll
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.Username
-import ndy.test.spec.TableTestSpec
+import ndy.test.spec.BaseSpec
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class UserTableTest : TableTestSpec({
+class UserTableTest : BaseSpec({
     val sut = UserTable()
 
     test("returns saved user and find it by id") {

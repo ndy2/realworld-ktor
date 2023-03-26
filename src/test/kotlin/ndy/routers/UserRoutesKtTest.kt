@@ -1,19 +1,18 @@
 package ndy.routers
 
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.property.PropertyTesting
-import io.kotest.property.arbitrary.ArbitraryBuilder
 import io.kotest.property.checkAll
-import io.kotest.property.resolution.GlobalArbResolver
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import junit.framework.TestCase.assertEquals
-import ndy.test.generator.ArbNullEdgecase
-import ndy.test.generator.UserArbs
+import ndy.test.generator.UserArbs.emailValueArb
+import ndy.test.generator.UserArbs.passwordValueArb
+import ndy.test.generator.UserArbs.usernameValueArb
+import ndy.test.generator.registerArb
+import ndy.test.spec.BaseSpec
 import ndy.test.util.integrationTest
 
-class UserRoutesKtTest : FunSpec({
+class UserRoutesKtTest : BaseSpec({
     integrationTest("authentication") { client ->
         client.post("/api/users/login").apply {
             assertEquals(HttpStatusCode.OK, status)
@@ -22,21 +21,7 @@ class UserRoutesKtTest : FunSpec({
     }
 
     integrationTest("signup") { client ->
-        PropertyTesting.defaultIterationCount = 10
-
-        GlobalArbResolver.register<RegistrationRequest>(
-            object : ArbNullEdgecase<RegistrationRequest>(
-                { rs ->
-                    ArbitraryBuilder.create {
-                        RegistrationRequest(
-                            UserArbs.UsernameValueArb.sample(it).value,
-                            UserArbs.EmailValueArb.sample(it).value,
-                            UserArbs.PasswordValueArb.sample(it).value,
-                        )
-                    }.build().sample(rs)
-                },
-            ) {}
-        )
+        registerArb<RegistrationRequest>(usernameValueArb, emailValueArb, passwordValueArb)
 
         checkAll<RegistrationRequest> { request ->
             client.post("/api/users") {
