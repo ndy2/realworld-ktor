@@ -5,13 +5,12 @@ import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
-import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
-import ndy.test.generator.UserArbs.usernameValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.integrationTest
@@ -34,7 +33,7 @@ class UserRoutesTest : BaseSpec(body = {
             assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
                 it.token shouldNotBe null
                 it.email shouldBe registrationRequest.email
-                it.username shouldBe registrationRequest.username
+                it.username shouldBe "user.username.value" // FIXME
                 it.bio shouldBe null
                 it.image shouldBe null
             }

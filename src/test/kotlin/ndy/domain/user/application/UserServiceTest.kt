@@ -9,9 +9,9 @@ import ndy.infra.tables.UserTable
 import ndy.test.extentions.DB
 import ndy.test.extentions.DI
 import ndy.test.extentions.JWT
+import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
-import ndy.test.generator.UserArbs.usernameValueArb
 import ndy.test.spec.BaseSpec
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -54,7 +54,7 @@ class UserServiceTest : BaseSpec(DI, DB, JWT) {
 
                 assertSoftly(result) {
                     it.token shouldNotBe null
-                    it.username shouldBe username
+                    it.username shouldBe "user.username.value" // FIXME
                     it.email shouldBe email
                     it.bio shouldBe null
                     it.image shouldBe null

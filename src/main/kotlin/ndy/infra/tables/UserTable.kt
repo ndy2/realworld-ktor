@@ -10,7 +10,6 @@ object UserTable : UserRepository {
 
     object Users : Table() {
         val id = ulong("id").autoIncrement()
-        val username = varchar("username", 128)
         val email = varchar("email", 128)
         val password = varchar("password", 512)
 
@@ -20,19 +19,16 @@ object UserTable : UserRepository {
     private fun resultRowToUser(row: ResultRow): User {
         return User(
             id = row[Users.id],
-            username = Username(row[Users.username]),
             email = Email(row[Users.email]),
             password = Password.withEncoded(row[Users.password]),
         )
     }
 
     override suspend fun save(
-        username: Username,
         email: Email,
         password: Password
     ): User {
         val insertStatement = Users.insert {
-            it[Users.username] = username.value
             it[Users.email] = email.value
             it[Users.password] = password.encodedPassword
         }

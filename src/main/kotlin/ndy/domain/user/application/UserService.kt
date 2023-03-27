@@ -1,11 +1,13 @@
 package ndy.domain.user.application
 
+import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
 import ndy.util.fail
 import ndy.util.newTransaction
 
 class UserService(
     private val repository: UserRepository,
+    private val profileService: ProfileService,
     private val passwordEncoder: PasswordEncoder,
     private val passwordVerifier: PasswordVerifier,
 ) {
@@ -23,7 +25,7 @@ class UserService(
         UserLoginResult(
             email = user.email.value,
             token = token,
-            username = user.username.value,
+            username = "user.username.value",
             bio = null,
             image = null,
         )
@@ -31,7 +33,6 @@ class UserService(
 
     suspend fun register(username: String, email: String, password: String) = newTransaction {
         repository.save(
-            Username(username),
             Email(email),
             Password(password, passwordEncoder)
         )

@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
 import io.kotest.property.PropertyTesting
 import io.kotest.property.resolution.GlobalArbResolver
+import ndy.test.generator.ProfileArbs
 import ndy.test.generator.UserArbs
 import org.koin.test.KoinTest
 import kotlin.reflect.KClass
@@ -30,6 +31,7 @@ abstract class BaseSpec(
     override suspend fun beforeSpec(spec: Spec) {
         PropertyTesting.defaultIterationCount = 10
         registerCustomArbs(UserArbs::class)
+        registerCustomArbs(ProfileArbs::class)
     }
 
     private fun registerCustomArbs(kClass: KClass<*>) {
