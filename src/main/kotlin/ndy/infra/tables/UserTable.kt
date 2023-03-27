@@ -33,7 +33,7 @@ class UserTable : UserRepository {
         val insertStatement = Users.insert {
             it[Users.username] = username.value
             it[Users.email] = email.value
-            it[Users.password] = password.value
+            it[Users.password] = password.encodedPassword
         }
 
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)!!
@@ -42,6 +42,13 @@ class UserTable : UserRepository {
     override suspend fun findUserById(id: ULong) = dbQuery {
         Users
             .select { Users.id eq id }
+            .map(::resultRowToUser)
+            .singleOrNull()
+    }
+
+    override suspend fun findUserByEmail(email: Email) = dbQuery {
+        Users
+            .select { Users.email eq email.value }
             .map(::resultRowToUser)
             .singleOrNull()
     }

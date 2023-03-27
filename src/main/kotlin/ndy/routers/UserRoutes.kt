@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
 import ndy.util.created
+import ndy.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
@@ -18,7 +19,25 @@ fun Route.userRouting() {
 
         // authentication
         post("/login") {
-            call.respond("login request received!")
+            // binding
+            val request = call.receive<Map<String, LoginRequest>>()["user"]
+                ?: return@post call.respond(BadRequest, "no use provided")
+
+            // invoke service
+            val result = userService.login(
+                email = request.email,
+                password = request.password
+            )
+
+            // response
+            val response = UserResponse(
+                email = result.email,
+                token = result.token,
+                username = result.username,
+                bio = result.bio,
+                image = result.image
+            )
+            call.ok(response)
         }
 
         // registration
@@ -35,14 +54,20 @@ fun Route.userRouting() {
             )
 
             // response
-            val response = UserResponse(email = result.email, username = result.username)
+            val response = UserResponse(
+                email = result.email,
+                username = result.username
+            )
             call.created(response)
         }
     }
 }
 
 @Serializable
-data class LoginRequest(val email: String, val password: String)
+data class LoginRequest(
+    val email: String,
+    val password: String
+)
 
 @Serializable
 data class RegistrationRequest(
