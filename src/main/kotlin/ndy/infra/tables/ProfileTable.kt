@@ -10,7 +10,7 @@ object ProfileTable : ProfileRepository {
 
     object Profiles : Table() {
         val id = ulong("id").autoIncrement()
-        val userId = ulong("userId").references(UserTable.Users.id)
+        val userId = ulong("userId")
         val username = varchar("username", 128).uniqueIndex()
         val bio = varchar("bio", 512).nullable()
         val image = varchar("image", 256).nullable()
@@ -27,8 +27,9 @@ object ProfileTable : ProfileRepository {
         )
     }
 
-    override suspend fun save(username: Username): Profile {
+    override suspend fun save(userId: ULong, username: Username): Profile {
         val insertStatement = Profiles.insert {
+            it[Profiles.userId] = userId
             it[Profiles.username] = username.value
         }
 
@@ -39,4 +40,10 @@ object ProfileTable : ProfileRepository {
         .select { Profiles.id eq id }
         .map(::resultRowToProfile)
         .singleOrNull()
+
+    override suspend fun findUsernameByUserId(userId: ULong) = Profiles
+        .slice(Profiles.username)
+        .select { Profiles.userId eq userId }
+        .map { it[Profiles.username] }
+        .single()
 }

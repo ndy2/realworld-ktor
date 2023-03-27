@@ -47,9 +47,11 @@ object DB : BeforeSpecListener, AfterSpecListener {
 
     override suspend fun beforeSpec(spec: Spec) = transaction(database) {
         SchemaUtils.create(UserTable.Users)
+        SchemaUtils.create(ProfileTable.Profiles)
     }
 
     override suspend fun afterSpec(spec: Spec) = transaction(database) {
+        SchemaUtils.drop(ProfileTable.Profiles)
         SchemaUtils.drop(UserTable.Users)
     }
 }

@@ -21,22 +21,30 @@ class UserService(
         // 3. token 생성
         val token = JwtTokenService.createToken(user)
 
+        // 4. profile.username 조회
+        val username = profileService.getUsernameByUserId(user.id)
+
         // 4. 응답
         UserLoginResult(
             email = user.email.value,
             token = token,
-            username = "user.username.value",
+            username = username,
             bio = null,
             image = null,
         )
     }
 
     suspend fun register(username: String, email: String, password: String) = newTransaction {
-        repository.save(
+        // 1. user 저장
+        val user = repository.save(
             Email(email),
             Password(password, passwordEncoder)
         )
 
+        // 2. profile 저장
+        profileService.register(user.id, username)
+
+        // 3. 응답
         UserRegisterResult(username, email)
     }
 }

@@ -33,7 +33,7 @@ class UserRoutesTest : BaseSpec(body = {
             assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
                 it.token shouldNotBe null
                 it.email shouldBe registrationRequest.email
-                it.username shouldBe "user.username.value" // FIXME
+                it.username shouldBe registrationRequest.username
                 it.bio shouldBe null
                 it.image shouldBe null
             }

@@ -2,6 +2,7 @@ package ndy.plugins
 
 import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.*
+import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -21,5 +22,6 @@ fun Application.configureDatabases() {
     )
     transaction(database) {
         SchemaUtils.create(UserTable.Users)
+        SchemaUtils.create(ProfileTable.Profiles)
     }
 }

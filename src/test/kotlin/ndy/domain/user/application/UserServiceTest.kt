@@ -54,7 +54,7 @@ class UserServiceTest : BaseSpec(DI, DB, JWT) {
 
                 assertSoftly(result) {
                     it.token shouldNotBe null
-                    it.username shouldBe "user.username.value" // FIXME
+                    it.username shouldBe username
                     it.email shouldBe email
                     it.bio shouldBe null
                     it.image shouldBe null
