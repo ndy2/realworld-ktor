@@ -1,13 +1,11 @@
 package ndy.test.generator
 
 import ndy.domain.user.application.BcryptPasswordService
-import ndy.domain.user.domain.Email
-import ndy.domain.user.domain.Password
-import ndy.domain.user.domain.Username
+import ndy.domain.user.domain.*
 import ndy.test.util.alphaNumericString
 import ndy.test.util.ascii
 
-@Suppress("unused")
+@Suppress("unused") // since they are registered automatically @BaseSpec#registerCustomArbs
 object UserArbs {
     val usernameValueArb = createArb { rs -> rs.ascii(0..10) }
     val usernameArb = createArb<Username>(usernameValueArb)
@@ -21,6 +19,7 @@ object UserArbs {
     val emailArb = createArb<Email>(emailValueArb)
 
     val passwordValueArb = createArb { rs -> rs.ascii(8..15) }
-    val passwordEncoderArb = createArb { _ -> BcryptPasswordService }
+    val passwordEncoderArb = createArb<PasswordEncoder> { _ -> BcryptPasswordService }
+    val passwordVerifierArb = createArb<PasswordVerifier> { _ -> BcryptPasswordService }
     val passwordArb = createArb<Password>(passwordValueArb, passwordEncoderArb)
 }
