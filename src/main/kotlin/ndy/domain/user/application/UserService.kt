@@ -22,6 +22,6 @@ class UserService(
 }
 
 data class UserRegisterResult(
-    val email: String,
     val username: String,
+    val email: String,
 )

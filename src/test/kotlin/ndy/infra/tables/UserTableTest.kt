@@ -8,13 +8,14 @@ import io.kotest.property.checkAll
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.Username
+import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class UserTableTest : BaseSpec({
-    val sut = UserTable()
+class UserTableTest : BaseSpec(DB, body = {
 
+    val sut = UserTable()
     test("returns saved user and find it by id") {
         checkAll<Username, Email, Password> { username, email, password ->
             val savedUser = sut.save(username, email, password)

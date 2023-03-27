@@ -13,7 +13,7 @@ import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.integrationTest
 
-class UserRoutesTest : BaseSpec({
+class UserRoutesTest : BaseSpec(body = {
     integrationTest("authentication") { client ->
         client.post("/api/users/login").apply {
             assertEquals(HttpStatusCode.OK, status)

@@ -9,6 +9,7 @@ object Versions {
     const val koinVersion = "3.3.0"
     const val kotestVersion = "5.5.5"
     const val kotestKtorVersion = "2.0.0"
+    const val kotestKoinVersion = "1.1.0"
 }
 
 sealed class Dependencies {
@@ -57,6 +58,7 @@ sealed class Dependencies {
         const val ASSERTIONS_CORE = "io.kotest:kotest-assertions-core:${Versions.kotestVersion}"
         const val ASSERTIONS_KTOR = "io.kotest.extensions:kotest-assertions-ktor:${Versions.kotestKtorVersion}"
         const val PROPERTY = "io.kotest:kotest-property:${Versions.kotestVersion}"
+        const val EXTENSIONS_KOINT = "io.kotest.extensions:kotest-extensions-koin:${Versions.kotestKoinVersion}"
     }
 }
 

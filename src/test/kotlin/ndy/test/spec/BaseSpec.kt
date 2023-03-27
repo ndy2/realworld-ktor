@@ -1,27 +1,35 @@
 package ndy.test.spec
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
 import io.kotest.property.PropertyTesting
 import io.kotest.property.resolution.GlobalArbResolver
-import io.ktor.server.testing.*
-import ndy.plugins.configureDatabases
 import ndy.test.generator.UserArbs
+import org.koin.test.KoinTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 
-abstract class BaseSpec(body: FunSpec.() -> Unit = {}) : FunSpec(body) {
+/**
+ * Custom Spec with FunSpec
+ * - can configure extension easily
+ * - configuration for property testing
+ */
+abstract class BaseSpec(
+    vararg extensions: Extension = emptyArray(),
+    body: FunSpec.() -> Unit = {}
+) : FunSpec(body), KoinTest {
 
+    private val extensions: List<Extension> = extensions.toList()
+
+    // see https://kotest.io/docs/extensions/koin.html for detail
+    override fun extensions() = extensions
+
+    // common hooks - configure property testing
     override suspend fun beforeSpec(spec: Spec) {
-        // set default iteration count - 10
         PropertyTesting.defaultIterationCount = 10
-
-        // register custom arb
         registerCustomArbs(UserArbs::class)
-
-        // configure application
-        testApplication { application { configureDatabases() } }
     }
 
     private fun registerCustomArbs(kClass: KClass<*>) {
