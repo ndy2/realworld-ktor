@@ -2,6 +2,7 @@ package ndy.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -15,13 +16,13 @@ fun Application.configureSecurity() {
 
     authentication {
         jwt {
-            val jwtAudience = this@configureSecurity.readProperty("jwt.audience")
-            realm = this@configureSecurity.readProperty("jwt.realm")
+            val jwtAudience = EnvConfig.getString("jwt.audience")
+            realm = EnvConfig.getString("jwt.realm")
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(this@configureSecurity.readProperty("jwt.secret")))
+                    .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
                     .withAudience(jwtAudience)
-                    .withIssuer(this@configureSecurity.readProperty("jwt.domain"))
+                    .withIssuer(EnvConfig.getString("jwt.issuer"))
                     .build()
             )
         }

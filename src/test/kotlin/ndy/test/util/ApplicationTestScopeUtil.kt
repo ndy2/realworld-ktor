@@ -5,9 +5,11 @@ import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
+import org.koin.core.context.stopKoin
 
 fun FunSpec.xintegrationTest(name: String, block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
     xtest(name) {
+        stopKoin()
         testApplication {
             val client = createClient {
                 install(ContentNegotiation) { json() }
@@ -19,6 +21,7 @@ fun FunSpec.xintegrationTest(name: String, block: suspend ApplicationTestBuilder
 
 fun FunSpec.integrationTest(name: String, block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
     test(name) {
+        stopKoin()
         testApplication {
             val client = createClient {
                 install(ContentNegotiation) { json() }

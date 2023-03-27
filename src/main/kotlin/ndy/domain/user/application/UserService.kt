@@ -8,16 +8,6 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val passwordVerifier: PasswordVerifier,
 ) {
-    suspend fun register(username: String, email: String, password: String): UserRegisterResult {
-        userRepository.save(
-            Username(username),
-            Email(email),
-            Password(password, passwordEncoder)
-        )
-
-        return UserRegisterResult(username, email)
-    }
-
     suspend fun login(email: String, password: String): UserLoginResult {
         // 1. email 로 사용자 조회
         val user = userRepository.findUserByEmail(Email(email)) ?: fail("login failure")
@@ -36,6 +26,16 @@ class UserService(
             bio = null,
             image = null,
         )
+    }
+
+    suspend fun register(username: String, email: String, password: String): UserRegisterResult {
+        userRepository.save(
+            Username(username),
+            Email(email),
+            Password(password, passwordEncoder)
+        )
+
+        return UserRegisterResult(username, email)
     }
 }
 

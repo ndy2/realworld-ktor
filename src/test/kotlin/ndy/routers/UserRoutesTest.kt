@@ -1,27 +1,42 @@
 package ndy.routers
 
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.ktor.client.shouldHaveStatus
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
+import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import junit.framework.TestCase.assertEquals
 import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.UserArbs.usernameValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.integrationTest
-import ndy.test.util.xintegrationTest
+import ndy.test.util.registerUser
 
 class UserRoutesTest : BaseSpec(body = {
-    xintegrationTest("authentication") { client ->
-        registerArb<LoginRequest>(emailValueArb, passwordValueArb)
+    integrationTest("login") { client ->
+        registerArb<RegistrationRequest>(usernameValueArb, emailValueArb, passwordValueArb)
 
-        checkAll<LoginRequest> { request ->
-            client.post("/api/users/login") {
+        checkAll<RegistrationRequest> { registrationRequest ->
+            registerUser(client, registrationRequest)
+
+            // login with that user
+            val response = client.post("/api/users/login") {
                 contentType(ContentType.Application.Json)
-                setBody(mapOf("user" to request))
-            }.apply {
-                assertEquals(HttpStatusCode.OK, status)
+                setBody(mapOf("user" to LoginRequest(registrationRequest.email, registrationRequest.password)))
+            }
+
+            response shouldHaveStatus HttpStatusCode.OK
+            assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
+                it.token shouldNotBe null
+                it.email shouldBe registrationRequest.email
+                it.username shouldBe registrationRequest.username
+                it.bio shouldBe null
+                it.image shouldBe null
             }
         }
     }
@@ -30,13 +45,19 @@ class UserRoutesTest : BaseSpec(body = {
         registerArb<RegistrationRequest>(usernameValueArb, emailValueArb, passwordValueArb)
 
         checkAll<RegistrationRequest> { request ->
-            client.post("/api/users") {
+            val response = client.post("/api/users") {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("user" to request))
             }
-                .apply {
-                    assertEquals(HttpStatusCode.Created, status)
-                }
+
+            response shouldHaveStatus HttpStatusCode.Created
+            assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
+                it.token shouldBe null
+                it.email shouldBe request.email
+                it.username shouldBe request.username
+                it.bio shouldBe null
+                it.image shouldBe null
+            }
         }
     }
 })

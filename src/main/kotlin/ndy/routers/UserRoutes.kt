@@ -37,7 +37,7 @@ fun Route.userRouting() {
                 bio = result.bio,
                 image = result.image
             )
-            call.ok(response)
+            call.ok(mapOf("user" to response))
         }
 
         // registration
@@ -58,7 +58,7 @@ fun Route.userRouting() {
                 email = result.email,
                 username = result.username
             )
-            call.created(response)
+            call.created(mapOf("user" to response))
         }
     }
 }

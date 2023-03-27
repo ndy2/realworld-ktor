@@ -25,7 +25,7 @@ val DI = KoinExtension(
         single<PasswordVerifier> { BcryptPasswordService }
         single { UserService(get(), get(), get()) }
     },
-    mode = KoinLifecycleMode.Root
+    mode = KoinLifecycleMode.Test
 )
 
 object DB : BeforeSpecListener, AfterSpecListener {
