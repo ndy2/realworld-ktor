@@ -4,13 +4,13 @@ import ndy.domain.user.domain.*
 import ndy.util.fail
 
 class UserService(
-    private val userRepository: UserRepository,
+    private val repository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val passwordVerifier: PasswordVerifier,
 ) {
     suspend fun login(email: String, password: String): UserLoginResult {
         // 1. email 로 사용자 조회
-        val user = userRepository.findUserByEmail(Email(email)) ?: fail("login failure")
+        val user = repository.findUserByEmail(Email(email)) ?: fail("login failure")
 
         // 2. password 검증
         user.password.checkPassword(password, passwordVerifier)
@@ -29,7 +29,7 @@ class UserService(
     }
 
     suspend fun register(username: String, email: String, password: String): UserRegisterResult {
-        userRepository.save(
+        repository.save(
             Username(username),
             Email(email),
             Password(password, passwordEncoder)
