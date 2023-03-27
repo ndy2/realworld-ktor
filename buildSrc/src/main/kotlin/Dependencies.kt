@@ -10,6 +10,7 @@ object Versions {
     const val kotestVersion = "5.5.5"
     const val kotestKtorVersion = "2.0.0"
     const val kotestKoinVersion = "1.1.0"
+    const val jbcryptVersion = "0.4"
 }
 
 sealed class Dependencies {
@@ -45,6 +46,10 @@ sealed class Dependencies {
 
     object Logging : Dependencies() {
         const val CLASSIC = "ch.qos.logback:logback-classic:${Versions.logbackVersion}"
+    }
+
+    object Security : Dependencies() {
+        const val JBCrypt = "org.mindrot:jbcrypt:${Versions.jbcryptVersion}"
     }
 
     object KOIN : Dependencies() {

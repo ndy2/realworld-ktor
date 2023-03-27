@@ -24,8 +24,8 @@ inline fun <reified T> createArb(crossinline sampleFunction: (RandomSource) -> T
  * create arb by combination of given arbs by calling constructor of T
  */
 inline fun <reified T> createArb(vararg arbArgs: Arb<*>): Arb<T> {
-    try {
-        return createArb { rs ->
+    return createArb { rs ->
+        try {
             val constructorArguments = arbArgs.map { it.sample(rs).value }.toTypedArray()
             ArbitraryBuilder.create {
                 T::class.constructors
@@ -34,9 +34,9 @@ inline fun <reified T> createArb(vararg arbArgs: Arb<*>): Arb<T> {
                     .first()
 
             }.build().sample(rs).value
+        } catch (e: Exception) {
+            throw IllegalArgumentException("bad constructor argument for type T: ${T::class.simpleName}")
         }
-    } catch (e: Exception) {
-        throw IllegalArgumentException("bad constructor argument provided while create Arb")
     }
 }
 

@@ -18,12 +18,14 @@ class UserTable : UserRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    private fun resultRowToUser(row: ResultRow) = User(
-        id = row[Users.id],
-        username = Username(row[Users.username]),
-        email = Email(row[Users.email]),
-        password = Password(row[Users.password]),
-    )
+    private fun resultRowToUser(row: ResultRow): User {
+        return User(
+            id = row[Users.id],
+            username = Username(row[Users.username]),
+            email = Email(row[Users.email]),
+            password = Password.withEncoded(row[Users.password]),
+        )
+    }
 
     override suspend fun save(
         username: Username,

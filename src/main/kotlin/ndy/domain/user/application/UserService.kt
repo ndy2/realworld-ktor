@@ -1,21 +1,18 @@
 package ndy.domain.user.application
 
-import ndy.domain.user.domain.Email
-import ndy.domain.user.domain.Password
-import ndy.domain.user.domain.UserRepository
-import ndy.domain.user.domain.Username
+import ndy.domain.user.domain.*
 import ndy.util.fail
 
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val passwordVerifier: PasswordVerifier,
 ) {
     suspend fun register(username: String, email: String, password: String): UserRegisterResult {
-        //TODO - validate duplicated username or email
-
         userRepository.save(
             Username(username),
             Email(email),
-            Password(password)
+            Password(password, passwordEncoder)
         )
 
         return UserRegisterResult(username, email)
@@ -26,8 +23,11 @@ class UserService(
         val user = userRepository.findUserByEmail(Email(email)) ?: fail("login failure")
 
         // 2. password 검증
+        user.password.checkPassword(password, passwordVerifier)
 
         // 3. token 생성
+
+
         // 4. 응답
         return UserLoginResult("", "", "")
     }

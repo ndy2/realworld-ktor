@@ -5,7 +5,10 @@ import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.koin.KoinExtension
 import io.kotest.koin.KoinLifecycleMode
+import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.application.UserService
+import ndy.domain.user.domain.PasswordEncoder
+import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
 import ndy.infra.tables.UserTable
 import org.jetbrains.exposed.sql.Database
@@ -16,7 +19,9 @@ import org.koin.dsl.module
 val DI = KoinExtension(
     module = module {
         single<UserRepository> { UserTable() }
-        single { UserService(get()) }
+        single<PasswordEncoder> { BcryptPasswordService }
+        single<PasswordVerifier> { BcryptPasswordService }
+        single { UserService(get(), get(), get()) }
     },
     mode = KoinLifecycleMode.Root
 )

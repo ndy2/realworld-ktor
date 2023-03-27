@@ -1,5 +1,6 @@
 package ndy.test.generator
 
+import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.Username
@@ -20,5 +21,6 @@ object UserArbs {
     val emailArb = createArb<Email>(emailValueArb)
 
     val passwordValueArb = createArb { rs -> rs.ascii(8..15) }
-    val passwordArb = createArb<Password>(passwordValueArb)
+    val passwordEncoderArb = createArb { _ -> BcryptPasswordService }
+    val passwordArb = createArb<Password>(passwordValueArb, passwordEncoderArb)
 }

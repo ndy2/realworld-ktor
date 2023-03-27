@@ -20,6 +20,7 @@ class UserTableTest : BaseSpec(DB, body = {
         checkAll<Username, Email, Password> { username, email, password ->
             val savedUser = sut.save(username, email, password)
             assertSoftly(savedUser) {
+
                 this.id shouldNotBe null
                 this.username shouldBe username
                 this.email shouldBe email
@@ -28,6 +29,8 @@ class UserTableTest : BaseSpec(DB, body = {
 
             val foundUser = sut.findUserById(savedUser.id)
             assertSoftly(foundUser!!) {
+                password.encodedPassword
+
                 this.id shouldBe savedUser.id
                 this.username shouldBe savedUser.username
                 this.email shouldBe savedUser.email
