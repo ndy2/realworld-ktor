@@ -10,6 +10,15 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
+/**
+ * Configure DI with Koin!
+ * there is no DI feature in Ktor, Let's use Koin!
+ * 
+ * Koin has no auto-configuration feature as in Spring Boot
+ * register module in below code
+ *
+ * @see <a href=https://insert-koin.io/docs/reference/koin-ktor/ktor/> koin-ktor in koin docs </a>
+ */
 fun Application.configureDi() {
 
     install(Koin) {
@@ -22,10 +31,4 @@ fun Application.configureDi() {
 private val appModule = module {
     singleOf(::UserTable) { bind<UserRepository>() }
     singleOf(::UserService)
-}
-
-// Classic DSL
-val appModuleClassic = module {
-    single<UserRepository> { UserTable() }
-    single { UserService(get()) }
 }

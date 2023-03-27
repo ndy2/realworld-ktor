@@ -6,6 +6,11 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
+/**
+ * configure database with Exposed!
+ *
+ * see - https://ktor.io/docs/interactive-website-add-persistence.html#connect_db
+ */
 fun Application.configureDatabases() {
     val database = Database.connect(
         url = environment.config.property("database.url").getString(),
