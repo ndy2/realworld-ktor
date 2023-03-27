@@ -16,7 +16,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserTableTest : BaseSpec(DB, body = {
 
-    val sut = UserTable()
+    val sut = UserTable
+
     test("returns saved user and find it by id") {
         checkAll<Username, Email, Password> { username, email, password ->
             newTransaction {

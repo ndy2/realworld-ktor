@@ -16,14 +16,15 @@ import ndy.infra.tables.UserTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val DI = KoinExtension(
     module = module {
-        single<UserRepository> { UserTable() }
+        single<UserRepository> { UserTable }
         single<PasswordEncoder> { BcryptPasswordService }
         single<PasswordVerifier> { BcryptPasswordService }
-        single { UserService(get(), get(), get()) }
+        singleOf(::UserService)
     },
     mode = KoinLifecycleMode.Test
 )

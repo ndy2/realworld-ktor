@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
-class UserTable : UserRepository {
+object UserTable : UserRepository {
 
     object Users : Table() {
         val id = ulong("id").autoIncrement()

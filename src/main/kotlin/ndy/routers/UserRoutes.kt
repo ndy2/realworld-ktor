@@ -12,11 +12,9 @@ import ndy.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
-
     val userService by inject<UserService>()
 
     route("/users") {
-
         // authentication
         post("/login") {
             // binding

@@ -31,7 +31,7 @@ fun Application.configureDi() {
 
 // Constructor DSL
 private val appModule = module {
-    single<UserRepository> { UserTable() }
+    single<UserRepository> { UserTable }
     single<PasswordEncoder> { BcryptPasswordService }
     single<PasswordVerifier> { BcryptPasswordService }
     singleOf(::UserService)
