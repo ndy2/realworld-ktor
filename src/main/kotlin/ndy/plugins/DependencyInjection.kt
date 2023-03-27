@@ -1,11 +1,14 @@
 package ndy.plugins
 
 import io.ktor.server.application.*
+import ndy.domain.profile.application.ProfileService
+import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.application.UserService
 import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
+import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -31,8 +34,13 @@ fun Application.configureDi() {
 
 // Constructor DSL
 private val appModule = module {
+    // user domain
     single<UserRepository> { UserTable }
     single<PasswordEncoder> { BcryptPasswordService }
     single<PasswordVerifier> { BcryptPasswordService }
     singleOf(::UserService)
+
+    // profile domain
+    single<ProfileRepository> { ProfileTable }
+    singleOf(::ProfileService)
 }

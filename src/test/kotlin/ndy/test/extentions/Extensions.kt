@@ -7,11 +7,14 @@ import io.kotest.core.spec.Spec
 import io.kotest.koin.KoinExtension
 import io.kotest.koin.KoinLifecycleMode
 import io.ktor.server.config.*
+import ndy.domain.profile.application.ProfileService
+import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.application.UserService
 import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
+import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -21,10 +24,15 @@ import org.koin.dsl.module
 
 val DI = KoinExtension(
     module = module {
+        // user domain
         single<UserRepository> { UserTable }
         single<PasswordEncoder> { BcryptPasswordService }
         single<PasswordVerifier> { BcryptPasswordService }
         singleOf(::UserService)
+
+        // profile domain
+        single<ProfileRepository> { ProfileTable }
+        singleOf(::ProfileService)
     },
     mode = KoinLifecycleMode.Test
 )
