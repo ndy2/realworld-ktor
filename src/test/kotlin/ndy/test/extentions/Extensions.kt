@@ -1,10 +1,12 @@
 package ndy.test.extentions
 
+import de.sharpmind.ktor.EnvConfig
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.koin.KoinExtension
 import io.kotest.koin.KoinLifecycleMode
+import io.ktor.server.config.*
 import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.application.UserService
 import ndy.domain.user.domain.PasswordEncoder
@@ -41,5 +43,20 @@ object DB : BeforeSpecListener, AfterSpecListener {
     override suspend fun afterSpec(spec: Spec) = transaction(database) {
         SchemaUtils.drop(UserTable.Users)
     }
+}
 
+object JWT : BeforeSpecListener {
+
+    override suspend fun beforeSpec(spec: Spec) {
+        EnvConfig.initConfig(
+            MapApplicationConfig(
+                "envConfig.default.jwt.domain" to "https://jwt-provider-domain/",
+                "envConfig.default.jwt.issuer" to "ndy2",
+                "envConfig.default.jwt.audience" to "jwt-audience",
+                "envConfig.default.jwt.realm" to "ktor sample app",
+                "envConfig.default.jwt.secret" to "secret",
+                "envConfig.default.jwt.expires" to "60000",
+            )
+        )
+    }
 }

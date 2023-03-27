@@ -26,10 +26,16 @@ class UserService(
         user.password.checkPassword(password, passwordVerifier)
 
         // 3. token 생성
-
+        val token = JwtTokenService.createToken(user)
 
         // 4. 응답
-        return UserLoginResult("", "", "")
+        return UserLoginResult(
+            email = user.email.value,
+            token = token,
+            username = user.username.value,
+            bio = null,
+            image = null,
+        )
     }
 }
 

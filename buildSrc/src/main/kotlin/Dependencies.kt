@@ -10,7 +10,6 @@ object Versions {
     const val kotestVersion = "5.5.5"
     const val kotestKtorVersion = "2.0.0"
     const val kotestKoinVersion = "1.1.0"
-    const val jbcryptVersion = "0.4"
 }
 
 sealed class Dependencies {
@@ -28,6 +27,7 @@ sealed class Dependencies {
         const val SERVER_NETTY = "io.ktor:ktor-server-netty-jvm:${Versions.ktorVersion}"
         const val SERVER_CONTENT = "io.ktor:ktor-server-content-negotiation-jvm:${Versions.ktorVersion}"
         const val SERVER_SERIALIZATION = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Versions.ktorVersion}"
+        const val ENV_CONFIG = "de.sharpmind.ktor:ktor-env-config:2.0.1"
 
         // server-auth
         const val SERVER_AUTH = "io.ktor:ktor-server-auth-jvm:${Versions.ktorVersion}"
@@ -49,7 +49,7 @@ sealed class Dependencies {
     }
 
     object Security : Dependencies() {
-        const val JBCrypt = "org.mindrot:jbcrypt:${Versions.jbcryptVersion}"
+        const val JBCrypt = "org.mindrot:jbcrypt:0.4"
     }
 
     object KOIN : Dependencies() {

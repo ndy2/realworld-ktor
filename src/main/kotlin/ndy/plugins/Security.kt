@@ -15,18 +15,18 @@ fun Application.configureSecurity() {
 
     authentication {
         jwt {
-            val jwtAudience = this@configureSecurity.environment.config.property("jwt.audience").getString()
-            realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
+            val jwtAudience = this@configureSecurity.readProperty("jwt.audience")
+            realm = this@configureSecurity.readProperty("jwt.realm")
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256("secret"))
+                    .require(Algorithm.HMAC256(this@configureSecurity.readProperty("jwt.secret")))
                     .withAudience(jwtAudience)
-                    .withIssuer(this@configureSecurity.environment.config.property("jwt.domain").getString())
+                    .withIssuer(this@configureSecurity.readProperty("jwt.domain"))
                     .build()
             )
-            validate { credential ->
-                if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
-            }
         }
     }
 }
+
+private fun Application.readProperty(path: String) =
+    this.environment.config.property(path).getString()
