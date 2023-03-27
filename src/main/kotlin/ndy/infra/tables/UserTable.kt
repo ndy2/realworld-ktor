@@ -1,7 +1,6 @@
 package ndy.infra.tables
 
 import ndy.domain.user.domain.*
-import ndy.util.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
@@ -31,27 +30,23 @@ class UserTable : UserRepository {
         username: Username,
         email: Email,
         password: Password
-    ): User = dbQuery {
+    ): User {
         val insertStatement = Users.insert {
             it[Users.username] = username.value
             it[Users.email] = email.value
             it[Users.password] = password.encodedPassword
         }
 
-        insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)!!
+        return insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)!!
     }
 
-    override suspend fun findUserById(id: ULong) = dbQuery {
-        Users
-            .select { Users.id eq id }
-            .map(::resultRowToUser)
-            .singleOrNull()
-    }
+    override suspend fun findUserById(id: ULong) = Users
+        .select { Users.id eq id }
+        .map(::resultRowToUser)
+        .singleOrNull()
 
-    override suspend fun findUserByEmail(email: Email) = dbQuery {
-        Users
-            .select { Users.email eq email.value }
-            .map(::resultRowToUser)
-            .singleOrNull()
-    }
+    override suspend fun findUserByEmail(email: Email) = Users
+        .select { Users.email eq email.value }
+        .map(::resultRowToUser)
+        .singleOrNull()
 }

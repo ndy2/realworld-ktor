@@ -2,13 +2,14 @@ package ndy.domain.user.application
 
 import ndy.domain.user.domain.*
 import ndy.util.fail
+import ndy.util.newTransaction
 
 class UserService(
     private val repository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val passwordVerifier: PasswordVerifier,
 ) {
-    suspend fun login(email: String, password: String): UserLoginResult {
+    suspend fun login(email: String, password: String) = newTransaction {
         // 1. email 로 사용자 조회
         val user = repository.findUserByEmail(Email(email)) ?: fail("login failure")
 
@@ -19,7 +20,7 @@ class UserService(
         val token = JwtTokenService.createToken(user)
 
         // 4. 응답
-        return UserLoginResult(
+        UserLoginResult(
             email = user.email.value,
             token = token,
             username = user.username.value,
@@ -28,14 +29,14 @@ class UserService(
         )
     }
 
-    suspend fun register(username: String, email: String, password: String): UserRegisterResult {
+    suspend fun register(username: String, email: String, password: String) = newTransaction {
         repository.save(
             Username(username),
             Email(email),
             Password(password, passwordEncoder)
         )
 
-        return UserRegisterResult(username, email)
+        UserRegisterResult(username, email)
     }
 }
 

@@ -10,6 +10,7 @@ import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.Username
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
+import ndy.util.newTransaction
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -18,27 +19,29 @@ class UserTableTest : BaseSpec(DB, body = {
     val sut = UserTable()
     test("returns saved user and find it by id") {
         checkAll<Username, Email, Password> { username, email, password ->
-            val savedUser = sut.save(username, email, password)
-            assertSoftly(savedUser) {
+            newTransaction {
+                val savedUser = sut.save(username, email, password)
+                assertSoftly(savedUser) {
 
-                this.id shouldNotBe null
-                this.username shouldBe username
-                this.email shouldBe email
-                this.password shouldBe password
-            }
+                    this.id shouldNotBe null
+                    this.username shouldBe username
+                    this.email shouldBe email
+                    this.password shouldBe password
+                }
 
-            val foundUser = sut.findUserById(savedUser.id)
-            assertSoftly(foundUser!!) {
-                password.encodedPassword
+                val foundUser = sut.findUserById(savedUser.id)
+                assertSoftly(foundUser!!) {
+                    password.encodedPassword
 
-                this.id shouldBe savedUser.id
-                this.username shouldBe savedUser.username
-                this.email shouldBe savedUser.email
-                this.password shouldBe savedUser.password
+                    this.id shouldBe savedUser.id
+                    this.username shouldBe savedUser.username
+                    this.email shouldBe savedUser.email
+                    this.password shouldBe savedUser.password
+                }
             }
         }
 
-        transaction {
+        newTransaction {
             val count = UserTable.Users.selectAll().count()
             count shouldBe PropertyTesting.defaultIterationCount
         }

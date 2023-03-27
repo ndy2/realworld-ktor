@@ -2,17 +2,15 @@ package ndy.domain.profile.application
 
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.domain.Username
+import ndy.util.mandatoryTransaction
 
 class ProfileService(
     private val repository: ProfileRepository
 ) {
-
-    suspend fun register(username: String): ProfileResult {
+    suspend fun register(username: String) = mandatoryTransaction {
         val profile = repository.save(Username(username))
 
-        return ProfileResult(
-            username = profile.username.value
-        )
+        ProfileResult(username = profile.username.value)
     }
 }
 
