@@ -8,9 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
-import ndy.domain.user.domain.UserId
-import ndy.util.created
-import ndy.util.ok
+import ndy.util.*
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
@@ -65,16 +63,15 @@ fun Route.userRouting() {
     route("/user") {
         authenticate {
             // get current user
-            get {
-                val userId = call.authentication.principal<UserId>()!!
+            getWithAuthenticatedUser { call ->
+                val result = userService.getById()
 
-                val result = userService.getById(userId)
-
-                val response = UserResponse(
-                    email = result.email,
-                    username = result.username
+                call.ok(
+                    UserResponse(
+                        email = result.email,
+                        username = result.username
+                    )
                 )
-                call.ok(response)
             }
 
             // update user
@@ -84,6 +81,7 @@ fun Route.userRouting() {
         }
     }
 }
+
 
 @Serializable
 data class LoginRequest(

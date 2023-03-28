@@ -1,5 +1,6 @@
 package ndy.domain.user.application
 
+import ndy.context.AuthenticatedUserContext
 import ndy.context.LoggingContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
@@ -54,7 +55,8 @@ class UserService(
         UserRegisterResult(username, email)
     }
 
-    suspend fun getById(userId: UserId) = newTransaction {
+    context (AuthenticatedUserContext)
+    suspend fun getById() = newTransaction {
         val user = repository.findUserById(userId) ?: fail("no such user")
 
         UserLoginResult(
