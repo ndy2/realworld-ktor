@@ -1,3 +1,4 @@
+
 plugins {
     kotlin("jvm") version "1.8.10"
     id("io.ktor.plugin") version "2.2.4"
@@ -17,6 +18,12 @@ application {
 repositories {
     mavenCentral()
 }
+
+//https://youtu.be/GISPalIVdQY
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>{
+    kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
+}
+
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
