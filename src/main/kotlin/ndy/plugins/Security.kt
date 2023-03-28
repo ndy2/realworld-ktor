@@ -6,6 +6,7 @@ import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import ndy.domain.user.domain.UserId
 
 /**
  * configure jwt in ktor
@@ -25,6 +26,10 @@ fun Application.configureSecurity() {
                     .withIssuer(EnvConfig.getString("jwt.issuer"))
                     .build()
             )
+
+            validate {
+                UserId(it.payload.getClaim("id").asLong().toULong())
+            }
         }
     }
 }

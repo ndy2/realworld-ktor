@@ -12,7 +12,7 @@ object JwtTokenService {
         return JWT.create()
             .withAudience(EnvConfig.getString("jwt.audience"))
             .withIssuer(EnvConfig.getString("jwt.issuer"))
-            .withClaim("id", user.id.toString())
+            .withClaim("id", user.id.value.toInt())
             .withExpiresAt(Date(System.currentTimeMillis() + EnvConfig.getInt("jwt.expires")))
             .sign(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
     }

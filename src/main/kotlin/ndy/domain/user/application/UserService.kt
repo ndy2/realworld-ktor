@@ -53,6 +53,15 @@ class UserService(
         // 3. 응답
         UserRegisterResult(username, email)
     }
+
+    suspend fun getById(userId: UserId) = newTransaction {
+        val user = repository.findUserById(userId) ?: fail("no such user")
+
+        UserLoginResult(
+            email = user.email.value,
+            username = "todo"
+        )
+    }
 }
 
 data class UserRegisterResult(
