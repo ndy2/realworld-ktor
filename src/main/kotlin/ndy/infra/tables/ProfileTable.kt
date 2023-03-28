@@ -20,7 +20,7 @@ object ProfileTable : ProfileRepository {
 
     private fun resultRowToProfile(row: ResultRow): Profile {
         return Profile(
-            id = row[Profiles.id],
+            id = ProfileId(row[Profiles.id]),
             username = Username(row[Profiles.username]),
             bio = row[Profiles.bio]?.let { Bio(it) },
             image = row[Profiles.image]?.let { Image.ofFullPath(it) }
@@ -36,8 +36,8 @@ object ProfileTable : ProfileRepository {
         return insertStatement.resultedValues?.singleOrNull()?.let(ProfileTable::resultRowToProfile)!!
     }
 
-    override suspend fun findById(id: ULong) = Profiles
-        .select { Profiles.id eq id }
+    override suspend fun findById(id: ProfileId) = Profiles
+        .select { Profiles.id eq id.value }
         .map(::resultRowToProfile)
         .singleOrNull()
 
