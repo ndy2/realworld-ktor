@@ -7,6 +7,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
+import io.ktor.util.pipeline.*
 import io.ktor.util.reflect.*
 import ndy.context.AuthenticatedUserContext
 import ndy.domain.user.domain.UserId
@@ -36,6 +37,17 @@ inline fun <reified T> Route.getWithAuthenticatedUser(
     }
 }
 
+@KtorDsl
+inline fun <reified T> Route.putWithAuthenticatedUser(
+    status: HttpStatusCode,
+    noinline body: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T
+) {
+    put {
+        val response = call.withAuthenticatedUser(body, this.context)
+        call.respond(status, response, typeInfo<T>())
+    }
+}
+
 // code referenced @ https://youtu.be/NxDIq-rFXUM
 suspend fun <T> ApplicationCall.withAuthenticatedUser(
     fn: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T,
@@ -60,5 +72,5 @@ suspend fun ApplicationCall.forward(path: String) {
         override val request: ApplicationRequest = req
     }
 
-    this.application.execute(call, Unit)
+    this.application.execute(call)
 }

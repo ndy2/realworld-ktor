@@ -80,7 +80,7 @@ fun Route.userRouting() {
 
         // update user ("[put] /api/user -> [put] /api/profile/{profileId})
         put {
-            call.forward("/api/profile/")
+            call.forward("/api/profile")
         }
     }
 }
