@@ -1,6 +1,6 @@
 package ndy.exception
 
 class RealworldRuntimeException(
-    message: String?,
-    e: Exception?
+    message: String? = null,
+    e: Exception? = null
 ) : RuntimeException(message, e)
