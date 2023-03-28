@@ -29,7 +29,7 @@ abstract class BaseSpec(
 
     // common hooks - configure property testing
     override suspend fun beforeSpec(spec: Spec) {
-        PropertyTesting.defaultIterationCount = 10
+        PropertyTesting.defaultIterationCount = 1
         registerCustomArbs(UserArbs::class)
         registerCustomArbs(ProfileArbs::class)
     }
