@@ -3,9 +3,11 @@ package ndy.util
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
+import io.ktor.util.reflect.*
 import ndy.context.AuthenticatedUserContext
 import ndy.domain.user.domain.UserId
 
@@ -24,26 +26,39 @@ fun ApplicationCall.userId(): UserId {
 }
 
 @KtorDsl
-fun Route.getWithAuthenticatedUser(body: suspend context(AuthenticatedUserContext) (ApplicationCall) -> Unit) {
+inline fun <reified T> Route.getWithAuthenticatedUser(
+    status: HttpStatusCode,
+    noinline body: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T
+) {
     get {
-
-        // (user context, application call) -> unit
-        // (user context) -> unit
-        // application call 과 관련된 context 는 여기서 전부 소모해 버림
-        suspend fun bodyWithModifiedSignature(context: AuthenticatedUserContext) {
-            body.invoke(
-                context, /* authenticatedUserContext */
-                this.context /* application call */
-            )
-        }
-        call.withAuthenticatedUser(::bodyWithModifiedSignature)
+        val response = call.withAuthenticatedUser(body, this.context)
+        call.respond(status, response, typeInfo<T>())
     }
 }
 
-suspend fun <T> ApplicationCall.withAuthenticatedUser(fn: suspend context(AuthenticatedUserContext) () -> T): T {
-    val context = object : AuthenticatedUserContext {
+// code referenced @ https://youtu.be/NxDIq-rFXUM
+suspend fun <T> ApplicationCall.withAuthenticatedUser(
+    fn: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T,
+    ac: ApplicationCall
+): T {
+    val userContext = object : AuthenticatedUserContext {
         override val userId = userId()
     }
 
-    return fn(context)
+    return fn(userContext, ac)
+}
+
+// code from https://stackoverflow.com/questions/60443412/how-to-redirect-internally-in-ktor
+suspend fun ApplicationCall.forward(path: String) {
+    val cp = object : RequestConnectionPoint by this.request.local {
+        override val uri: String = path
+    }
+    val req = object : ApplicationRequest by this.request {
+        override val local: RequestConnectionPoint = cp
+    }
+    val call = object : ApplicationCall by this {
+        override val request: ApplicationRequest = req
+    }
+
+    this.application.execute(call, Unit)
 }

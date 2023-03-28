@@ -1,6 +1,7 @@
 package ndy.routers
 
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -8,7 +9,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
-import ndy.util.*
+import ndy.util.created
+import ndy.util.forward
+import ndy.util.getWithAuthenticatedUser
+import ndy.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
@@ -62,22 +66,21 @@ fun Route.userRouting() {
 
     route("/user") {
         authenticate {
+
             // get current user
-            getWithAuthenticatedUser { call ->
+            getWithAuthenticatedUser(OK) {
                 val result = userService.getById()
 
-                call.ok(
-                    UserResponse(
-                        email = result.email,
-                        username = result.username
-                    )
+                UserResponse(
+                    email = result.email,
+                    username = result.username
                 )
             }
+        }
 
-            // update user
-            put {
-
-            }
+        // update user ("[put] /api/user -> [put] /api/profile/{profileId})
+        put {
+            call.forward("/api/profile/")
         }
     }
 }
