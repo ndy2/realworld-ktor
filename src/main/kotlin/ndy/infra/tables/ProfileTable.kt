@@ -1,6 +1,7 @@
 package ndy.infra.tables
 
 import ndy.domain.profile.domain.*
+import ndy.domain.user.domain.UserId
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
@@ -27,9 +28,9 @@ object ProfileTable : ProfileRepository {
         )
     }
 
-    override suspend fun save(userId: ULong, username: Username): Profile {
+    override suspend fun save(userId: UserId, username: Username): Profile {
         val insertStatement = Profiles.insert {
-            it[Profiles.userId] = userId
+            it[Profiles.userId] = userId.value
             it[Profiles.username] = username.value
         }
 
@@ -41,9 +42,9 @@ object ProfileTable : ProfileRepository {
         .map(::resultRowToProfile)
         .singleOrNull()
 
-    override suspend fun findUsernameByUserId(userId: ULong) = Profiles
+    override suspend fun findUsernameByUserId(userId: UserId) = Profiles
         .slice(Profiles.username)
-        .select { Profiles.userId eq userId }
+        .select { Profiles.userId eq userId.value }
         .map { it[Profiles.username] }
         .single()
 }
