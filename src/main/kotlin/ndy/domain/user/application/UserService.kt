@@ -22,7 +22,7 @@ class UserService(
         val token = JwtTokenService.createToken(user)
 
         // 4. profile.username 조회
-        val username = profileService.getUsernameByUserId(user.id)
+        val username = profileService.getUsernameByUserId(user.id.value)
 
         // 4. 응답
         UserLoginResult(
@@ -42,7 +42,7 @@ class UserService(
         )
 
         // 2. profile 저장
-        profileService.register(user.id, username)
+        profileService.register(user.id.value, username)
 
         // 3. 응답
         UserRegisterResult(username, email)

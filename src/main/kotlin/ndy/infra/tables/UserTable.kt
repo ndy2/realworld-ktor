@@ -18,7 +18,7 @@ object UserTable : UserRepository {
 
     private fun resultRowToUser(row: ResultRow): User {
         return User(
-            id = row[Users.id],
+            id = UserId(row[Users.id]),
             email = Email(row[Users.email]),
             password = Password.withEncoded(row[Users.password]),
         )
@@ -36,8 +36,8 @@ object UserTable : UserRepository {
         return insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)!!
     }
 
-    override suspend fun findUserById(id: ULong) = Users
-        .select { Users.id eq id }
+    override suspend fun findUserById(id: UserId) = Users
+        .select { Users.id eq id.value }
         .map(::resultRowToUser)
         .singleOrNull()
 
