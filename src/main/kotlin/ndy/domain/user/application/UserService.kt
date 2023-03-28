@@ -1,10 +1,12 @@
 package ndy.domain.user.application
 
+import ndy.context.LoggingContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
 import ndy.util.fail
 import ndy.util.newTransaction
 
+context (LoggingContext)
 class UserService(
     private val repository: UserRepository,
     private val profileService: ProfileService,
@@ -12,6 +14,8 @@ class UserService(
     private val passwordVerifier: PasswordVerifier,
 ) {
     suspend fun login(email: String, password: String) = newTransaction {
+        log.info("login request - email : $email")
+
         // 1. email 로 사용자 조회
         val user = repository.findUserByEmail(Email(email)) ?: fail("login failure")
 
@@ -25,6 +29,7 @@ class UserService(
         val username = profileService.getUsernameByUserId(user.id.value)
 
         // 4. 응답
+        log.info("login done - email : $email")
         UserLoginResult(
             email = user.email.value,
             token = token,
@@ -36,6 +41,7 @@ class UserService(
 
     suspend fun register(username: String, email: String, password: String) = newTransaction {
         // 1. user 저장
+        log.info("register new user - username: $username, password : $password")
         val user = repository.save(
             Email(email),
             Password(password, passwordEncoder)

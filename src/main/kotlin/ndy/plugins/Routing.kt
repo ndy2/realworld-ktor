@@ -2,6 +2,7 @@ package ndy.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import ndy.context.DefaultLoggingContext
 import ndy.routers.userRouting
 
 /**
@@ -11,8 +12,10 @@ import ndy.routers.userRouting
 fun Application.configureRouting() {
 
     routing {
-        route("/api") {
-            userRouting()
+        with(DefaultLoggingContext) {
+            route("/api") {
+                userRouting()
+            }
         }
     }
 }

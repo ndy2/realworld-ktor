@@ -76,10 +76,10 @@ sealed class Dependencies {
         const val KTOR_ENV_CONFIG = "de.sharpmind.ktor:ktor-env-config:2.0.1" // properties
 
         //https://github.com/qos-ch/logback
-        const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.2.11" //logging
+        const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.2.11" // logging
 
         //https://github.com/jeremyh/jBCrypt
-        const val JBCrypt = "org.mindrot:jbcrypt:0.4" //security
+        const val JBCrypt = "org.mindrot:jbcrypt:0.4" // security
 
         //https://github.com/konform-kt/konform
         const val KONFORM = "io.konform:konform:0.4.0" // validation

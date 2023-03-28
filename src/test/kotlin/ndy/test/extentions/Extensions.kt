@@ -7,6 +7,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.koin.KoinExtension
 import io.kotest.koin.KoinLifecycleMode
 import io.ktor.server.config.*
+import ndy.context.DefaultLoggingContext
+import ndy.context.LoggingContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.user.application.BcryptPasswordService
@@ -31,6 +33,8 @@ import org.koin.dsl.module
 // see https://kotest.io/docs/extensions/koin.html
 val DI = KoinExtension(
     module = module {
+        single<LoggingContext> { DefaultLoggingContext } // should be added for context(LoggingContext)
+
         // user domain
         single<UserRepository> { UserTable }
         single<PasswordEncoder> { BcryptPasswordService }
