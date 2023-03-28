@@ -6,8 +6,6 @@ object Versions {
     const val h2Version = "2.1.214"
     const val koinVersion = "3.3.0"
     const val kotestVersion = "5.5.5"
-    const val kotestKtorVersion = "2.0.0"
-    const val kotestKoinVersion = "1.1.0"
 }
 
 sealed class Dependencies {
@@ -16,6 +14,7 @@ sealed class Dependencies {
         it.name to it.getter.call().toString()
     }.groupBy({ it.first }, { it.second }).mapValues { it.value[0] }
 
+    //https://ktor.io/
     object Ktor : Dependencies() {
         // core
         const val SERVER_CORE = "io.ktor:ktor-server-core-jvm:${Versions.ktorVersion}"
@@ -36,30 +35,53 @@ sealed class Dependencies {
     }
 
     object Persistence : Dependencies() {
+        //https://github.com/JetBrains/Exposed
         const val EXPOSED_CORE = "org.jetbrains.exposed:exposed-core:${Versions.exposedVersion}"
         const val EXPOSED_JDBC = "org.jetbrains.exposed:exposed-jdbc:${Versions.exposedVersion}"
+
+        //https://www.h2database.com/
         const val H2_DATABASE = "com.h2database:h2:${Versions.h2Version}"
     }
 
 
+    //https://insert-koin.io/
     object KOIN : Dependencies() {
         const val KTOR = "io.insert-koin:koin-ktor:${Versions.koinVersion}"
         const val LOGGER_SLF4J = "io.insert-koin:koin-logger-slf4j:${Versions.koinVersion}"
         const val TEST = "io.insert-koin:koin-test:${Versions.koinVersion}"
     }
 
+    //https://kotest.io/
     object KOTEST : Dependencies() {
         const val RUNNER = "io.kotest:kotest-runner-junit5:${Versions.kotestVersion}"
+
+        //https://kotest.io/docs/assertions/assertions.html
         const val ASSERTIONS_CORE = "io.kotest:kotest-assertions-core:${Versions.kotestVersion}"
-        const val ASSERTIONS_KTOR = "io.kotest.extensions:kotest-assertions-ktor:${Versions.kotestKtorVersion}"
+
+        //https://kotest.io/docs/proptest/property-based-testing.html
         const val PROPERTY = "io.kotest:kotest-property:${Versions.kotestVersion}"
-        const val EXTENSIONS_KOIN = "io.kotest.extensions:kotest-extensions-koin:${Versions.kotestKoinVersion}"
+
+        //https://kotest.io/docs/assertions/ktor-matchers.html
+        const val ASSERTIONS_KTOR = "io.kotest.extensions:kotest-assertions-ktor:2.0.0"
+
+        //https://kotest.io/docs/extensions/koin.html
+        const val EXTENSIONS_KOIN = "io.kotest.extensions:kotest-extensions-koin:1.1.0"
+
+        //https://kotest.io/docs/assertions/konform-matchers.html
+        const val EXTENSIONS_KONFORM = "io.kotest.extensions:kotest-assertions-konform:1.0.2"
     }
 
     object ETC : Dependencies() {
+        //https://github.com/sharpmind-de/ktor-env-config
         const val KTOR_ENV_CONFIG = "de.sharpmind.ktor:ktor-env-config:2.0.1" // properties
+
+        //https://github.com/qos-ch/logback
         const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.2.11" //logging
+
+        //https://github.com/jeremyh/jBCrypt
         const val JBCrypt = "org.mindrot:jbcrypt:0.4" //security
+
+        //https://github.com/konform-kt/konform
         const val KONFORM = "io.konform:konform:0.4.0" // validation
     }
 }
