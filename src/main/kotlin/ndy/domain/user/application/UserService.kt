@@ -58,11 +58,21 @@ class UserService(
 
     context (AuthenticatedUserContext)
     suspend fun getById() = newTransaction {
-        val user = repository.findUserById(userId) ?: notFound("no such user")
+        // find user in user table
+        val foundUser = repository.findUserById(userId) ?: notFound()
 
+        // get profile from profileService
+        val profileResult = with(userIdContext(userId)) {
+            profileService.getByUserId()
+        }
+
+        // combine results
         UserLoginResult(
-            email = user.email.value,
-            username = "todo"
+            email = foundUser.email.value,
+            username = profileResult.username,
+            token = null,
+            bio = profileResult.bio,
+            image = profileResult.image
         )
     }
 
