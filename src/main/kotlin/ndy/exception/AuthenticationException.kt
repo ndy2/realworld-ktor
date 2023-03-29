@@ -1,3 +1,3 @@
 package ndy.exception
 
-class AuthenticationException : RealworldRuntimeException("authentication failure!")
+class AuthenticationException(message: String) : RealworldRuntimeException(message)

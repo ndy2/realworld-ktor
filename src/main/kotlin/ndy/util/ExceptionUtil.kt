@@ -1,26 +1,40 @@
 package ndy.util
 
 import io.konform.validation.ValidationResult
-import ndy.exception.RealworldRuntimeException
+import ndy.exception.AuthenticationException
+import ndy.exception.EntityNotFoundException
+import ndy.exception.ValidationException
 
-fun fail(
+fun authenticationFail(
+    message: String
+): Nothing {
+    throw AuthenticationException(message)
+}
+
+fun notFound(
+    message: String
+): Nothing {
+    throw EntityNotFoundException(message)
+}
+
+fun validationFail(
     message: String? = null,
     e: Exception? = null
 ): Nothing {
-    throw RealworldRuntimeException(message, e)
+    throw ValidationException(message, e)
 }
 
-fun checkCondition(
+fun checkValidation(
     condition: Boolean,
-    message: String = "condition not matched"
+    message: String
 ) {
     if (!condition) {
-        fail(message)
+        validationFail(message)
     }
 }
 
 fun <T> ValidationResult<T>.checkAndThrow() {
     if (errors.isNotEmpty()) {
-        fail(errors.joinToString { it.message })
+        validationFail(errors.joinToString { it.message })
     }
 }

@@ -29,7 +29,7 @@ fun Application.configureSecurity() {
             )
 
             validate {
-                val claim = it.payload.getClaim("id") ?: throw AuthenticationException()
+                val claim = it.payload.getClaim("id") ?: throw AuthenticationException("login failure")
                 UserId(claim.asLong().toULong())
             }
         }

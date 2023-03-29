@@ -23,7 +23,7 @@ suspend inline fun <reified T : Any> ApplicationCall.ok(message: T) {
 }
 
 fun ApplicationCall.userId(): UserId {
-    return this.authentication.principal() ?: fail("user id not found in token")
+    return this.authentication.principal() ?: authenticationFail("user id not found in token")
 }
 
 @KtorDsl

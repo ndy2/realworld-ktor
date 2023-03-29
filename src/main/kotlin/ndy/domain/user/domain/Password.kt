@@ -1,7 +1,7 @@
 package ndy.domain.user.domain
 
-import ndy.util.checkCondition
-import ndy.util.fail
+import ndy.exception.AuthenticationException
+import ndy.util.checkValidation
 import kotlin.reflect.KProperty
 
 /**
@@ -13,7 +13,7 @@ class Password(
     passwordEncoder: PasswordEncoder? = null,
 ) {
     init {
-        rawPassword?.let { checkCondition(it.length <= MAX_USER_PASSWORD_LENGTH, "password too long") }
+        rawPassword?.let { checkValidation(it.length <= MAX_USER_PASSWORD_LENGTH, "password too long") }
     }
 
     var encodedPassword: String by PasswordDelegate(rawPassword, passwordEncoder)
@@ -38,7 +38,7 @@ class Password(
     /* throw exception if password verification failed! */
     fun checkPassword(attemptPassword: String, passwordVerifier: PasswordVerifier) {
         if (!passwordVerifier.verify(attemptPassword, encodedPassword)) {
-            fail("login failure")
+            throw AuthenticationException("login failure")
         }
     }
 }
@@ -57,7 +57,7 @@ class PasswordDelegate(private val raw: String?, private val encoder: PasswordEn
                 setValue(thisRef, prop, encodedPassword)
                 encodedPassword
             } else {
-                fail("illegal approach to get encodedPassword")
+                throw IllegalAccessException("illegal approach to get encodedPassword")
             }
         } else {
             encodedPassword!!

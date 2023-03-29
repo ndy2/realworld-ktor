@@ -4,8 +4,9 @@ import ndy.context.AuthenticatedUserContext
 import ndy.context.LoggingContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
-import ndy.util.fail
+import ndy.util.authenticationFail
 import ndy.util.newTransaction
+import ndy.util.notFound
 
 context (LoggingContext)
 class UserService(
@@ -18,7 +19,7 @@ class UserService(
         log.info("login request - email : $email")
 
         // 1. email 로 사용자 조회
-        val user = repository.findUserByEmail(Email(email)) ?: fail("login failure")
+        val user = repository.findUserByEmail(Email(email)) ?: authenticationFail("login failure")
 
         // 2. password 검증
         user.password.checkPassword(password, passwordVerifier)
@@ -57,7 +58,7 @@ class UserService(
 
     context (AuthenticatedUserContext)
     suspend fun getById() = newTransaction {
-        val user = repository.findUserById(userId) ?: fail("no such user")
+        val user = repository.findUserById(userId) ?: notFound("no such user")
 
         UserLoginResult(
             email = user.email.value,

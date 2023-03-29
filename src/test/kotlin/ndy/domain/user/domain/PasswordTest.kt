@@ -59,7 +59,7 @@ class PasswordTest : BaseSpec(body = {
     test("cannot access encodedPassword with null args constructed Password") {
         val nullPassword = Password(rawPassword = null, passwordEncoder = null)
 
-        shouldThrow<RealworldRuntimeException> { nullPassword.encodedPassword /* invoke PasswordDelegate.getValue */ }
+        shouldThrow<IllegalAccessException> { nullPassword.encodedPassword /* invoke PasswordDelegate.getValue */ }
             .apply { message shouldBe "illegal approach to get encodedPassword" }
     }
 
