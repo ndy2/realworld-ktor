@@ -3,6 +3,7 @@ package ndy.util
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.request.*
 import io.ktor.server.resources.*
 import io.ktor.server.resources.put
 import io.ktor.server.response.*
@@ -24,6 +25,8 @@ suspend inline fun <reified T : Any> ApplicationCall.ok(message: T) {
 fun ApplicationCall.userId(): UserId {
     return this.authentication.principal() ?: authenticationFail("user id not found in token")
 }
+
+suspend inline fun <reified T : Any> ApplicationCall.extract(key: String) = receive<Map<String, T>>()[key]!!
 
 inline fun <reified T : Any> Route.authenticatedGet(
     vararg configurations: String? = arrayOf(null),

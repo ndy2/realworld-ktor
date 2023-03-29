@@ -6,17 +6,14 @@ import io.ktor.server.resources.post
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
-import ndy.util.authenticatedGet
-import ndy.util.authenticatedPut
-import ndy.util.created
-import ndy.util.ok
+import ndy.util.*
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
     val userService by inject<UserService>()
 
     post<Users> {
-        val request = call.receive<Map<String, RegistrationRequest>>()["user"]!!
+        val request = call.extract<RegistrationRequest>("user")
 
         val result = userService.register(
             username = request.username,
@@ -32,7 +29,7 @@ fun Route.userRouting() {
     }
 
     post<Users.Login> {
-        val request = call.receive<Map<String, LoginRequest>>()["user"]!!
+        val request = call.extract<LoginRequest>("user")
 
         val result = userService.login(
             email = request.email,
