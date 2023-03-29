@@ -1,4 +1,4 @@
-package ndy.routers
+package ndy.routers.user
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.ktor.client.shouldHaveStatus

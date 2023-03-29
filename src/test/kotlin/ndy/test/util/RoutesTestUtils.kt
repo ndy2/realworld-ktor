@@ -4,7 +4,7 @@ import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import ndy.routers.RegistrationRequest
+import ndy.routers.user.RegistrationRequest
 
 /**
  * Contains some helper functions that create/setup data for routeTests

@@ -1,4 +1,4 @@
-package ndy.routers
+package ndy.routers.profile
 
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.auth.*
