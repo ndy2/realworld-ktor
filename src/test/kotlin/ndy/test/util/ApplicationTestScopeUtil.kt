@@ -3,21 +3,32 @@ package ndy.test.util
 import io.kotest.core.spec.style.FunSpec
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.resources.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
+import kotlinx.serialization.json.Json
 import org.koin.core.context.stopKoin
 
-fun FunSpec.xintegrationTest(name: String, block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
-    xtest(name) {
+fun FunSpec.xintegrationTest(name: String, block: suspend context(HttpClientContext) () -> Unit) =
+    test(name) {
         stopKoin()
         testApplication {
             val client = createClient {
-                install(ContentNegotiation) { json() }
+                install(ContentNegotiation) {
+                    json(Json {
+                        explicitNulls = false
+                    })
+                }
+                install(Resources)
             }
-            block(this, client)
+
+            val clientContext = object : HttpClientContext {
+                override val client: HttpClient = client
+            }
+
+            block(clientContext)
         }
     }
-
 
 // TestScope/ Context 와 관련된 기능은 포기
 // block: suspend context(HttpClientContext) TestScope.() -> Unit
@@ -27,7 +38,12 @@ fun FunSpec.integrationTest(name: String, block: suspend context(HttpClientConte
         stopKoin()
         testApplication {
             val client = createClient {
-                install(ContentNegotiation) { json() }
+                install(ContentNegotiation) {
+                    json(Json {
+                        explicitNulls = false
+                    })
+                }
+                install(Resources)
             }
 
             val clientContext = object : HttpClientContext {

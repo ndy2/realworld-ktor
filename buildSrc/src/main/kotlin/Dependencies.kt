@@ -32,8 +32,9 @@ sealed class Dependencies {
         const val SERVER_AUTH_JWT = "io.ktor:ktor-server-auth-jwt-jvm:${Versions.ktorVersion}"
         const val SERVER_CORS = "io.ktor:ktor-server-cors-jvm:${Versions.ktorVersion}"
 
-        // client
-        const val CLIENT_CONTENT_TEST = "io.ktor:ktor-client-content-negotiation-jvm:${Versions.ktorVersion}" // test
+        // client - used in test
+        const val CLIENT_CONTENT_TEST = "io.ktor:ktor-client-content-negotiation-jvm:${Versions.ktorVersion}"
+        const val CLIENT_RESOURCES_TEST = "io.ktor:ktor-client-resources:${Versions.ktorVersion}"
     }
 
     object Persistence : Dependencies() {
