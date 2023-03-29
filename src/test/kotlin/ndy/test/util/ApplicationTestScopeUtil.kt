@@ -25,6 +25,7 @@ fun FunSpec.integrationTest(name: String, block: suspend context(HttpClientConte
                     url {
                         path("api/")
                     }
+                    contentType(ContentType.Application.Json)
                 }
 
                 install(ContentNegotiation) {

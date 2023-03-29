@@ -29,7 +29,6 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
             val response = client.post(Users()) {
-                contentType(Json)
                 setBody(mapOf("user" to request))
             }
 
@@ -48,7 +47,6 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
         checkAll<RegistrationRequest> { request ->
             registerUser(request)
             val response = client.post(Users.Login()) {
-                contentType(Json)
                 setBody(mapOf("user" to LoginRequest(request.email, request.password)))
             }
 
@@ -70,7 +68,6 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
             val token = login(LoginRequest(request.email, request.password))
 
             val response = client.get(User()) {
-                contentType(Json)
                 authToken(token)
             }
 
