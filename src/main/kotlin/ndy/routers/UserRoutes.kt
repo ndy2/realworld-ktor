@@ -1,10 +1,12 @@
-package ndy.routers.user
+package ndy.routers
 
 import io.ktor.server.application.*
 import io.ktor.server.resources.post
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
+import ndy.resources.User
+import ndy.resources.Users
 import ndy.util.*
 import org.koin.ktor.ext.inject
 

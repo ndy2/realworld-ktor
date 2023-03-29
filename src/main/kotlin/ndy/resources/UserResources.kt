@@ -1,4 +1,4 @@
-package ndy.routers.user
+package ndy.resources
 
 import io.ktor.resources.*
 

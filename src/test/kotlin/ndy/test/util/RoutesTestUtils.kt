@@ -7,9 +7,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
-import ndy.routers.user.LoginRequest
-import ndy.routers.user.RegistrationRequest
-import ndy.routers.user.UserResponse
+import ndy.routers.LoginRequest
+import ndy.routers.RegistrationRequest
+import ndy.routers.UserResponse
 
 /**
  * Contains some helper functions that create/setup data for routeTests

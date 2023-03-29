@@ -3,7 +3,7 @@ package ndy.plugins
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import ndy.context.DefaultLoggingContext
-import ndy.routers.user.userRouting
+import ndy.routers.userRouting
 
 /**
  * configure Routing (Controller in Spring)
