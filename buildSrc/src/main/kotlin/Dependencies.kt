@@ -25,6 +25,7 @@ sealed class Dependencies {
         const val SERVER_CONTENT = "io.ktor:ktor-server-content-negotiation-jvm:${Versions.ktorVersion}"
         const val SERVER_SERIALIZATION = "io.ktor:ktor-serialization-kotlinx-json-jvm:${Versions.ktorVersion}"
         const val SERVER_STATUS_PAGES = "io.ktor:ktor-server-status-pages:${Versions.ktorVersion}"
+        const val SERVER_SEROUCES = "io.ktor:ktor-server-resources:${Versions.ktorVersion}"
 
         // server-auth
         const val SERVER_AUTH = "io.ktor:ktor-server-auth-jvm:${Versions.ktorVersion}"

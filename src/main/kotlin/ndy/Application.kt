@@ -1,5 +1,6 @@
 package ndy
 
+import io.ktor.resources.*
 import io.ktor.server.application.*
 import ndy.plugins.*
 import io.ktor.server.netty.EngineMain.main as netty
@@ -16,4 +17,5 @@ fun Application.module() {
     configureDatabases()
     configureRouting()
     configureExceptionHandling()
+    configureResources()
 }
