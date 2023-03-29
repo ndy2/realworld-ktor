@@ -12,7 +12,7 @@ fun authenticationFail(
 }
 
 fun notFound(
-    message: String
+    message: String = "not found"
 ): Nothing {
     throw EntityNotFoundException(message)
 }

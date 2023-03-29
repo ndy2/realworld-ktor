@@ -93,11 +93,11 @@ data class RegistrationRequest(
 
 @Serializable
 data class UserUpdateRequest(
-    val email: String,
-    val password: String,
-    val username: String,
-    val bio: String,
-    val image: String,
+    val email: String?,
+    val password: String?,
+    val username: String?,
+    val bio: String?,
+    val image: String?,
 )
 
 @Serializable

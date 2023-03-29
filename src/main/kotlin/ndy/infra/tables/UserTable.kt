@@ -44,9 +44,10 @@ object UserTable : UserRepository {
         .map(::resultRowToUser)
         .singleOrNull()
 
-    override suspend fun updateById(id: UserId, email: Email, password: Password) = Users
+
+    override suspend fun updateById(id: UserId, email: Email?, password: Password?) = Users
         .update({ Users.id eq id.value }) {
-            it[Users.email] = email.value
-            it[Users.password] = password.encodedPassword
+            if (email != null) it[Users.email] = email.value
+            if (password != null) it[Users.password] = password.encodedPassword
         }
 }

@@ -19,7 +19,6 @@ class ProfileTableTest : BaseSpec(DB, body = {
             newTransaction {
                 val savedProfile = sut.save(UserId(userId), username)
                 assertSoftly(savedProfile) {
-
                     this.id shouldNotBe null
                     this.username shouldBe username
                     this.bio shouldBe null
@@ -33,9 +32,6 @@ class ProfileTableTest : BaseSpec(DB, body = {
                     this.bio shouldBe savedProfile.bio
                     this.image shouldBe savedProfile.image
                 }
-
-                val foundUsername = sut.findUsernameByUserId(UserId(userId))
-                foundUsername shouldBe username.value
             }
         }
     }

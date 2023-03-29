@@ -7,6 +7,7 @@ import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
 import ndy.util.mandatoryTransaction
+import ndy.util.notFound
 
 class ProfileService(
     private val repository: ProfileRepository
@@ -20,17 +21,24 @@ class ProfileService(
     }
 
     context (UserIdContext)
-    suspend fun getUsernameByUserId() = mandatoryTransaction {
-        repository.findUsernameByUserId(UserId(userId))
+    suspend fun getByUserId() = mandatoryTransaction {
+        val profile = repository.findByUserId(UserId(userId)) ?: notFound()
+
+        ProfileResult(
+            username = profile.username.value,
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath,
+            following = false
+        )
     }
 
     context (UserIdContext)
-    suspend fun update(username: String, bio: String, image: String) {
+    suspend fun update(username: String?, bio: String?, image: String?) {
         repository.updateById(
             UserId(userId),
-            Username(username),
-            Bio(bio),
-            Image.ofFullPath(image),
+            username?.let { Username(it) },
+            bio?.let { Bio(it) },
+            image?.let { Image.ofFullPath(it) },
         )
     }
 }
@@ -39,5 +47,5 @@ data class ProfileResult(
     val username: String,
     val bio: String? = null,
     val image: String? = null,
-    val following: Boolean? = null
+    val following: Boolean = false
 )

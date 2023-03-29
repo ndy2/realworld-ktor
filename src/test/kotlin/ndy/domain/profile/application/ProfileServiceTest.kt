@@ -29,7 +29,7 @@ class ProfileServiceTest : BaseSpec(DI, DB, JWT) {
                             it.username shouldBe usernameValue
                             it.bio shouldBe null
                             it.image shouldBe null
-                            it.following shouldBe null
+                            it.following shouldBe false
                         }
                     }
                 }
@@ -45,15 +45,20 @@ class ProfileServiceTest : BaseSpec(DI, DB, JWT) {
                 context("with registered profile") {
                     test("find its username by userId") {
                         newTransaction {
-                            val result = with(userIdContext(userId)) { sut.getUsernameByUserId() }
+                            val result = with(userIdContext(userId)) { sut.getByUserId() }
 
-                            result shouldBe usernameValue
+                            assertSoftly(result) {
+                                username shouldBe usernameValue
+                                bio shouldBe null
+                                image shouldBe null
+                                following shouldBe false
+                            }
                         }
                     }
 
                     test("also fail if no transaction") {
                         val exception = shouldThrow<IllegalStateException> {
-                            with(userIdContext(userId)) { sut.getUsernameByUserId() }
+                            with(userIdContext(userId)) { sut.getByUserId() }
                         }
                         exception.message shouldBe "No transaction in context."
                     }

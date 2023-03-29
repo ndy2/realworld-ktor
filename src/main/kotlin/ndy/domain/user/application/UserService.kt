@@ -29,7 +29,7 @@ class UserService(
         val token = JwtTokenService.createToken(user)
 
         // 4. profile.username 조회
-        val username = with(userIdContext(user.id)) { profileService.getUsernameByUserId() }
+        val username = with(userIdContext(user.id)) { profileService.getByUserId() }.username
 
         // 4. 응답
         UserLoginResult(
@@ -68,23 +68,32 @@ class UserService(
 
     context (AuthenticatedUserContext)
     suspend fun update(
-        email: String,
-        password: String,
-        username: String,
-        bio: String,
-        image: String
+        email: String?,
+        password: String?,
+        username: String?,
+        bio: String?,
+        image: String?
     ): UserResult {
-        repository.updateById(userId, Email(email), Password(password))
+        // update user table and find it
+        repository.updateById(
+            userId,
+            email?.let { Email(it) },
+            password?.let { Password(it) }
+        )
+        val foundUser = repository.findUserById(userId) ?: notFound()
 
-        with(userIdContext(userId)) {
+        // update profile table and find it
+        val profileResult = with(userIdContext(userId)) {
             profileService.update(username, bio, image)
+            profileService.getByUserId()
         }
 
+        // combine result
         return UserResult(
-            email = email,
-            username = username,
-            bio = bio,
-            image = image
+            email = foundUser.email.value,
+            username = profileResult.username,
+            bio = profileResult.bio,
+            image = profileResult.image
         )
     }
 }

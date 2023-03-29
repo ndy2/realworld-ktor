@@ -39,16 +39,15 @@ object ProfileTable : ProfileRepository {
         .map(::resultRowToProfile)
         .singleOrNull()
 
-    override suspend fun findUsernameByUserId(userId: UserId) = Profiles
-        .slice(Profiles.username)
+    override suspend fun findByUserId(userId: UserId) = Profiles
         .select { Profiles.userId eq userId.value }
-        .map { it[Profiles.username] }
-        .single()
+        .map(::resultRowToProfile)
+        .singleOrNull()
 
-    override suspend fun updateById(userId: UserId, username: Username, bio: Bio, image: Image) = Profiles
+    override suspend fun updateById(userId: UserId, username: Username?, bio: Bio?, image: Image?) = Profiles
         .update({ Profiles.userId eq userId.value }) {
-            it[Profiles.username] = username.value
-            it[Profiles.bio] = bio.value
-            it[Profiles.image] = image.fullPath
+            if (username != null) it[Profiles.username] = username.value
+            if (bio != null) it[Profiles.bio] = bio.value
+            if (image != null) it[Profiles.image] = image.fullPath
         }
 }
