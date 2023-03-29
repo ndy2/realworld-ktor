@@ -1,7 +1,7 @@
 # realworld-ktor
 
 ![image](https://user-images.githubusercontent.com/67302707/227979583-09b2cddc-23a0-4c4c-aa14-0240f6553dff.png)
-[![Build](https://github.com/ndy2/realworld-ktor/actions/workflows/build.yml/badge.svg)](https://github.com/ndy2/realworld-ktor/actions/workflows/build.yml)
+[![Build](https://github.com/ndy2/realworld-ktor/actions/workflows/test.yml/badge.svg)](https://github.com/ndy2/realworld-ktor/actions/workflows/test.yml)
 [![Coverage](.github/badges/jacoco.svg)](jacoco.svg)
 
 
