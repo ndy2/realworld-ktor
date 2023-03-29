@@ -10,6 +10,7 @@ import io.kotest.property.checkAll
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import ndy.test.generator.ProfileArbs.usernameValueArb
@@ -19,14 +20,14 @@ import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.integrationTest
 import ndy.test.util.registerUser
+import ndy.test.util.xintegrationTest
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
-
     integrationTest("login") {
         checkAll<RegistrationRequest> { request ->
             registerUser(client, request)
             val response = client.post("/api/users/login") {
-                contentType(ContentType.Application.Json)
+                contentType(Json)
                 setBody(mapOf("user" to LoginRequest(request.email, request.password)))
             }
 
@@ -44,7 +45,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
             val response = client.post("/api/users") {
-                contentType(ContentType.Application.Json)
+                contentType(Json)
                 setBody(mapOf("user" to request))
             }
 
@@ -58,6 +59,24 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
             }
         }
     }
+
+   /* xintegrationTest("get user") {
+        checkAll<RegistrationRequest> { request ->
+            val response = client.post("/api/user") {
+                contentType(Json)
+                bearerAuth("")
+            }
+
+            response shouldHaveStatus OK
+            assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
+                it.token shouldNotBe null
+                it.email shouldBe request.email
+                it.username shouldBe "todo"
+                it.bio shouldBe null
+                it.image shouldBe null
+            }
+        }
+    }*/
 })
 
 object RequestArb : BeforeSpecListener {

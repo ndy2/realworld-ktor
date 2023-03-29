@@ -19,7 +19,9 @@ fun FunSpec.xintegrationTest(name: String, block: suspend ApplicationTestBuilder
     }
 
 
-fun FunSpec.integrationTest(name: String, block: suspend context(ClientContext) () -> Unit) =
+// TestScope/ Context 와 관련된 기능은 포기
+// block: suspend context(HttpClientContext) TestScope.() -> Unit
+fun FunSpec.integrationTest(name: String, block: suspend context(HttpClientContext) () -> Unit) =
     test(name) {
         stopKoin()
         testApplication {
@@ -27,15 +29,14 @@ fun FunSpec.integrationTest(name: String, block: suspend context(ClientContext) 
                 install(ContentNegotiation) { json() }
             }
 
-            val clientContext = object : ClientContext {
-                override val client = client
+            val clientContext = object : HttpClientContext {
+                override val client: HttpClient = client
             }
 
             block(clientContext)
         }
     }
 
-interface ClientContext {
+interface HttpClientContext {
     val client: HttpClient
 }
-
