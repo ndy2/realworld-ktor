@@ -40,8 +40,8 @@ tasks.withType<JacocoReport> {
                 "ndy/exception/**/*.*",
                 "ndy/plugins/**/*.*",
                 "ndy/util/**/*.*",
-                "ndy/**/*Request.*",
-                "ndy/**/*Response.*",
+                "ndy/**/*Request*.*",
+                "ndy/**/*Response*.*",
                 "ndy/**/*Result.*",
             )
         }
