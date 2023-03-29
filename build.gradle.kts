@@ -20,13 +20,35 @@ repositories {
 }
 
 //https://youtu.be/GISPalIVdQY
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>{
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
 }
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     finalizedBy("jacocoTestReport")
+}
+
+// ref @https://stackoverflow.com/questions/29887805/filter-jacoco-coverage-reports-with-gradle
+tasks.withType<JacocoReport> {
+    dependsOn(tasks.test)
+    classDirectories.setFrom(files(classDirectories.files.map {
+        fileTree(it).apply {
+            exclude(
+                "ndy/ApplicationKt.class",
+                "ndy/context/**/*.*",
+                "ndy/exception/**/*.*",
+                "ndy/plugins/**/*.*",
+                "ndy/util/**/*.*",
+                "ndy/**/*Request.*",
+                "ndy/**/*Response.*",
+                "ndy/**/*Result.*",
+            )
+        }
+    }))
+    doLast {
+        println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html")
+    }
 }
 
 //see buildSrc/src/main/kotlin/Dependencies
