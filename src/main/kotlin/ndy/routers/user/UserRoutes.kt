@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
 import ndy.util.authenticatedGet
+import ndy.util.authenticatedPut
 import ndy.util.created
 import ndy.util.ok
 import org.koin.ktor.ext.inject
@@ -57,6 +58,9 @@ fun Route.userRouting() {
         )
         call.ok(mapOf("user" to response))
     }
+
+    authenticatedPut<User> {
+    }
 }
 
 
@@ -71,6 +75,13 @@ data class RegistrationRequest(
     val username: String,
     val email: String,
     val password: String,
+)
+
+@Serializable
+data class UserUpdateRequest(
+    val email: String,
+    val bio: String,
+    val image: String,
 )
 
 @Serializable
