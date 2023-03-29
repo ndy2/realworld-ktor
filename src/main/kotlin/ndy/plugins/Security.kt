@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import ndy.domain.user.domain.UserId
+import ndy.exception.AuthenticationException
 
 /**
  * configure jwt in ktor
@@ -28,7 +29,8 @@ fun Application.configureSecurity() {
             )
 
             validate {
-                UserId(it.payload.getClaim("id").asLong().toULong())
+                val claim = it.payload.getClaim("id") ?: throw AuthenticationException()
+                UserId(claim.asLong().toULong())
             }
         }
     }

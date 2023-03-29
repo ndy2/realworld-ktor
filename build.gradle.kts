@@ -52,4 +52,7 @@ tasks.withType<JacocoReport> {
 }
 
 //see buildSrc/src/main/kotlin/Dependencies
-dependencies { applyAll() }
+dependencies { implementation("io.ktor:ktor-server-core-jvm:2.2.4")
+    implementation("io.ktor:ktor-server-host-common-jvm:2.2.4")
+    implementation("io.ktor:ktor-server-status-pages-jvm:2.2.4")
+    applyAll() }
