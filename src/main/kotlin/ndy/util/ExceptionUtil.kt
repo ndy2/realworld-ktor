@@ -17,6 +17,11 @@ fun notFound(
     throw EntityNotFoundException(message)
 }
 
+fun illegalState(): Nothing {
+    throw IllegalStateException()
+}
+
+
 fun validationFail(
     message: String? = null,
     e: Exception? = null

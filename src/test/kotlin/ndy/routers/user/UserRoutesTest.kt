@@ -73,9 +73,9 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
 
             response shouldHaveStatus OK
             assertSoftly(response.extract<UserResponse>("user")) {
-                it.token shouldBe null //FIXME
+                it.token shouldBe token
                 it.email shouldBe request.email
-                it.username shouldBe "todo"
+                it.username shouldBe request.username
                 it.bio shouldBe null
                 it.image shouldBe null
             }

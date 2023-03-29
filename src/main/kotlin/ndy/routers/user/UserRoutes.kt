@@ -22,7 +22,10 @@ fun Route.userRouting() {
 
         val response = UserResponse(
             email = result.email,
-            username = result.username
+            token = null,
+            username = result.username,
+            bio = null,
+            image = null,
         )
         call.created(mapOf("user" to response))
     }
@@ -40,7 +43,7 @@ fun Route.userRouting() {
             token = result.token,
             username = result.username,
             bio = result.bio,
-            image = result.image
+            image = result.image,
         )
         call.ok(mapOf("user" to response))
     }
@@ -50,7 +53,10 @@ fun Route.userRouting() {
 
         val response = UserResponse(
             email = result.email,
-            username = result.username
+            username = result.username,
+            token = call.bearerToken(),
+            bio = result.bio,
+            image = result.image,
         )
         call.ok(mapOf("user" to response))
     }
@@ -68,7 +74,7 @@ fun Route.userRouting() {
 
         val response = UserResponse(
             email = result.email,
-            token = "token",
+            token = call.bearerToken(),
             username = result.username,
             bio = result.bio,
             image = result.image,
@@ -103,8 +109,8 @@ data class UserUpdateRequest(
 @Serializable
 data class UserResponse(
     val email: String,
-    val token: String? = null,
+    val token: String?,
     val username: String,
-    val bio: String? = null,
-    val image: String? = null,
+    val bio: String?,
+    val image: String?,
 )

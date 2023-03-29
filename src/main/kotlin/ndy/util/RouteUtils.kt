@@ -22,8 +22,14 @@ suspend inline fun <reified T : Any> ApplicationCall.ok(message: T) {
     respond(message)
 }
 
+// principal 은 configureSecurity -> jwt.validate 에서 생성함
 fun ApplicationCall.userId(): UserId {
     return this.authentication.principal() ?: authenticationFail("user id not found in token")
+}
+
+context (AuthenticatedUserContext)
+fun ApplicationCall.bearerToken(): String {
+    return request.header("AUTHORIZATION")?.substringAfter("Bearer ") ?: illegalState()
 }
 
 suspend inline fun <reified T : Any> ApplicationCall.extract(key: String) = receive<Map<String, T>>()[key]!!
