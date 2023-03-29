@@ -81,7 +81,7 @@ fun Route.userRouting() {
             bio = result.bio,
             image = result.image,
         )
-        call.ok(response)
+        call.ok(mapOf("user" to response))
     }
 }
 

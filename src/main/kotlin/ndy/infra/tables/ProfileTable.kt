@@ -44,10 +44,13 @@ object ProfileTable : ProfileRepository {
         .map(::resultRowToProfile)
         .singleOrNull()
 
-    override suspend fun updateById(userId: UserId, username: Username?, bio: Bio?, image: Image?) = Profiles
-        .update({ Profiles.userId eq userId.value }) {
-            if (username != null) it[Profiles.username] = username.value
-            if (bio != null) it[Profiles.bio] = bio.value
-            if (image != null) it[Profiles.image] = image.fullPath
-        }
+    override suspend fun updateById(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
+        return if (listOf(username, bio, image).any { it != null }) {
+            Profiles.update({ Profiles.userId eq userId.value }) {
+                if (username != null) it[Profiles.username] = username.value
+                if (bio != null) it[Profiles.bio] = bio.value
+                if (image != null) it[Profiles.image] = image.fullPath
+            }
+        } else 0
+    }
 }

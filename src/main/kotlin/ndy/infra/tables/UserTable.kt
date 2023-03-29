@@ -45,9 +45,12 @@ object UserTable : UserRepository {
         .singleOrNull()
 
 
-    override suspend fun updateById(id: UserId, email: Email?, password: Password?) = Users
-        .update({ Users.id eq id.value }) {
-            if (email != null) it[Users.email] = email.value
-            if (password != null) it[Users.password] = password.encodedPassword
-        }
+    override suspend fun updateById(id: UserId, email: Email?, password: Password?): Int {
+        return if (listOf(email, password).any { it != null }) {
+            Users.update({ Users.id eq id.value }) {
+                if (email != null) it[Users.email] = email.value
+                if (password != null) it[Users.password] = password.encodedPassword
+            }
+        } else 0
+    }
 }
