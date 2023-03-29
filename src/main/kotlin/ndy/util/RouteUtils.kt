@@ -3,12 +3,10 @@ package ndy.util
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.request.*
+import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.*
-import io.ktor.util.pipeline.*
-import io.ktor.util.reflect.*
+import ndy.context.ApplicationCallContext
 import ndy.context.AuthenticatedUserContext
 import ndy.domain.user.domain.UserId
 
@@ -26,51 +24,24 @@ fun ApplicationCall.userId(): UserId {
     return this.authentication.principal() ?: authenticationFail("user id not found in token")
 }
 
-@KtorDsl
-inline fun <reified T> Route.getWithAuthenticatedUser(
-    status: HttpStatusCode,
-    noinline body: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T
-) {
-    get {
-        val response = call.withAuthenticatedUser(body, this.context)
-        call.respond(status, response, typeInfo<T>())
-    }
-}
+inline fun <reified T : Any> Route.authenticatedGet(
+    vararg configurations: String? = arrayOf(null),
+    optional: Boolean = false,
+    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) () -> Unit
+): Route {
+    return authenticate(
+        configurations = configurations,
+        optional = optional
+    ) {
+        get<T> {
+            val userContext = object : AuthenticatedUserContext {
+                override val userId = call.userId()
+            }
+            val callContext = object : ApplicationCallContext {
+                override val call = this@get.call
+            }
 
-@KtorDsl
-inline fun <reified T> Route.putWithAuthenticatedUser(
-    status: HttpStatusCode,
-    noinline body: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T
-) {
-    put {
-        val response = call.withAuthenticatedUser(body, this.context)
-        call.respond(status, response, typeInfo<T>())
+            build(userContext, callContext)
+        }
     }
-}
-
-// code referenced @ https://youtu.be/NxDIq-rFXUM
-suspend fun <T> ApplicationCall.withAuthenticatedUser(
-    fn: suspend context(AuthenticatedUserContext) (ApplicationCall) -> T,
-    ac: ApplicationCall
-): T {
-    val userContext = object : AuthenticatedUserContext {
-        override val userId = userId()
-    }
-
-    return fn(userContext, ac)
-}
-
-// code from https://stackoverflow.com/questions/60443412/how-to-redirect-internally-in-ktor
-suspend fun ApplicationCall.forward(path: String) {
-    val cp = object : RequestConnectionPoint by this.request.local {
-        override val uri: String = path
-    }
-    val req = object : ApplicationRequest by this.request {
-        override val local: RequestConnectionPoint = cp
-    }
-    val call = object : ApplicationCall by this {
-        override val request: ApplicationRequest = req
-    }
-
-    this.application.execute(call)
 }
