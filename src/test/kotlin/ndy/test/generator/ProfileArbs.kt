@@ -1,5 +1,8 @@
 package ndy.test.generator
 
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.uLong
 import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
@@ -9,6 +12,7 @@ import ndy.test.util.ascii
 
 @Suppress("unused") // since they are registered automatically @BaseSpec#registerCustomArbs
 object ProfileArbs {
+    val userIdArb = Arb.uLong().map(::UserId)
 
     val usernameValueArb = createArb { rs -> rs.alphaNumericString(0..64) }
     val usernameArb = createArb<Username>(usernameValueArb)
