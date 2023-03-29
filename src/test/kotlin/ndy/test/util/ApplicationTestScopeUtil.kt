@@ -19,14 +19,23 @@ fun FunSpec.xintegrationTest(name: String, block: suspend ApplicationTestBuilder
     }
 
 
-fun FunSpec.integrationTest(name: String, block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
+fun FunSpec.integrationTest(name: String, block: suspend context(ClientContext) () -> Unit) =
     test(name) {
         stopKoin()
         testApplication {
             val client = createClient {
                 install(ContentNegotiation) { json() }
             }
-            block(this, client)
+
+            val clientContext = object : ClientContext {
+                override val client = client
+            }
+
+            block(clientContext)
         }
     }
+
+interface ClientContext {
+    val client: HttpClient
+}
 
