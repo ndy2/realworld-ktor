@@ -46,4 +46,8 @@ object UserTable : UserRepository {
         .select { Users.email eq email.value }
         .map(::resultRowToUser)
         .singleOrNull()
+
+    override suspend fun updateById(id: UserId, email: Email, password: Password) {
+        TODO("Not yet implemented")
+    }
 }

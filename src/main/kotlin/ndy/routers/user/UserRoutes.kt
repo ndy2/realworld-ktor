@@ -1,7 +1,6 @@
 package ndy.routers.user
 
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.resources.post
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
@@ -57,6 +56,24 @@ fun Route.userRouting() {
     }
 
     authenticatedPut<User> {
+        val request = call.extract<UserUpdateRequest>("user")
+
+        val result = userService.update(
+            email = request.email,
+            password = request.password,
+            username = request.username,
+            bio = request.bio,
+            image = request.image,
+        )
+
+        val response = UserResponse(
+            email = result.email,
+            token = "token",
+            username = result.username,
+            bio = result.bio,
+            image = result.image,
+        )
+        call.ok(response)
     }
 }
 
@@ -77,6 +94,8 @@ data class RegistrationRequest(
 @Serializable
 data class UserUpdateRequest(
     val email: String,
+    val password: String,
+    val username: String,
     val bio: String,
     val image: String,
 )

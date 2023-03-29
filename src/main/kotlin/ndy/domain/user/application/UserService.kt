@@ -2,6 +2,7 @@ package ndy.domain.user.application
 
 import ndy.context.AuthenticatedUserContext
 import ndy.context.LoggingContext
+import ndy.context.userIdContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
 import ndy.util.authenticationFail
@@ -28,10 +29,9 @@ class UserService(
         val token = JwtTokenService.createToken(user)
 
         // 4. profile.username 조회
-        val username = profileService.getUsernameByUserId(user.id.value)
+        val username = with(userIdContext(user.id)) { profileService.getUsernameByUserId() }
 
         // 4. 응답
-        log.info("login done - email : $email")
         UserLoginResult(
             email = user.email.value,
             token = token,
@@ -50,7 +50,7 @@ class UserService(
         )
 
         // 2. profile 저장
-        profileService.register(user.id.value, username)
+        with(userIdContext(user.id)) { profileService.register(username) }
 
         // 3. 응답
         UserRegisterResult(username, email)
@@ -65,7 +65,30 @@ class UserService(
             username = "todo"
         )
     }
+
+    context (AuthenticatedUserContext)
+    suspend fun update(
+        email: String,
+        password: String,
+        username: String,
+        bio: String,
+        image: String
+    ): UserResult {
+        repository.updateById(userId, Email(email), Password(password))
+
+        with(userIdContext(userId)) {
+            profileService.update(username, bio, image)
+        }
+
+        return UserResult(
+            email = email,
+            username = username,
+            bio = bio,
+            image = image
+        )
+    }
 }
+
 
 data class UserRegisterResult(
     val username: String,
@@ -75,6 +98,13 @@ data class UserRegisterResult(
 data class UserLoginResult(
     val email: String,
     val token: String? = null,
+    val username: String,
+    val bio: String? = null,
+    val image: String? = null,
+)
+
+data class UserResult(
+    val email: String,
     val username: String,
     val bio: String? = null,
     val image: String? = null,

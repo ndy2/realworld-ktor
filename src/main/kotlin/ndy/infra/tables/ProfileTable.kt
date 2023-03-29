@@ -47,4 +47,8 @@ object ProfileTable : ProfileRepository {
         .select { Profiles.userId eq userId.value }
         .map { it[Profiles.username] }
         .single()
+
+    override suspend fun updateById(userId: UserId, username: Username, bio: Bio, image: Image) {
+        TODO("Not yet implemented")
+    }
 }
