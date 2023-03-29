@@ -14,16 +14,24 @@ class ProfileTableTest : BaseSpec(DB, body = {
 
     val sut = ProfileTable
 
-    test("returns saved profile and find it by id") {
+    test("returns saved profile and find it") {
         checkAll<ULong, Username> { userId, username ->
             newTransaction {
-                val savedUser = sut.save(UserId(userId), username)
-                assertSoftly(savedUser) {
+                val savedProfile = sut.save(UserId(userId), username)
+                assertSoftly(savedProfile) {
 
                     this.id shouldNotBe null
                     this.username shouldBe username
                     this.bio shouldBe null
                     this.image shouldBe null
+                }
+
+                val foundProfile = sut.findById(savedProfile.id)
+                assertSoftly(foundProfile!!) {
+                    this.id shouldBe savedProfile.id
+                    this.username shouldBe savedProfile.username
+                    this.bio shouldBe savedProfile.bio
+                    this.image shouldBe savedProfile.image
                 }
 
                 val foundUsername = sut.findUsernameByUserId(UserId(userId))
