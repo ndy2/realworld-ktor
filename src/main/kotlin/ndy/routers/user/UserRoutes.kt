@@ -62,15 +62,14 @@ fun Route.userRouting() {
 
     route("/user") {
         authenticate {
-
-            // get current user
             getWithAuthenticatedUser(OK) {
                 val result = userService.getById()
 
-                UserResponse(
+                val response = UserResponse(
                     email = result.email,
                     username = result.username
                 )
+                mapOf("user" to response)
             }
         }
 

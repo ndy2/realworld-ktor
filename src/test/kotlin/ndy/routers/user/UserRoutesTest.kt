@@ -7,7 +7,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
-import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
@@ -18,30 +17,12 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
+import ndy.test.util.extract
 import ndy.test.util.integrationTest
+import ndy.test.util.login
 import ndy.test.util.registerUser
-import ndy.test.util.xintegrationTest
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
-    integrationTest("login") {
-        checkAll<RegistrationRequest> { request ->
-            registerUser(client, request)
-            val response = client.post("/api/users/login") {
-                contentType(Json)
-                setBody(mapOf("user" to LoginRequest(request.email, request.password)))
-            }
-
-            response shouldHaveStatus OK
-            assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
-                it.token shouldNotBe null
-                it.email shouldBe request.email
-                it.username shouldBe request.username
-                it.bio shouldBe null
-                it.image shouldBe null
-            }
-        }
-    }
-
     integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
             val response = client.post("/api/users") {
@@ -50,7 +31,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
             }
 
             response shouldHaveStatus Created
-            assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
+            assertSoftly(response.extract<UserResponse>("user")) {
                 it.token shouldBe null
                 it.email shouldBe request.email
                 it.username shouldBe request.username
@@ -60,24 +41,48 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
         }
     }
 
-   /* xintegrationTest("get user") {
+    integrationTest("login") {
         checkAll<RegistrationRequest> { request ->
-            val response = client.post("/api/user") {
+            registerUser(request)
+            val response = client.post("/api/users/login") {
                 contentType(Json)
-                bearerAuth("")
+                setBody(mapOf("user" to LoginRequest(request.email, request.password)))
             }
 
             response shouldHaveStatus OK
-            assertSoftly(response.body<Map<String, UserResponse>>()["user"]!!) {
+            assertSoftly(response.extract<UserResponse>("user")) {
                 it.token shouldNotBe null
+                it.email shouldBe request.email
+                it.username shouldBe request.username
+                it.bio shouldBe null
+                it.image shouldBe null
+            }
+        }
+    }
+
+
+    integrationTest("get user") {
+        checkAll<RegistrationRequest> { request ->
+            registerUser(request)
+            val token = login(LoginRequest(request.email, request.password))
+
+            val response = client.get("/api/user") {
+                contentType(Json)
+                bearerAuth(token)
+            }
+
+            response shouldHaveStatus OK
+            assertSoftly(response.extract<UserResponse>("user")) {
+                it.token shouldBe null //FIXME
                 it.email shouldBe request.email
                 it.username shouldBe "todo"
                 it.bio shouldBe null
                 it.image shouldBe null
             }
         }
-    }*/
+    }
 })
+
 
 object RequestArb : BeforeSpecListener {
     override suspend fun beforeSpec(spec: Spec) {

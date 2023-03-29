@@ -1,21 +1,39 @@
 package ndy.test.util
 
 import io.kotest.assertions.ktor.client.shouldHaveStatus
-import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.OK
+import ndy.routers.user.LoginRequest
 import ndy.routers.user.RegistrationRequest
+import ndy.routers.user.UserResponse
 
 /**
  * Contains some helper functions that create/setup data for routeTests
  */
 
-suspend fun registerUser(client: HttpClient, request: RegistrationRequest) {
+suspend inline fun <reified T : Any> HttpResponse.extract(key: String): T = body<Map<String, T>>()[key]!!
+
+context (HttpClientContext)
+suspend fun registerUser(request: RegistrationRequest) {
     val response = client.post("/api/users") {
         contentType(ContentType.Application.Json)
         setBody(mapOf("user" to request))
     }
 
-    response shouldHaveStatus HttpStatusCode.Created
+    response shouldHaveStatus Created
 }
 
+context (HttpClientContext)
+suspend fun login(request: LoginRequest): String {
+    val response = client.post("/api/users/login") {
+        contentType(ContentType.Application.Json)
+        setBody(mapOf("user" to request))
+    }
+
+    response shouldHaveStatus OK
+    return response.extract<UserResponse>("user").token!!
+}
