@@ -1,6 +1,9 @@
 # realworld-ktor
 
 ![image](https://user-images.githubusercontent.com/67302707/227979583-09b2cddc-23a0-4c4c-aa14-0240f6553dff.png)
+[![Build](https://github.com/ndy2/realworld-ktor/actions/workflows/build.yml/badge.svg)](https://github.com/ndy2/realworld-ktor/actions/workflows/build.yml)
+[![Coverage](.github/badges/jacoco.svg)](jacoco.svg)
+
 
 [Ktor](https://ktor.io/) codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the RealWorld spec and API.
 
@@ -31,9 +34,17 @@ I will try my best to find out my own "Best Practice" in this project.
 - Password with PasswordDelegate
   - it is my first time to apply what is called [delegate property](https://kotlinlang.org/docs/delegated-properties.html). 
   It could probably get better... but I'm really satisfied with that
-
-## Plan!
-- I would play on [kotlin's context receiver](https://youtu.be/GISPalIVdQY) feature with this project. It must be fun!
+- Test
+  - [kotest](https://kotest.io/) is super awesome!
+  - It provides nice dsl for assertions & property testing.
+  - It also supports integration with a lot of other projects - ktor/koin/konform!
+  - IDE/plugin support is quite bad for now. It think will be better soon.
+- Context Receiver
+  - [context receiver](https://youtu.be/GISPalIVdQY) is still experimental feature in kotlin
+  - with **context-receiver**, we can provide much more expressiveness code!
+  - see my use cases!
+    - [integrationTest works with HttpClientContext!](https://github.com/ndy2/realworld-ktor/blob/main/src/test/kotlin/ndy/test/util/ApplicationTestScopeUtil.kt)
+    - [authenticatedGet works with AuthenticatedUserContext!](https://github.com/ndy2/realworld-ktor/blob/main/src/main/kotlin/ndy/util/RouteUtils.kt#L37) we don't need to provide boilerplate `call.userId()` stuff every time!
 
 ## Questions
 - I think that ktor/exposed support "light weight" server. So, I wonder is it worth enough to consist on DI or clean architecture pattern 
