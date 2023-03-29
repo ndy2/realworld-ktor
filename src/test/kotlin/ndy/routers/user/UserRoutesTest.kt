@@ -7,11 +7,14 @@ import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
+import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
+import ndy.resources.User
+import ndy.resources.Users
 import ndy.routers.LoginRequest
 import ndy.routers.RegistrationRequest
 import ndy.routers.UserResponse
@@ -25,7 +28,7 @@ import ndy.test.util.*
 class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
-            val response = client.post("/api/users") {
+            val response = client.post(Users()) {
                 contentType(Json)
                 setBody(mapOf("user" to request))
             }
@@ -44,7 +47,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("login") {
         checkAll<RegistrationRequest> { request ->
             registerUser(request)
-            val response = client.post("/api/users/login") {
+            val response = client.post(Users.Login()) {
                 contentType(Json)
                 setBody(mapOf("user" to LoginRequest(request.email, request.password)))
             }
@@ -66,7 +69,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
             registerUser(request)
             val token = login(LoginRequest(request.email, request.password))
 
-            val response = client.get("/api/user") {
+            val response = client.get(User()) {
                 contentType(Json)
                 authToken(token)
             }
