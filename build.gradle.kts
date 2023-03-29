@@ -30,8 +30,14 @@ tasks.withType<Test>().configureEach {
 }
 
 // ref @https://stackoverflow.com/questions/29887805/filter-jacoco-coverage-reports-with-gradle
-tasks.withType<JacocoReport> {
+tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    reports {
+        html.required.set(true)
+        csv.required.set(true) // for badge @README.md
+        xml.required.set(false)
+    }
+
     classDirectories.setFrom(files(classDirectories.files.map {
         fileTree(it).apply {
             exclude(
