@@ -11,6 +11,7 @@ import io.ktor.server.routing.*
 import ndy.context.ApplicationCallContext
 import ndy.context.AuthenticatedUserContext
 import ndy.domain.user.domain.UserId
+import ndy.plugins.TOKEN_SCHEMA
 
 suspend inline fun <reified T : Any> ApplicationCall.created(message: T) {
     response.status(HttpStatusCode.Created)
@@ -28,8 +29,8 @@ fun ApplicationCall.userId(): UserId {
 }
 
 context (AuthenticatedUserContext)
-fun ApplicationCall.bearerToken(): String {
-    return request.header("AUTHORIZATION")?.substringAfter("Bearer ") ?: illegalState()
+fun ApplicationCall.token(): String {
+    return request.header("AUTHORIZATION")?.substringAfter("$TOKEN_SCHEMA ") ?: illegalState()
 }
 
 suspend inline fun <reified T : Any> ApplicationCall.extract(key: String) = receive<Map<String, T>>()[key]!!

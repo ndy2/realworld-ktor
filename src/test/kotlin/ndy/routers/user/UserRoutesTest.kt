@@ -12,6 +12,7 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
+import ndy.plugins.TOKEN_SCHEMA
 import ndy.routers.LoginRequest
 import ndy.routers.RegistrationRequest
 import ndy.routers.UserResponse
@@ -20,10 +21,7 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
-import ndy.test.util.extract
-import ndy.test.util.integrationTest
-import ndy.test.util.login
-import ndy.test.util.registerUser
+import ndy.test.util.*
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("signup") {
@@ -71,7 +69,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
 
             val response = client.get("/api/user") {
                 contentType(Json)
-                bearerAuth(token)
+                authToken(token)
             }
 
             response shouldHaveStatus OK
@@ -85,7 +83,6 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
         }
     }
 })
-
 
 object RequestArb : BeforeSpecListener {
     override suspend fun beforeSpec(spec: Spec) {

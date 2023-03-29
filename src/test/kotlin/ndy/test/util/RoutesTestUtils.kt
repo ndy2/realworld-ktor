@@ -7,6 +7,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
+import ndy.plugins.TOKEN_SCHEMA
 import ndy.routers.LoginRequest
 import ndy.routers.RegistrationRequest
 import ndy.routers.UserResponse
@@ -36,4 +37,8 @@ suspend fun login(request: LoginRequest): String {
 
     response shouldHaveStatus OK
     return response.extract<UserResponse>("user").token!!
+}
+
+fun HttpMessageBuilder.authToken(token: String) {
+    headers[HttpHeaders.Authorization] = "$TOKEN_SCHEMA $token"
 }

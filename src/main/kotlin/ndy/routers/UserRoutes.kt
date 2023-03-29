@@ -56,7 +56,7 @@ fun Route.userRouting() {
         val response = UserResponse(
             email = result.email,
             username = result.username,
-            token = call.bearerToken(),
+            token = call.token(),
             bio = result.bio,
             image = result.image,
         )
@@ -76,7 +76,7 @@ fun Route.userRouting() {
 
         val response = UserResponse(
             email = result.email,
-            token = call.bearerToken(),
+            token = call.token(),
             username = result.username,
             bio = result.bio,
             image = result.image,

@@ -9,17 +9,22 @@ import io.ktor.server.auth.jwt.*
 import ndy.domain.user.domain.UserId
 import ndy.exception.AuthenticationException
 
+
 /**
  * configure jwt in ktor
  *
  * see https://ktor.io/docs/jwt.htm
  */
+
+const val TOKEN_SCHEMA = "Token"
 fun Application.configureSecurity() {
 
     authentication {
         jwt {
             val jwtAudience = EnvConfig.getString("jwt.audience")
             realm = EnvConfig.getString("jwt.realm")
+            authSchemes(TOKEN_SCHEMA)
+
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
