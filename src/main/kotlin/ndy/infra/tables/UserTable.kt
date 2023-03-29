@@ -1,10 +1,7 @@
 package ndy.infra.tables
 
 import ndy.domain.user.domain.*
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 
 object UserTable : UserRepository {
 
@@ -47,7 +44,9 @@ object UserTable : UserRepository {
         .map(::resultRowToUser)
         .singleOrNull()
 
-    override suspend fun updateById(id: UserId, email: Email, password: Password) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateById(id: UserId, email: Email, password: Password) = Users
+        .update({ Users.id eq id.value }) {
+            it[Users.email] = email.value
+            it[Users.password] = password.encodedPassword
+        }
 }

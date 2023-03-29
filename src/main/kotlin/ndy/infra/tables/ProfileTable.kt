@@ -2,10 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.profile.domain.*
 import ndy.domain.user.domain.UserId
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 
 object ProfileTable : ProfileRepository {
 
@@ -48,7 +45,10 @@ object ProfileTable : ProfileRepository {
         .map { it[Profiles.username] }
         .single()
 
-    override suspend fun updateById(userId: UserId, username: Username, bio: Bio, image: Image) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateById(userId: UserId, username: Username, bio: Bio, image: Image) = Profiles
+        .update({ Profiles.userId eq userId.value }) {
+            it[Profiles.username] = username.value
+            it[Profiles.bio] = bio.value
+            it[Profiles.image] = image.fullPath
+        }
 }
