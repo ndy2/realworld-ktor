@@ -6,7 +6,7 @@
 
 This codebase was created to demonstrate a fully fledged fullstack application built with *Ktor* including CRUD operations, authentication, routing, pagination, and more.
 We've gone to great lengths to adhere to the *Ktor* community styleguides & best practices.
-For more information on how to this works with other frontends/backends, head over to the [RealWorld repo](https://github.com/gothinkster/realworld).
+For more information on how to this works with other frontends/backends, head over to the [RealWorld repo](https://github.com/gothinkster/realworld)!!
 
 ## It works with...
 As above logo shows, it works mainly with four kotlin based frameworks/libraries. That is ..
