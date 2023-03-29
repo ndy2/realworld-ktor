@@ -12,7 +12,7 @@ object ProfileTable : ProfileRepository {
     object Profiles : Table() {
         val id = ulong("id").autoIncrement()
         val userId = ulong("userId")
-        val username = varchar("username", 128).uniqueIndex()
+        val username = varchar("username", 64).uniqueIndex()
         val bio = varchar("bio", 512).nullable()
         val image = varchar("image", 256).nullable()
 
