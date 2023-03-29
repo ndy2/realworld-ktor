@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.emailValueArb
@@ -40,6 +41,16 @@ class UserRoutesTest : BaseSpec(body = {
         }
     }
 
+    integrationTest("login with no user") { client ->
+        val response = client.post("/api/users/login") {
+            contentType(ContentType.Application.Json)
+            setBody("{\"no\":\"user\"}")
+        }
+
+        response shouldHaveStatus HttpStatusCode.BadRequest
+        response.bodyAsText() shouldBe "" // TODO - https://ktor.io/docs/status-pages.html
+    }
+
     integrationTest("signup") { client ->
         registerArb<RegistrationRequest>(usernameValueArb, emailValueArb, passwordValueArb)
 
@@ -58,5 +69,14 @@ class UserRoutesTest : BaseSpec(body = {
                 it.image shouldBe null
             }
         }
+    }
+
+    integrationTest("signup with no user") { client ->
+        val response = client.post("/api/users") {
+            contentType(ContentType.Application.Json)
+            setBody("{\"no\":\"user\"}")
+        }
+
+        response shouldHaveStatus HttpStatusCode.BadRequest
     }
 })

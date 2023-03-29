@@ -1,11 +1,9 @@
 package ndy.routers
 
-import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserService
@@ -22,8 +20,7 @@ fun Route.userRouting() {
         // authentication
         post("/login") {
             // binding
-            val request = call.receive<Map<String, LoginRequest>>()["user"]
-                ?: return@post call.respond(BadRequest, "no use provided")
+            val request = call.receive<Map<String, LoginRequest>>()["user"]!!
 
             // invoke service
             val result = userService.login(
@@ -45,8 +42,7 @@ fun Route.userRouting() {
         // registration
         post {
             // binding
-            val request = call.receive<Map<String, RegistrationRequest>>()["user"]
-                ?: return@post call.respond(BadRequest, "no user provided")
+            val request = call.receive<Map<String, RegistrationRequest>>()["user"]!!
 
             // invoke service
             val result = userService.register(
