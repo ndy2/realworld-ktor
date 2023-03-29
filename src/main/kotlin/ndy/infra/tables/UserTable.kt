@@ -10,8 +10,9 @@ object UserTable : UserRepository {
 
     object Users : Table() {
         val id = ulong("id").autoIncrement()
-        val email = varchar("email", 128)
-        val password = varchar("password", 512)
+        val email = varchar("email", MAX_USER_EMAIL_LENGTH)
+        val password = varchar("password", 64)
+        // do not use MAX_USER_PASSWORD_LENGTH since column should be encoded
 
         override val primaryKey = PrimaryKey(id)
     }

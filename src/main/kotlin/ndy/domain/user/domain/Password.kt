@@ -1,5 +1,6 @@
 package ndy.domain.user.domain
 
+import ndy.util.checkCondition
 import ndy.util.fail
 import kotlin.reflect.KProperty
 
@@ -11,6 +12,10 @@ class Password(
     rawPassword: String? = null,
     passwordEncoder: PasswordEncoder? = null,
 ) {
+    init {
+        rawPassword?.let { checkCondition(it.length <= MAX_USER_PASSWORD_LENGTH, "password too long") }
+    }
+
     var encodedPassword: String by PasswordDelegate(rawPassword, passwordEncoder)
 
     override fun equals(other: Any?) =
@@ -37,6 +42,8 @@ class Password(
         }
     }
 }
+
+const val MAX_USER_PASSWORD_LENGTH = 32
 
 class PasswordDelegate(private val raw: String?, private val encoder: PasswordEncoder?) {
 

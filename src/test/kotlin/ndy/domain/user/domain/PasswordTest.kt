@@ -5,18 +5,24 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
+import io.kotest.property.azstring
 import io.kotest.property.checkAll
 import ndy.exception.RealworldRuntimeException
 import ndy.test.generator.UserArbs.passwordEncoderArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.UserArbs.passwordVerifierArb
 import ndy.test.spec.BaseSpec
+import kotlin.random.Random
 
 class PasswordTest : BaseSpec(body = {
 
     test("password 생성 후 검증 성공") {
 
-        checkAll<String, PasswordEncoder, PasswordVerifier> { passwordValue, encoder, verifier ->
+        checkAll(
+            passwordValueArb,
+            passwordEncoderArb,
+            passwordVerifierArb
+        ) { passwordValue, encoder, verifier ->
             // construct password
             val password = Password(passwordValue, encoder)
 
@@ -50,10 +56,16 @@ class PasswordTest : BaseSpec(body = {
         }
     }
 
-    test("cannot access encodedPassword with null args constructed Password"){
+    test("cannot access encodedPassword with null args constructed Password") {
         val nullPassword = Password(rawPassword = null, passwordEncoder = null)
 
         shouldThrow<RealworldRuntimeException> { nullPassword.encodedPassword /* invoke PasswordDelegate.getValue */ }
             .apply { message shouldBe "illegal approach to get encodedPassword" }
+    }
+
+    test("cannot create password with length greater than $MAX_USER_PASSWORD_LENGTH") {
+        val tooLongPasswordValue = Random.azstring(MAX_USER_PASSWORD_LENGTH + 1)
+
+        shouldThrow<RealworldRuntimeException> { Password(tooLongPasswordValue, null) }
     }
 })

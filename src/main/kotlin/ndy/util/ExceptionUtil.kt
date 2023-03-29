@@ -10,9 +10,17 @@ fun fail(
     throw RealworldRuntimeException(message, e)
 }
 
+fun checkCondition(
+    condition: Boolean,
+    message: String = "condition not matched"
+) {
+    if (!condition) {
+        fail(message)
+    }
+}
 
 fun <T> ValidationResult<T>.checkAndThrow() {
     if (errors.isNotEmpty()) {
-        throw RealworldRuntimeException(errors.joinToString { it.message })
+        fail(errors.joinToString { it.message })
     }
 }
