@@ -33,7 +33,7 @@ class ProfileService(
     }
 
     context (UserIdContext)
-    suspend fun update(username: String?, bio: String?, image: String?) {
+    suspend fun update(username: String?, bio: String?, image: String?) = mandatoryTransaction {
         repository.updateById(
             UserId(userId),
             username?.let { Username(it) },

@@ -73,7 +73,7 @@ class UserService(
         username: String?,
         bio: String?,
         image: String?
-    ): UserResult {
+    ): UserResult = newTransaction {
         // update user table and find it
         repository.updateById(
             userId,
@@ -89,7 +89,7 @@ class UserService(
         }
 
         // combine result
-        return UserResult(
+        UserResult(
             email = foundUser.email.value,
             username = profileResult.username,
             bio = profileResult.bio,
