@@ -18,6 +18,7 @@ object ProfileTable : ProfileRepository {
 
     private fun resultRowToProfile(row: ResultRow) = Profile(
         id = ProfileId(row[Profiles.id]),
+        userId = UserId(row[Profiles.userId]),
         username = Username(row[Profiles.username]),
         bio = row[Profiles.bio]?.let { Bio(it) },
         image = row[Profiles.image]?.let { Image.ofFullPath(it) },
@@ -59,5 +60,11 @@ object ProfileTable : ProfileRepository {
     override suspend fun findByUsername(username: Username) = Profiles
         .select { Profiles.username eq username.value }
         .map(::resultRowToProfile)
+        .singleOrNull()
+
+    override suspend fun findUserIdByUsername(username: Username) = Profiles
+        .slice(Profiles.userId)
+        .select { Profiles.username eq username.value }
+        .map { UserId(it[Profiles.userId]) }
         .singleOrNull()
 }

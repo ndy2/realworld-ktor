@@ -14,7 +14,7 @@ import ndy.util.newTransaction
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 
-    val sut = ProfileService(ProfileTable)
+    val sut = ProfileService(ProfileTable, FollowService())
     with(ProfileTable) {
 
         test("register a profile and get it's result") {

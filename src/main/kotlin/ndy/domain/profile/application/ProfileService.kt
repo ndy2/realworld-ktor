@@ -12,7 +12,8 @@ import ndy.util.notFound
 import ndy.util.notFoundField
 
 class ProfileService(
-    private val repository: ProfileRepository
+    private val repository: ProfileRepository,
+    private val followService: FollowService,
 ) {
 
     context (UserIdContext)
@@ -64,12 +65,14 @@ class ProfileService(
 
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun getByUsername(username: String) = newTransaction {
-        // validate & action
+        // validate - user exists & action - find user
         val profile = Username(username)
             .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
 
-        // action - TODO - check following via follow service
-        val following = userIdNullable != null
+        // action - check following
+        val following =
+            if (userIdNullable == null) false // false if not authenticated
+            else followService.checkFollow(profile.userId)
 
         // return
         ProfileResult(

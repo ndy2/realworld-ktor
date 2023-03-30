@@ -3,6 +3,7 @@ package ndy.plugins
 import io.ktor.server.application.*
 import ndy.context.DefaultLoggingContext
 import ndy.context.LoggingContext
+import ndy.domain.profile.application.FollowService
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.user.application.BcryptPasswordService
@@ -34,7 +35,6 @@ fun Application.configureDi() {
     }
 }
 
-// Constructor DSL
 private val appModule = module {
     single<LoggingContext> { DefaultLoggingContext } // should be added for context(LoggingContext)
 
@@ -46,5 +46,6 @@ private val appModule = module {
 
     // profile domain
     single<ProfileRepository> { ProfileTable }
+    single { FollowService() }
     singleOf(::ProfileService)
 }

@@ -9,6 +9,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.ktor.server.config.*
 import ndy.context.DefaultLoggingContext
+import ndy.domain.profile.application.FollowService
 import ndy.domain.profile.application.ProfileService
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
@@ -24,7 +25,7 @@ class UserServiceTest : BaseSpec(DB, JWT, body = {
     val sut = with(DefaultLoggingContext) {
         UserService(
             repository = UserTable,
-            profileService = ProfileService(ProfileTable),
+            profileService = ProfileService(ProfileTable, FollowService()),
             passwordEncoder = BcryptPasswordService,
             passwordVerifier = BcryptPasswordService
         )
