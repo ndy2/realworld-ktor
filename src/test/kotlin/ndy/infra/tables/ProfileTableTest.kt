@@ -74,7 +74,6 @@ class ProfileTableTest : BaseSpec(DB, body = {
                     it.bio shouldBe updateBio
                     it.image shouldBe updateImage
                 }
-
             }
         }
 
@@ -90,6 +89,29 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 newTransaction {
                     sut.existByUsername(username) shouldBe true
                     sut.existByUsername(Username("nonExist${username.value}")) shouldBe false
+                }
+            }
+        }
+
+        test("find by username") {
+            checkAll<UserId, Username> { userId, username ->
+                // setup - save a profile
+                newTransaction {
+                    assumeNotDuplicated(username.value)
+                    sut.save(userId, username)
+                }
+
+                // action
+                val foundProfile = newTransaction { sut.findByUsername(username) }
+
+                // assert
+                foundProfile shouldNotBe null
+                assertSoftly(foundProfile!!) {
+                    this.id shouldNotBe null
+                    this.userId shouldBe userId
+                    this.username shouldBe username
+                    this.bio shouldBe null
+                    this.image shouldBe null
                 }
             }
         }

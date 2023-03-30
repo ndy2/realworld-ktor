@@ -10,5 +10,4 @@ interface ProfileRepository {
     suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int
     suspend fun existByUsername(username: Username): Boolean
     suspend fun findByUsername(username: Username): Profile?
-    suspend fun findUserIdByUsername(username: Username): UserId?
 }

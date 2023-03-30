@@ -4,7 +4,6 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
-import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.resolution.GlobalArbResolver

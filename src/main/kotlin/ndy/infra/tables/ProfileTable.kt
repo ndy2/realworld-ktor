@@ -61,10 +61,4 @@ object ProfileTable : ProfileRepository {
         .select { Profiles.username eq username.value }
         .map(::resultRowToProfile)
         .singleOrNull()
-
-    override suspend fun findUserIdByUsername(username: Username) = Profiles
-        .slice(Profiles.userId)
-        .select { Profiles.username eq username.value }
-        .map { UserId(it[Profiles.userId]) }
-        .singleOrNull()
 }
