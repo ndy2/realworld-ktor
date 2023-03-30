@@ -4,6 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
+import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.test.extentions.DB
@@ -11,6 +12,8 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
 import ndy.util.newTransaction
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserTableTest : BaseSpec(DB, body = {
 
@@ -58,6 +61,52 @@ class UserTableTest : BaseSpec(DB, body = {
             assertSoftly(foundUser!!) {
                 it.email shouldBeUpdatedToIf (updateEmail isNotNullOr email)
                 it.password shouldBeUpdatedToIf (updatePassword isNotNullOr password)
+            }
+        }
+    }
+
+    test("join1") {
+        val user = newTransaction { UserTable.save(Email("haha@gmail.com"), Password("password")) }
+        val profile = newTransaction { ProfileTable.save(user.id, Username("haha")) }
+
+        val result = transaction {
+            (UserTable.Users innerJoin ProfileTable.Profiles)
+                .select { UserTable.Users.id eq ProfileTable.Profiles.userId }
+                .single()
+        }
+
+        assertSoftly(result) {
+            this[UserTable.Users.id] shouldBe user.id.value
+            this[UserTable.Users.password] shouldBe user.password.encodedPassword
+            this[UserTable.Users.email] shouldBe user.email.value
+            this[ProfileTable.Profiles.userId] shouldBe user.id.value
+            this[ProfileTable.Profiles.username] shouldBe "haha"
+        }
+
+        println("result = $result")
+    }
+
+    test("join2") {
+        newTransaction {
+            val user = UserTable.save(Email("haha@gmail.com"), Password("password"))
+            newTransaction {
+                ProfileTable.save(user.id, Username("haha"))
+
+                val result = transaction {
+                    (UserTable.Users innerJoin ProfileTable.Profiles)
+                        .select { UserTable.Users.id eq ProfileTable.Profiles.userId }
+                        .single()
+                }
+
+                assertSoftly(result) {
+                    this[UserTable.Users.id] shouldBe user.id.value
+                    this[UserTable.Users.password] shouldBe user.password.encodedPassword
+                    this[UserTable.Users.email] shouldBe user.email.value
+                    this[ProfileTable.Profiles.userId] shouldBe user.id.value
+                    this[ProfileTable.Profiles.username] shouldBe "haha"
+                }
+
+                println("result = $result")
             }
         }
     }

@@ -9,11 +9,13 @@ import ndy.context.userIdContext
 import ndy.domain.profile.follow.application.FollowService
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
+import ndy.infra.tables.UserTable
 import ndy.test.extentions.DB
 import ndy.test.generator.ProfileArbs.bioValueArb
 import ndy.test.generator.ProfileArbs.imageFullPathArb
-import ndy.test.generator.ProfileArbs.userIdArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
+import ndy.test.generator.UserArbs.emailArb
+import ndy.test.generator.UserArbs.passwordArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
@@ -28,11 +30,13 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             repository = FollowTable
         )
     )
+    val userRepository = UserTable
     with(ProfileTable) {
 
         test("register a profile and get it's result") {
-            checkAll(userIdArb, usernameValueArb) { userId, usernameValue ->
+            checkAll(emailArb, passwordArb, usernameValueArb) { email, password, usernameValue ->
                 // setup
+                val userId = newTransaction { userRepository.save(email, password) }.id
                 assumeNotDuplicated(usernameValue)
 
                 // action
@@ -49,8 +53,9 @@ class ProfileServiceTest : BaseSpec(DB, body = {
         }
 
         test("register a profile and find it with userId") {
-            checkAll(userIdArb, usernameValueArb) { userId, usernameValue ->
+            checkAll(emailArb, passwordArb, usernameValueArb) { email, password, usernameValue ->
                 // setup
+                val userId = newTransaction { userRepository.save(email, password) }.id
                 assumeNotDuplicated(userId.value, usernameValue)
                 newTransaction { with(userIdContext(userId)) { sut.register(usernameValue) } }
 
@@ -69,13 +74,15 @@ class ProfileServiceTest : BaseSpec(DB, body = {
 
         test("update profile") {
             checkAll(
-                userIdArb,
+                emailArb,
+                passwordArb,
                 usernameValueArb,
                 bioValueArb.orNull(),
                 imageFullPathArb.orNull(),
                 usernameValueArb.orNull(),
-            ) { userId, username, updateBio, updateImage, updateUsername ->
+            ) { email, password, username, updateBio, updateImage, updateUsername ->
                 // setup - assume non duplicated username & userId
+                val userId = newTransaction { userRepository.save(email, password) }.id
                 assumeNotDuplicated(userId.value, username)
                 updateUsername?.let { assumeNotDuplicated(it) }
                 assume(username != updateUsername)
@@ -98,8 +105,9 @@ class ProfileServiceTest : BaseSpec(DB, body = {
         }
 
         test("exist by username") {
-            checkAll(userIdArb, usernameValueArb) { userId, username ->
+            checkAll(emailArb, passwordArb, usernameValueArb) { email, password, username ->
                 // setup - save a profile
+                val userId = newTransaction { userRepository.save(email, password) }.id
                 newTransaction {
                     assumeNotDuplicated(username)
                     with(userIdContext(userId)) { sut.register(username) }

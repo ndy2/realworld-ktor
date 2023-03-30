@@ -2,13 +2,14 @@ package ndy.infra.tables
 
 import ndy.domain.profile.domain.*
 import ndy.domain.user.domain.UserId
+import ndy.infra.tables.UserTable.Users
 import org.jetbrains.exposed.sql.*
 
 object ProfileTable : ProfileRepository {
 
     object Profiles : Table() {
         val id = ulong("id").autoIncrement()
-        val userId = ulong("userid")
+        val userId = ulong("userid").references(Users.id)
         val username = varchar("username", 64).uniqueIndex()
         val bio = varchar("bio", 512).nullable()
         val image = varchar("image", 256).nullable()
