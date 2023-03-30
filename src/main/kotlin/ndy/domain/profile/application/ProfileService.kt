@@ -1,16 +1,15 @@
 package ndy.domain.profile.application
 
+import ndy.context.AuthenticatedUserContext
 import ndy.context.UserIdContext
-import ndy.domain.profile.domain.Bio
-import ndy.domain.profile.domain.Image
-import ndy.domain.profile.domain.ProfileRepository
-import ndy.domain.profile.domain.Username
+import ndy.domain.profile.domain.*
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.exception.UsernameDuplicatedException
 import ndy.util.mandatoryTransaction
 import ndy.util.newTransaction
 import ndy.util.notFound
+import ndy.util.notFoundField
 
 class ProfileService(
     private val repository: ProfileRepository
@@ -63,16 +62,32 @@ class ProfileService(
         repository.existByUsername(Username(username))
     }
 
-    fun getByUsername(username: String): ProfileResult {
-        TODO("Not yet implemented")
+    context (AuthenticatedUserContext/* optional = true */)
+    suspend fun getByUsername(username: String) = newTransaction {
+        // validate & action
+        val profile = Username(username)
+            .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
+
+        // action - TODO - check following via follow service
+        val following = userIdNullable != null
+
+        // return
+        ProfileResult(
+            username = profile.username.value,
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath,
+            following = following
+        )
     }
 
+    context (AuthenticatedUserContext)
     fun follow(username: String): ProfileResult {
-        TODO("Not yet implemented")
+        TODO("Not yet implemented - delegate to follow service")
     }
 
+    context (AuthenticatedUserContext)
     fun unfollow(username: String): ProfileResult {
-        TODO("Not yet implemented")
+        TODO("Not yet implemented - delegate to follow service")
     }
 
 

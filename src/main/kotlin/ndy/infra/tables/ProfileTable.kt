@@ -55,4 +55,9 @@ object ProfileTable : ProfileRepository {
     override suspend fun existByUsername(username: Username) = Profiles
         .select { Profiles.username eq username.value }
         .empty().not()
+
+    override suspend fun findByUsername(username: Username) = Profiles
+        .select { Profiles.username eq username.value }
+        .map(::resultRowToProfile)
+        .singleOrNull()
 }
