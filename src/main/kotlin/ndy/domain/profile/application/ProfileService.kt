@@ -62,6 +62,20 @@ class ProfileService(
         // action/return
         repository.existByUsername(Username(username))
     }
+
+    fun getByUsername(username: String): ProfileResult {
+        TODO("Not yet implemented")
+    }
+
+    fun follow(username: String): ProfileResult {
+        TODO("Not yet implemented")
+    }
+
+    fun unfollow(username: String): ProfileResult {
+        TODO("Not yet implemented")
+    }
+
+
 }
 
 data class ProfileResult(
