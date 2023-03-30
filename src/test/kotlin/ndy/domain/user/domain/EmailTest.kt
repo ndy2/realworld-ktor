@@ -10,18 +10,12 @@ import ndy.test.spec.BaseSpec
 
 class EmailTest : BaseSpec(body = {
 
-    test("validateEmail works properly") {
-        checkAll<Email> { email ->
-            validateEmail shouldBeValid email
-        }
+    test("email arb works properly") {
+        checkAll<Email> { email -> validateEmail shouldBeValid email }
     }
 
     test("email validation work properly with constructor") {
-        checkAll(emailValueArb) { emailValue ->
-            shouldNotThrow<RealworldRuntimeException> { Email(emailValue) }
-        }
-        checkAll<String> { arbString ->
-            shouldThrow<RealworldRuntimeException> { Email(arbString) }
-        }
+        checkAll(emailValueArb) { shouldNotThrow<RealworldRuntimeException> { Email(it) } }
+        checkAll<String> { shouldThrow<RealworldRuntimeException> { Email(it) } }
     }
 })

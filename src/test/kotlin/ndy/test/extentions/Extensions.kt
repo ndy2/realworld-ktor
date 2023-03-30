@@ -32,19 +32,3 @@ object DB : BeforeEachListener, AfterEachListener {
         SchemaUtils.drop(UserTable.Users)
     }
 }
-
-object JWT : BeforeSpecListener {
-
-    override suspend fun beforeSpec(spec: Spec) {
-        EnvConfig.initConfig(
-            MapApplicationConfig(
-                "envConfig.default.jwt.domain" to "https://jwt-provider-domain/",
-                "envConfig.default.jwt.issuer" to "ndy2",
-                "envConfig.default.jwt.audience" to "jwt-audience",
-                "envConfig.default.jwt.realm" to "ktor sample app",
-                "envConfig.default.jwt.secret" to "secret",
-                "envConfig.default.jwt.expires" to "60000",
-            )
-        )
-    }
-}

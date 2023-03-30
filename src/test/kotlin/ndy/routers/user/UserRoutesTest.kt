@@ -31,10 +31,12 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
 
     integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
+            // request
             val response = client.post(Users()) {
                 setBody(mapOf("user" to request))
             }
 
+            // assert
             response shouldHaveStatus Created
             assertSoftly(response.extract<UserResponse>("user")) {
                 it.token shouldBe null
@@ -48,11 +50,15 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
 
     integrationTest("login") {
         checkAll<RegistrationRequest> { request ->
+            // setup
             registerUser(request)
+
+            // request
             val response = client.post(Users.Login()) {
                 setBody(mapOf("user" to LoginRequest(request.email, request.password)))
             }
 
+            // assert
             response shouldHaveStatus OK
             assertSoftly(response.extract<UserResponse>("user")) {
                 it.token shouldNotBe null
@@ -67,13 +73,16 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
 
     integrationTest("get user") {
         checkAll<RegistrationRequest> { request ->
+            // setup
             registerUser(request)
             val token = login(request)
 
+            // request
             val response = client.get(User()) {
                 authToken(token)
             }
 
+            // assert
             response shouldHaveStatus OK
             assertSoftly(response.extract<UserResponse>("user")) {
                 it.token shouldBe token
@@ -87,16 +96,18 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
 
     integrationTest("update user") {
         checkAll<RegistrationRequest, UserUpdateRequest> { registrationRequest, updateRequest ->
+            // setup
             registerUser(registrationRequest)
             updateRequest.username?.let { assumeNotDuplicated(it) }
-
             val token = login(registrationRequest)
 
+            // request
             val response = client.put(User()) {
                 authToken(token)
                 setBody(mapOf("user" to updateRequest))
             }
 
+            // assert
             response shouldHaveStatus OK
             assertSoftly(response.extract<UserResponse>("user")) {
                 it.token shouldBe token

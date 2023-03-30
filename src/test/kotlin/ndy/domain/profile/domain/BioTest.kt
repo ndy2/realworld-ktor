@@ -9,8 +9,10 @@ class BioTest : BaseSpec(body = {
 
     test("create bio") {
         checkAll(bioValueArb) { value ->
+            // action
             val bio = Bio(value)
 
+            // assert
             bio.value shouldBe value
         }
     }

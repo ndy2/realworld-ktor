@@ -9,8 +9,10 @@ class ProfileTest : BaseSpec(body = {
 
     test("create profile") {
         checkAll<ULong, Username, Bio, Image> { id, username, bio, image ->
+            // setup
             val profile = Profile(ProfileId(id), username, bio, image)
 
+            // assert
             assertSoftly(profile){
                 this.id.value shouldBe id
                 this.username shouldBe username

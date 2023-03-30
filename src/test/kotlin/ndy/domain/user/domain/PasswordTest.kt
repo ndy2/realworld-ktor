@@ -17,21 +17,17 @@ import kotlin.random.Random
 class PasswordTest : BaseSpec(body = {
 
     test("password 생성 후 검증 성공") {
-        checkAll(
-            passwordValueArb,
-            passwordEncoderArb,
-            passwordVerifierArb
-        ) { passwordValue, encoder, verifier ->
-            // construct password
+        checkAll(passwordValueArb, passwordEncoderArb, passwordVerifierArb) { passwordValue, encoder, verifier ->
+            // setup - construct password
             val password = Password(passwordValue, encoder)
 
-            // check it with raw password
+            // assert - check it with raw password
             shouldNotThrow<RealworldRuntimeException> { password.checkPassword(passwordValue, verifier) }
 
-            // create password with encoded value
+            // setup - create password with encoded value
             val passwordWithEncoded = Password.withEncoded(password.encodedPassword)
 
-            // both should be equal
+            // assert - both should be equal
             passwordWithEncoded shouldBe password
         }
     }
@@ -43,21 +39,21 @@ class PasswordTest : BaseSpec(body = {
             passwordVerifierArb,
             Arb.string()
         ) { passwordValue, encoder, verifier, arbString ->
-            // construct password
+            // setup - construct password
             val password = Password(passwordValue, encoder)
 
-            // check success with password
+            // assert - check success with password &  check failure with arb string
             shouldNotThrow<RealworldRuntimeException> { password.checkPassword(passwordValue, verifier) }
-
-            // check failure with arb string
             shouldThrow<RealworldRuntimeException> { password.checkPassword(arbString, verifier) }
                 .apply { message shouldBe "login failure" }
         }
     }
 
     test("cannot create password with length greater than $MAX_USER_PASSWORD_LENGTH") {
+        // setup
         val tooLongPasswordValue = Random.azstring(MAX_USER_PASSWORD_LENGTH + 1)
 
+        // assert
         shouldThrow<RealworldRuntimeException> { Password(tooLongPasswordValue, null) }
     }
 })

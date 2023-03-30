@@ -26,9 +26,10 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 // setup - assume not duplicated username & id
                 assumeNotDuplicated(userId.value, username.value)
 
-                // save it
+                // action - save it
                 val savedProfile = newTransaction { sut.save(userId, username) }
-                // assert it
+
+                // assert
                 assertSoftly(savedProfile) {
                     this.id shouldNotBe null
                     this.username shouldBe username
@@ -36,9 +37,10 @@ class ProfileTableTest : BaseSpec(DB, body = {
                     this.image shouldBe null
                 }
 
-                // find it
+                // action - find it
                 val foundProfile = newTransaction { sut.findById(savedProfile.id) }
-                // assert it
+
+                // assert
                 assertSoftly(foundProfile!!) {
                     this.id shouldBe savedProfile.id
                     this.username shouldBe savedProfile.username
@@ -50,23 +52,23 @@ class ProfileTableTest : BaseSpec(DB, body = {
 
         test("update profile") {
             checkAll<UserId, Username, Bio?, Image?, Username?> { userId, username, updateBio, updateImage, updateUsername ->
-                // assume non duplicated username & userId
+                // setup - assume non duplicated username & userId
                 assumeNotDuplicated(userId.value, username.value)
                 updateUsername?.let { assumeNotDuplicated(it.value) }
                 assume(username != updateUsername)
 
-                // save a profile
-                newTransaction {
+                // action - save a profile
+                val count = newTransaction {
                     sut.save(userId, username)
-                    val count = sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
-                    if (listOf(updateBio, updateImage, updateUsername).any { it != null }) count shouldBe 1
-                    else count shouldBe 0
+                    sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
                 }
 
-                // update it
-                val foundProfile = newTransaction { sut.findByUserId(userId) }
+                // assert - update count
+                if (listOf(updateBio, updateImage, updateUsername).any { it != null }) count shouldBe 1
+                else count shouldBe 0
 
-                // assert
+                // assert - properly updated
+                val foundProfile = newTransaction { sut.findByUserId(userId) }
                 assertSoftly(foundProfile!!) {
                     it.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
                     it.bio shouldBe updateBio
@@ -78,13 +80,13 @@ class ProfileTableTest : BaseSpec(DB, body = {
 
         test("exist by username") {
             checkAll<UserId, Username> { userId, username ->
-                // save a profile
+                // setup - save a profile
                 newTransaction {
                     assumeNotDuplicated(username.value)
                     sut.save(userId, username)
                 }
 
-                // check exists
+                // action & assert
                 newTransaction {
                     sut.existByUsername(username) shouldBe true
                     sut.existByUsername(Username("nonExist${username.value}")) shouldBe false

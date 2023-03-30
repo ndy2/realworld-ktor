@@ -16,7 +16,10 @@ class ImageTest : BaseSpec(body = {
             imageFilNameArb,
             imageExtensionArb
         ) { storePath, fileName, extension ->
+            // setup
             val image = Image(storePath, fileName, extension)
+
+            // assert
             assertSoftly(image) {
                 this.storePath shouldBe storePath
                 this.fileName shouldBe fileName
@@ -24,7 +27,10 @@ class ImageTest : BaseSpec(body = {
                 this.fullPath shouldBe "$storePath/$fileName.$extension"
             }
 
+            // setup
             val fullPath = "$storePath/$fileName.$extension"
+
+            // assert
             Image.ofFullPath(fullPath) shouldBe image
         }
     }
