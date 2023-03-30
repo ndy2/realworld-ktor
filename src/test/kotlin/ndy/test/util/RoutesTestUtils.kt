@@ -1,13 +1,18 @@
 package ndy.test.util
 
 import io.kotest.assertions.ktor.client.shouldHaveStatus
+import io.kotest.property.AssumptionFailedException
+import io.kotest.property.assume
 import io.ktor.client.call.*
+import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import ndy.plugins.TOKEN_SCHEMA
+import ndy.resources.Profiles
+import ndy.resources.Users
 import ndy.routers.LoginRequest
 import ndy.routers.RegistrationRequest
 import ndy.routers.UserResponse
@@ -20,8 +25,8 @@ suspend inline fun <reified T : Any> HttpResponse.extract(key: String): T = body
 
 context (HttpClientContext)
 suspend fun registerUser(request: RegistrationRequest) {
-    val response = client.post("/api/users") {
-        contentType(ContentType.Application.Json)
+    assumeNonDuplicatedUsername(request.username)
+    val response = client.post(Users()) {
         setBody(mapOf("user" to request))
     }
 
@@ -29,12 +34,25 @@ suspend fun registerUser(request: RegistrationRequest) {
 }
 
 context (HttpClientContext)
+suspend fun login(request: RegistrationRequest): String {
+    return login(LoginRequest(request.email, request.password))
+}
+
+context (HttpClientContext)
+suspend fun assumeNonDuplicatedUsername(username: String) {
+    val response = client.post(Profiles.Username.Duplicated(parent = Profiles.Username(username = username)))
+
+    response shouldHaveStatus OK
+    val duplicated = response.extract<Boolean>("duplicated")
+    assume(!duplicated)
+}
+
+context (HttpClientContext)
 suspend fun login(request: LoginRequest): String {
-    val response = client.post("/api/users/login") {
+    val response = client.post(Users.Login()) {
         contentType(ContentType.Application.Json)
         setBody(mapOf("user" to request))
     }
-
     response shouldHaveStatus OK
     return response.extract<UserResponse>("user").token!!
 }

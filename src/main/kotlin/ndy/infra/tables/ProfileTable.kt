@@ -53,4 +53,8 @@ object ProfileTable : ProfileRepository {
             }
         } else 0
     }
+
+    override suspend fun existByUsername(username: Username): Boolean {
+        return !Profiles.select { Profiles.username eq username.value }.empty()
+    }
 }

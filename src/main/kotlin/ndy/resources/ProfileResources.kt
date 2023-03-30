@@ -10,5 +10,8 @@ class Profiles {
 
         @Resource("/follow")
         class Follow(val parent: Username)
+
+        @Resource("/duplicated")
+        class Duplicated(val parent: Username)
     }
 }

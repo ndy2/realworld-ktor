@@ -4,6 +4,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.property.Arb
+import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.resolution.GlobalArbResolver
@@ -31,13 +32,12 @@ abstract class BaseSpec(
 
     // common hooks - configure property testing
     override suspend fun beforeSpec(spec: Spec) {
-        PropertyTesting.defaultIterationCount = 1
+        PropertyTesting.defaultIterationCount = 5
         registerCustomArbs(UserArbs::class)
         registerCustomArbs(ProfileArbs::class)
     }
 
     private fun registerCustomArbs(kClass: KClass<*>) {
-        println("registerCustomArbs for class : ${kClass.simpleName}")
         kClass.declaredMemberProperties
             .filterNot { it.returnType.arguments[0].type.toString().contains("kotlin") }
             .forEach {

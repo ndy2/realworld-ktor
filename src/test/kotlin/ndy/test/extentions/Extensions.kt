@@ -24,12 +24,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-/**
- * Custom Kotest Extenstions
- *
- * see - https://kotest.io/docs/framework/extensions/simple-extensions.html
- */
-
 // see https://kotest.io/docs/extensions/koin.html
 val DI = KoinExtension(
     module = module {
@@ -45,7 +39,7 @@ val DI = KoinExtension(
         single<ProfileRepository> { ProfileTable }
         singleOf(::ProfileService)
     },
-    mode = KoinLifecycleMode.Test
+    mode = KoinLifecycleMode.Root
 )
 
 object DB : BeforeSpecListener, AfterSpecListener {

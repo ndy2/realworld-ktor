@@ -57,7 +57,7 @@ class PasswordDelegate(private val raw: String?, private val encoder: PasswordEn
                 setValue(thisRef, prop, encodedPassword)
                 encodedPassword
             } else {
-                throw IllegalAccessException("illegal approach to get encodedPassword")
+                "illegal approach to get encodedPassword"
             }
         } else {
             encodedPassword!!

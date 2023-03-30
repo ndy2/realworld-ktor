@@ -6,24 +6,38 @@ import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.property.arbitrary.orNull
 import io.kotest.property.checkAll
+import io.ktor.client.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.testing.*
+import kotlinx.serialization.json.Json
 import ndy.resources.User
 import ndy.resources.Users
 import ndy.routers.LoginRequest
 import ndy.routers.RegistrationRequest
 import ndy.routers.UserResponse
+import ndy.routers.UserUpdateRequest
+import ndy.test.generator.ProfileArbs.bioValueArb
+import ndy.test.generator.ProfileArbs.imageFullPathArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.*
+import org.koin.core.context.stopKoin
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
+
     integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
             val response = client.post(Users()) {
@@ -63,7 +77,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("get user") {
         checkAll<RegistrationRequest> { request ->
             registerUser(request)
-            val token = login(LoginRequest(request.email, request.password))
+            val token = login(request)
 
             val response = client.get(User()) {
                 authToken(token)
@@ -79,10 +93,40 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
             }
         }
     }
+
+    integrationTest("update user") {
+        checkAll<RegistrationRequest, UserUpdateRequest> { registrationRequest, updateRequest ->
+            registerUser(registrationRequest)
+            updateRequest.username?.let { assumeNonDuplicatedUsername(it) }
+
+            val token = login(registrationRequest)
+
+            val response = client.put(User()) {
+                authToken(token)
+                setBody(mapOf("user" to updateRequest))
+            }
+
+            response shouldHaveStatus OK
+            assertSoftly(response.extract<UserResponse>("user")) {
+                it.token shouldBe token
+                it.email shouldBeUpdatedToIf (updateRequest.email isNotNullOr registrationRequest.email)
+                it.username shouldBeUpdatedToIf (updateRequest.username isNotNullOr registrationRequest.username)
+                it.bio shouldBe updateRequest.bio
+                it.image shouldBe updateRequest.image
+            }
+        }
+    }
 })
 
 object RequestArb : BeforeSpecListener {
     override suspend fun beforeSpec(spec: Spec) {
         registerArb<RegistrationRequest>(usernameValueArb, emailValueArb, passwordValueArb)
+        registerArb<UserUpdateRequest>(
+            emailValueArb.orNull(),
+            passwordValueArb.orNull(),
+            usernameValueArb.orNull(),
+            bioValueArb.orNull(),
+            imageFullPathArb.orNull(),
+        )
     }
 }

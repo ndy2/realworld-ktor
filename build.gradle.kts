@@ -27,6 +27,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     finalizedBy("jacocoTestReport")
+    doFirst { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
 }
 
 // ref @https://stackoverflow.com/questions/29887805/filter-jacoco-coverage-reports-with-gradle
@@ -53,9 +54,7 @@ tasks.jacocoTestReport {
             )
         }
     }))
-    doLast {
-        println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html")
-    }
+    doLast { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
 }
 
 //see buildSrc/src/main/kotlin/Dependencies

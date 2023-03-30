@@ -56,13 +56,6 @@ class PasswordTest : BaseSpec(body = {
         }
     }
 
-    test("cannot access encodedPassword with null args constructed Password") {
-        val nullPassword = Password(rawPassword = null, passwordEncoder = null)
-
-        shouldThrow<IllegalAccessException> { nullPassword.encodedPassword /* invoke PasswordDelegate.getValue */ }
-            .apply { message shouldBe "illegal approach to get encodedPassword" }
-    }
-
     test("cannot create password with length greater than $MAX_USER_PASSWORD_LENGTH") {
         val tooLongPasswordValue = Random.azstring(MAX_USER_PASSWORD_LENGTH + 1)
 

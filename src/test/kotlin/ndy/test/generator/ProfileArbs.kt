@@ -9,7 +9,7 @@ import ndy.domain.user.domain.*
 
 @Suppress("unused") // since they are registered automatically @BaseSpec#registerCustomArbs
 object ProfileArbs {
-    val userIdArb = Arb.uLong().map(::UserId)
+    val userIdArb = Arb.uLong(1u, ULong.MAX_VALUE / 2u).map(::UserId)
 
     val usernameValueArb = Arb.string(4..64, Codepoint.alphanumeric())
     val usernameArb = usernameValueArb.map { Username(it) }
@@ -17,6 +17,13 @@ object ProfileArbs {
     val imageStorePathArb = arbitrary { "path/to/store" }
     val imageFilNameArb = Arb.string(5..10, Codepoint.alphanumeric())
     val imageExtensionArb = Arb.choice(arbitrary { "jpeg" }, arbitrary { "jpg" }, arbitrary { "png" })
+    val imageFullPathArb = imageStorePathArb.flatMap { storePath ->
+        imageFilNameArb.flatMap { fileName ->
+            imageExtensionArb.map { extension ->
+                "$storePath/$fileName.$extension"
+            }
+        }
+    }
     val imageArb = Arb.bind(imageStorePathArb, imageFilNameArb, imageExtensionArb) { store, filename, extension ->
         Image(store, filename, extension)
     }

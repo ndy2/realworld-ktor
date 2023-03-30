@@ -3,25 +3,32 @@ package ndy.domain.profile.application
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.kotest.property.assume
 import io.kotest.property.checkAll
+import io.kotest.property.withAssumptions
 import ndy.context.userIdContext
+import ndy.domain.profile.domain.ProfileRepository
+import ndy.domain.profile.domain.Username
 import ndy.test.extentions.DB
 import ndy.test.extentions.DI
 import ndy.test.extentions.JWT
 import ndy.test.generator.ProfileArbs.userIdArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.spec.BaseSpec
+import ndy.test.util.assumeNonDuplicatedUsername
 import ndy.util.newTransaction
 import org.koin.test.inject
 
 class ProfileServiceTest : BaseSpec(DI, DB, JWT) {
 
     private val sut: ProfileService by inject()
+    private val repository: ProfileRepository by inject()
 
     init {
         context("register a profile") {
             checkAll(userIdArb, usernameValueArb) { userId, usernameValue ->
                 test("requires a transaction") {
+                    assumeNonDuplicatedUsername(usernameValue, repository)
                     newTransaction {
                         val result = with(userIdContext(userId)) { sut.register(usernameValue) }
 
