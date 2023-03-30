@@ -65,7 +65,7 @@ class ProfileService(
 
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun getByUsername(username: String) = newTransaction {
-        // validate - user exists & action - find user
+        // validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
 
@@ -84,16 +84,40 @@ class ProfileService(
     }
 
     context (AuthenticatedUserContext)
-    fun follow(username: String): ProfileResult {
-        TODO("Not yet implemented - delegate to follow service")
+    suspend fun follow(username: String) = newTransaction {
+        // validate - user exists & setup - find target userId
+        val profile = Username(username)
+            .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
+
+        // action
+        followService.follow(profile.userId)
+
+        // return
+        ProfileResult(
+            username = profile.username.value,
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath,
+            following = true
+        )
     }
 
     context (AuthenticatedUserContext)
-    fun unfollow(username: String): ProfileResult {
-        TODO("Not yet implemented - delegate to follow service")
+    suspend fun unfollow(username: String) = newTransaction {
+        // validate - user exists & setup - find target userId
+        val profile = Username(username)
+            .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
+
+        // action
+        followService.unfollow(profile.userId)
+
+        // return
+        ProfileResult(
+            username = profile.username.value,
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath,
+            following = true
+        )
     }
-
-
 }
 
 data class ProfileResult(
