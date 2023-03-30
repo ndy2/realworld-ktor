@@ -8,6 +8,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.ktor.server.config.*
+import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
 import org.jetbrains.exposed.sql.Database
@@ -25,10 +26,12 @@ object DB : BeforeEachListener, AfterEachListener {
     override suspend fun beforeEach(testCase: TestCase) = transaction(database) {
         SchemaUtils.create(UserTable.Users)
         SchemaUtils.create(ProfileTable.Profiles)
+        SchemaUtils.create(FollowTable.Follows)
     }
 
     override suspend fun afterEach(testCase: TestCase, result: TestResult) = transaction(database) {
         SchemaUtils.drop(ProfileTable.Profiles)
         SchemaUtils.drop(UserTable.Users)
+        SchemaUtils.drop(FollowTable.Follows)
     }
 }
