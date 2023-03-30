@@ -116,7 +116,7 @@ class ProfileService(
             username = profile.username.value,
             bio = profile.bio?.value,
             image = profile.image?.fullPath,
-            following = true
+            following = false
         )
     }
 }

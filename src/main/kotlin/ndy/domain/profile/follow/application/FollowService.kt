@@ -7,7 +7,6 @@ import ndy.domain.user.domain.UserId
 class FollowService(
     private val repository: FollowRepository
 ) {
-
     context (AuthenticatedUserContext)
     suspend fun follow(targetUserId: UserId) {
         repository.save(userId, targetUserId)
