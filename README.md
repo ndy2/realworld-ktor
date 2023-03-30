@@ -46,17 +46,16 @@ I will try my best to find out my own "Best Practice" in this project.
 that I used to studied in the `Spring Framework`. Well that must be case by case. In this case I ommited lots of those values and focus on framwork/library usages
 
 ## Current Test with postman - with script provided [@here](https://github.com/gothinkster/realworld/tree/main/api)
-![image](https://user-images.githubusercontent.com/67302707/227984143-cf1d120e-de0f-4017-8231-a56571750066.png)
+![image](https://user-images.githubusercontent.com/67302707/228865061-b0683c26-b883-426e-8e0f-6accafb869b8.png)
 
 ## Endpoint milestones - See Details [@here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints)
 - [x] Authentication
 - [x] Registration
 - [x] Get Current User
 - [x] Update User
-- [ ] Get Profile
-- [ ] Follow user
-- [ ] Get Profile
-- [ ] Unfollow user
+- [x] Get Profile - test WIP
+- [x] Follow user - test WIP
+- [x] Unfollow user - test WIP
 - [ ] List Articles
 - [ ] Feed Articles
 - [ ] Get Article
