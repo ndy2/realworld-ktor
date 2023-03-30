@@ -4,6 +4,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import ndy.context.userIdContext
+import ndy.domain.profile.follow.application.FollowService
+import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.test.extentions.DB
 import ndy.test.generator.ProfileArbs.userIdArb
@@ -14,7 +16,12 @@ import ndy.util.newTransaction
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 
-    val sut = ProfileService(ProfileTable, FollowService())
+    val sut = ProfileService(
+        repository = ProfileTable,
+        followService = FollowService(
+            repository = FollowTable
+        )
+    )
     with(ProfileTable) {
 
         test("register a profile and get it's result") {

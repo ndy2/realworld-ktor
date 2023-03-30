@@ -3,6 +3,7 @@ package ndy.domain.profile.application
 import ndy.context.AuthenticatedUserContext
 import ndy.context.UserIdContext
 import ndy.domain.profile.domain.*
+import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.exception.UsernameDuplicatedException
