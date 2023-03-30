@@ -5,6 +5,7 @@ import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.domain.Username
+import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.exception.UsernameDuplicatedException
 import ndy.util.mandatoryTransaction
@@ -27,7 +28,7 @@ class ProfileService(
 
     context (UserIdContext)
     suspend fun getByUserId() = mandatoryTransaction {
-        val profile = repository.findByUserId(UserId(userId)) ?: notFound()
+        val profile = repository.findByUserId(UserId(userId)) ?: notFound<User>(userId)
 
         ProfileResult(
             username = profile.username.value,

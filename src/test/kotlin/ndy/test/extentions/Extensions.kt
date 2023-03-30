@@ -1,9 +1,13 @@
 package ndy.test.extentions
 
 import de.sharpmind.ktor.EnvConfig
+import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterSpecListener
+import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.kotest.koin.KoinExtension
 import io.kotest.koin.KoinLifecycleMode
 import io.ktor.server.config.*
@@ -42,7 +46,7 @@ val DI = KoinExtension(
     mode = KoinLifecycleMode.Root
 )
 
-object DB : BeforeSpecListener, AfterSpecListener {
+object DB : BeforeEachListener, AfterEachListener {
     private val database = Database.connect(
         url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
         user = "root",
@@ -50,12 +54,12 @@ object DB : BeforeSpecListener, AfterSpecListener {
         password = "",
     )
 
-    override suspend fun beforeSpec(spec: Spec) = transaction(database) {
+    override suspend fun beforeEach(testCase: TestCase) = transaction(database) {
         SchemaUtils.create(UserTable.Users)
         SchemaUtils.create(ProfileTable.Profiles)
     }
 
-    override suspend fun afterSpec(spec: Spec) = transaction(database) {
+    override suspend fun afterEach(testCase: TestCase, result: TestResult) = transaction(database) {
         SchemaUtils.drop(ProfileTable.Profiles)
         SchemaUtils.drop(UserTable.Users)
     }

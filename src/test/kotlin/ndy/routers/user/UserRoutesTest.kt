@@ -8,18 +8,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.checkAll
-import io.ktor.client.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.testing.*
-import kotlinx.serialization.json.Json
 import ndy.resources.User
 import ndy.resources.Users
 import ndy.routers.LoginRequest
@@ -34,7 +26,6 @@ import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.*
-import org.koin.core.context.stopKoin
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
 
@@ -97,7 +88,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
     integrationTest("update user") {
         checkAll<RegistrationRequest, UserUpdateRequest> { registrationRequest, updateRequest ->
             registerUser(registrationRequest)
-            updateRequest.username?.let { assumeNonDuplicatedUsername(it) }
+            updateRequest.username?.let { assumeNotDuplicated(it) }
 
             val token = login(registrationRequest)
 

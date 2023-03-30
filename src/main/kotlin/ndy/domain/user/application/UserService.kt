@@ -59,7 +59,7 @@ class UserService(
     context (AuthenticatedUserContext)
     suspend fun getById() = newTransaction {
         // find user in user table
-        val foundUser = repository.findUserById(userId) ?: notFound()
+        val foundUser = repository.findUserById(userId) ?: notFound<User>(userId.value)
 
         // get profile from profileService
         val profileResult = with(userIdContext(userId)) {
@@ -90,7 +90,7 @@ class UserService(
             email?.let { Email(it) },
             password?.let { Password(it) }
         )
-        val foundUser = repository.findUserById(userId) ?: notFound()
+        val foundUser = repository.findUserById(userId) ?: notFound<User>(userId.value)
 
         // update profile table and find it
         val profileResult = with(userIdContext(userId)) {

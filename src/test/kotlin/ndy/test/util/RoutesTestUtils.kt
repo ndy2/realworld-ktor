@@ -1,7 +1,6 @@
 package ndy.test.util
 
 import io.kotest.assertions.ktor.client.shouldHaveStatus
-import io.kotest.property.AssumptionFailedException
 import io.kotest.property.assume
 import io.ktor.client.call.*
 import io.ktor.client.plugins.resources.*
@@ -25,7 +24,7 @@ suspend inline fun <reified T : Any> HttpResponse.extract(key: String): T = body
 
 context (HttpClientContext)
 suspend fun registerUser(request: RegistrationRequest) {
-    assumeNonDuplicatedUsername(request.username)
+    assumeNotDuplicated(request.username)
     val response = client.post(Users()) {
         setBody(mapOf("user" to request))
     }
@@ -39,7 +38,7 @@ suspend fun login(request: RegistrationRequest): String {
 }
 
 context (HttpClientContext)
-suspend fun assumeNonDuplicatedUsername(username: String) {
+suspend fun assumeNotDuplicated(username: String) {
     val response = client.post(Profiles.Username.Duplicated(parent = Profiles.Username(username = username)))
 
     response shouldHaveStatus OK

@@ -11,6 +11,7 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
+import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
 import ndy.util.newTransaction
@@ -19,71 +20,71 @@ class ProfileTableTest : BaseSpec(DB, body = {
 
     val sut = ProfileTable
 
-    context("prop1") {
-        checkAll<ULong, Username> { userId, username ->
-            test("returns saved profile and find it") {
-                newTransaction {
-                    assume(!sut.existByUsername(username))
-                    val savedProfile = sut.save(UserId(userId), username)
-                    assertSoftly(savedProfile) {
-                        this.id shouldNotBe null
-                        this.username shouldBe username
-                        this.bio shouldBe null
-                        this.image shouldBe null
-                    }
+    with(sut) {
+        test("returns saved profile and find it") {
+            checkAll<UserId, Username> { userId, username ->
+                // setup - assume not duplicated username & id
+                assumeNotDuplicated(userId.value, username.value)
 
-                    val foundProfile = sut.findById(savedProfile.id)
-                    assertSoftly(foundProfile!!) {
-                        this.id shouldBe savedProfile.id
-                        this.username shouldBe savedProfile.username
-                        this.bio shouldBe savedProfile.bio
-                        this.image shouldBe savedProfile.image
-                    }
+                // save it
+                val savedProfile = newTransaction { sut.save(userId, username) }
+                // assert it
+                assertSoftly(savedProfile) {
+                    this.id shouldNotBe null
+                    this.username shouldBe username
+                    this.bio shouldBe null
+                    this.image shouldBe null
+                }
+
+                // find it
+                val foundProfile = newTransaction { sut.findById(savedProfile.id) }
+                // assert it
+                assertSoftly(foundProfile!!) {
+                    this.id shouldBe savedProfile.id
+                    this.username shouldBe savedProfile.username
+                    this.bio shouldBe savedProfile.bio
+                    this.image shouldBe savedProfile.image
                 }
             }
         }
-    }
 
-    context("prop2") {
-        checkAll<UserId, Username, Bio?, Image?, Username?> { userId, username, updateBio, updateImage, updateUsername ->
-            var duplicated = newTransaction { sut.existByUsername(username) }
-            if (updateUsername != null) {
-                duplicated = duplicated or newTransaction { sut.existByUsername(updateUsername) }
-                duplicated = duplicated or (duplicated.equals(username))
-            }
-            assume(!duplicated)
+        test("update profile") {
+            checkAll<UserId, Username, Bio?, Image?, Username?> { userId, username, updateBio, updateImage, updateUsername ->
+                // assume non duplicated username & userId
+                assumeNotDuplicated(userId.value, username.value)
+                updateUsername?.let { assumeNotDuplicated(it.value) }
+                assume(username != updateUsername)
 
-            test("update profile") {
+                // save a profile
                 newTransaction {
                     sut.save(userId, username)
                     val count = sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
-
                     if (listOf(updateBio, updateImage, updateUsername).any { it != null }) count shouldBe 1
                     else count shouldBe 0
                 }
 
+                // update it
+                val foundProfile = newTransaction { sut.findByUserId(userId) }
 
-                newTransaction {
-
-                    val foundProfile = sut.findByUserId(userId)
-                    assertSoftly(foundProfile!!) {
-                        it.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
-                        it.bio shouldBe updateBio
-                        it.image shouldBe updateImage
-                    }
+                // assert
+                assertSoftly(foundProfile!!) {
+                    it.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
+                    it.bio shouldBe updateBio
+                    it.image shouldBe updateImage
                 }
-                println("username : $username")
+
             }
         }
-    }
 
-    context("prop3") {
-        checkAll<UserId, Username> { userId, username ->
-            test("exist by username") {
+        test("exist by username") {
+            checkAll<UserId, Username> { userId, username ->
+                // save a profile
                 newTransaction {
+                    assumeNotDuplicated(username.value)
                     sut.save(userId, username)
                 }
 
+                // check exists
                 newTransaction {
                     sut.existByUsername(username) shouldBe true
                     sut.existByUsername(Username("nonExist${username.value}")) shouldBe false
@@ -91,5 +92,4 @@ class ProfileTableTest : BaseSpec(DB, body = {
             }
         }
     }
-
 })

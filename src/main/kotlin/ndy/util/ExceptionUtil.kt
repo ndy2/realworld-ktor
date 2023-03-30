@@ -4,6 +4,7 @@ import io.konform.validation.ValidationResult
 import ndy.exception.AuthenticationException
 import ndy.exception.EntityNotFoundException
 import ndy.exception.ValidationException
+import kotlin.reflect.typeOf
 
 fun authenticationFail(
     message: String
@@ -11,10 +12,10 @@ fun authenticationFail(
     throw AuthenticationException(message)
 }
 
-fun notFound(
-    message: String = "not found"
+inline fun <reified T> notFound(
+    id: ULong
 ): Nothing {
-    throw EntityNotFoundException(message)
+    throw EntityNotFoundException("${T::class.simpleName} with id :$id not found")
 }
 
 fun illegalState(): Nothing {

@@ -17,7 +17,6 @@ import kotlin.random.Random
 class PasswordTest : BaseSpec(body = {
 
     test("password 생성 후 검증 성공") {
-
         checkAll(
             passwordValueArb,
             passwordEncoderArb,

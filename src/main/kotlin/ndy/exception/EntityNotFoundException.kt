@@ -1,3 +1,3 @@
 package ndy.exception
 
-class EntityNotFoundException(message: String) : RealworldRuntimeException()
+class EntityNotFoundException(message: String) : RealworldRuntimeException(message)

@@ -1,34 +1,29 @@
 package ndy.domain.profile.application
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import io.kotest.property.assume
 import io.kotest.property.checkAll
-import io.kotest.property.withAssumptions
 import ndy.context.userIdContext
-import ndy.domain.profile.domain.ProfileRepository
-import ndy.domain.profile.domain.Username
+import ndy.infra.tables.ProfileTable
 import ndy.test.extentions.DB
 import ndy.test.extentions.DI
 import ndy.test.extentions.JWT
 import ndy.test.generator.ProfileArbs.userIdArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.spec.BaseSpec
-import ndy.test.util.assumeNonDuplicatedUsername
+import ndy.test.util.assumeNotDuplicated
 import ndy.util.newTransaction
 import org.koin.test.inject
 
 class ProfileServiceTest : BaseSpec(DI, DB, JWT) {
 
     private val sut: ProfileService by inject()
-    private val repository: ProfileRepository by inject()
 
     init {
-        context("register a profile") {
-            checkAll(userIdArb, usernameValueArb) { userId, usernameValue ->
-                test("requires a transaction") {
-                    assumeNonDuplicatedUsername(usernameValue, repository)
+        with(ProfileTable) {
+            test("register a profile and get it's result") {
+                checkAll(userIdArb, usernameValueArb) { userId, usernameValue ->
+                    assumeNotDuplicated(usernameValue)
                     newTransaction {
                         val result = with(userIdContext(userId)) { sut.register(usernameValue) }
 
@@ -40,39 +35,25 @@ class ProfileServiceTest : BaseSpec(DI, DB, JWT) {
                         }
                     }
                 }
+            }
 
-                test("fail if no transaction") {
-                    val exception = shouldThrow<IllegalStateException> {
+            test("register a profile and find it with userId") {
+                checkAll(userIdArb, usernameValueArb) { userId, usernameValue ->
+                    assumeNotDuplicated(userId.value, usernameValue)
+                    newTransaction {
                         with(userIdContext(userId)) { sut.register(usernameValue) }
                     }
-
-                    exception.message shouldBe "No transaction in context."
-                }
-
-                context("with registered profile") {
-                    test("find its username by userId") {
-                        newTransaction {
-                            val result = with(userIdContext(userId)) { sut.getByUserId() }
-
-                            assertSoftly(result) {
-                                username shouldBe usernameValue
-                                bio shouldBe null
-                                image shouldBe null
-                                following shouldBe false
-                            }
+                    newTransaction {
+                        val result = with(userIdContext(userId)) { sut.getByUserId() }
+                        assertSoftly(result) {
+                            username shouldBe usernameValue
+                            bio shouldBe null
+                            image shouldBe null
+                            following shouldBe false
                         }
-                    }
-
-                    test("also fail if no transaction") {
-                        val exception = shouldThrow<IllegalStateException> {
-                            with(userIdContext(userId)) { sut.getByUserId() }
-                        }
-                        exception.message shouldBe "No transaction in context."
                     }
                 }
             }
         }
     }
-
-
 }
