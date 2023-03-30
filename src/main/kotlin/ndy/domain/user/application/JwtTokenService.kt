@@ -8,12 +8,10 @@ import java.util.*
 
 object JwtTokenService {
 
-    fun createToken(user: User): String {
-        return JWT.create()
-            .withAudience(EnvConfig.getString("jwt.audience"))
-            .withIssuer(EnvConfig.getString("jwt.issuer"))
-            .withClaim("id", user.id.value.toInt())
-            .withExpiresAt(Date(System.currentTimeMillis() + EnvConfig.getInt("jwt.expires")))
-            .sign(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
-    }
+    fun createToken(user: User): String = JWT.create()
+        .withAudience(EnvConfig.getString("jwt.audience"))
+        .withIssuer(EnvConfig.getString("jwt.issuer"))
+        .withClaim("id", user.id.value.toInt())
+        .withExpiresAt(Date(System.currentTimeMillis() + EnvConfig.getInt("jwt.expires")))
+        .sign(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
 }

@@ -4,6 +4,8 @@ import ndy.exception.AuthenticationException
 import ndy.util.checkValidation
 import kotlin.reflect.KProperty
 
+const val MAX_USER_PASSWORD_LENGTH = 32
+
 /**
  * Password - 비밀번호
  */
@@ -43,25 +45,19 @@ class Password(
     }
 }
 
-const val MAX_USER_PASSWORD_LENGTH = 32
-
 class PasswordDelegate(private val raw: String?, private val encoder: PasswordEncoder?) {
 
     private var initialized = false
     private var encodedPassword: String? = null
 
     operator fun getValue(thisRef: Password, prop: KProperty<*>): String {
-        return if (!initialized) {
+        return if (!initialized)
             if (this.encoder != null && this.raw != null) {
                 val encodedPassword = this.encoder.encode(this.raw)
                 setValue(thisRef, prop, encodedPassword)
                 encodedPassword
-            } else {
-                "illegal approach to get encodedPassword"
-            }
-        } else {
-            encodedPassword!!
-        }
+            } else "illegal approach to get encodedPassword"
+        else encodedPassword!!
     }
 
     operator fun setValue(password: Password, property: KProperty<*>, value: String) {

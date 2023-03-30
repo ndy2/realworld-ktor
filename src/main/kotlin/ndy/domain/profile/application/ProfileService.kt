@@ -18,9 +18,13 @@ class ProfileService(
 
     context (UserIdContext)
     suspend fun register(username: String) = mandatoryTransaction {
-        checkUsernameDuplicatedInternal(username)
+        // validate
+        if (checkUsernameDuplicated(username)) throw UsernameDuplicatedException(username)
+
+        // action
         val profile = repository.save(UserId(userId), Username(username))
 
+        // return
         ProfileResult(
             username = profile.username.value
         )
@@ -28,8 +32,10 @@ class ProfileService(
 
     context (UserIdContext)
     suspend fun getByUserId() = mandatoryTransaction {
+        // validate/action
         val profile = repository.findByUserId(UserId(userId)) ?: notFound<User>(userId)
 
+        // return
         ProfileResult(
             username = profile.username.value,
             bio = profile.bio?.value,
@@ -40,8 +46,10 @@ class ProfileService(
 
     context (UserIdContext)
     suspend fun update(username: String?, bio: String?, image: String?) = mandatoryTransaction {
-        username?.let { checkUsernameDuplicatedInternal(it) }
+        // validate
+        username?.let { if (checkUsernameDuplicated(it)) throw UsernameDuplicatedException(it) }
 
+        // action/return
         repository.updateByUserId(
             UserId(userId),
             username?.let { Username(it) },
@@ -51,13 +59,8 @@ class ProfileService(
     }
 
     suspend fun checkUsernameDuplicated(username: String) = newTransaction {
-        checkUsernameDuplicatedInternal(username)
-    }
-
-    private suspend fun checkUsernameDuplicatedInternal(username: String) = mandatoryTransaction {
-        if (repository.existByUsername(Username(username))) {
-            throw UsernameDuplicatedException("'$username' is already used")
-        }
+        // action/return
+        repository.existByUsername(Username(username))
     }
 }
 

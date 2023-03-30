@@ -24,7 +24,7 @@ import org.koin.logger.slf4jLogger
  * Koin has no auto-configuration feature as in Spring Boot
  * register module in below code
  *
- * @see <a href=https://insert-koin.io/docs/reference/koin-ktor/ktor/> koin-ktor in koin docs </a>
+ * see https://insert-koin.io/docs/reference/koin-ktor/ktor/
  */
 fun Application.configureDi() {
 

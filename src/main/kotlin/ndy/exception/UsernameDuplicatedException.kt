@@ -1,3 +1,3 @@
 package ndy.exception
 
-class UsernameDuplicatedException(message: String) : RealworldRuntimeException(message)
+class UsernameDuplicatedException(username: String) : RealworldRuntimeException("'$username' is already used")

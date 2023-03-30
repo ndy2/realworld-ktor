@@ -23,7 +23,7 @@ suspend inline fun <reified T : Any> ApplicationCall.ok(message: T) {
     respond(message)
 }
 
-// principal 은 configureSecurity -> jwt.validate 에서 생성함
+// principal is created @configureSecurity -> jwt.validate
 fun ApplicationCall.userId(): UserId {
     return this.authentication.principal() ?: authenticationFail("user id not found in token")
 }
@@ -35,6 +35,10 @@ fun ApplicationCall.token(): String {
 
 suspend inline fun <reified T : Any> ApplicationCall.extract(key: String) = receive<Map<String, T>>()[key]!!
 
+/**
+ * custom dsl which combines `authenticate` & `get<T>`
+ * also add `context(AuthenticatedUserContext, ApplicationCallContext)` for flexibility
+ */
 inline fun <reified T : Any> Route.authenticatedGet(
     vararg configurations: String? = arrayOf(null),
     optional: Boolean = false,
@@ -56,7 +60,12 @@ inline fun <reified T : Any> Route.authenticatedGet(
     }
 }
 
-// inline fn 에서 local fn 을 사용할 수 없는 제약때문에 리팩토링 하기 힘듬..
+/**
+ * custom dsl which combines `authenticate` & `put<T>`
+ * also add `context(AuthenticatedUserContext, ApplicationCallContext)` for flexibility
+ * *
+ * since inline fn cannot use local fn, it is hard two refactor duplication in authenticatedGet & authenticatedPut
+ */
 inline fun <reified T : Any> Route.authenticatedPut(
     vararg configurations: String? = arrayOf(null),
     optional: Boolean = false,

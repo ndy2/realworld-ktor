@@ -14,13 +14,11 @@ object UserTable : UserRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    private fun resultRowToUser(row: ResultRow): User {
-        return User(
-            id = UserId(row[Users.id]),
-            email = Email(row[Users.email]),
-            password = Password.withEncoded(row[Users.password]),
-        )
-    }
+    private fun resultRowToUser(row: ResultRow) = User(
+        id = UserId(row[Users.id]),
+        email = Email(row[Users.email]),
+        password = Password.withEncoded(row[Users.password]),
+    )
 
     override suspend fun save(
         email: Email,
@@ -44,13 +42,12 @@ object UserTable : UserRepository {
         .map(::resultRowToUser)
         .singleOrNull()
 
-
     override suspend fun updateById(id: UserId, email: Email?, password: Password?): Int {
-        return if (listOf(email, password).any { it != null }) {
+        return if (listOf(email, password).any { it != null })
             Users.update({ Users.id eq id.value }) {
                 if (email != null) it[Users.email] = email.value
                 if (password != null) it[Users.password] = password.encodedPassword
             }
-        } else 0
+        else 0
     }
 }

@@ -8,7 +8,8 @@ import ndy.routers.userRouting
 
 /**
  * configure Routing (Controller in Spring)
- * https://ktor.io/docs/routing-in-ktor.html>routing-in-ktor in ktor docs
+ *
+ * see - https://ktor.io/docs/routing-in-ktor.html>routing-in-ktor in ktor docs
  */
 fun Application.configureRouting() {
 

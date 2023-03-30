@@ -20,6 +20,7 @@ fun Application.configureDatabases() {
         driver = EnvConfig.getString("database.driver"),
         password = EnvConfig.getString("database.password")
     )
+
     transaction(database) {
         SchemaUtils.create(UserTable.Users)
         SchemaUtils.create(ProfileTable.Profiles)

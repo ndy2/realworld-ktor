@@ -4,8 +4,7 @@ import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import org.mindrot.jbcrypt.BCrypt
 
-object BcryptPasswordService
-    : PasswordEncoder, PasswordVerifier {
+object BcryptPasswordService : PasswordEncoder, PasswordVerifier {
 
     override fun encode(rawPassword: String): String {
         return BCrypt.hashpw(rawPassword, BCrypt.gensalt())

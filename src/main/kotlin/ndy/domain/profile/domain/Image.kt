@@ -8,7 +8,6 @@ data class Image(
     val fullPath: String by lazy { "$storePath/$fileName.$extension" }
 
     companion object {
-
         fun ofFullPath(fullPath: String): Image {
             val i1 = fullPath.lastIndexOf('/')
             val i2 = fullPath.lastIndexOf(".")

@@ -6,7 +6,7 @@ import io.ktor.server.plugins.cors.routing.*
 
 /**
  * Configure CORS - allow all!
- * @see <a href=https://ktor.io/docs/cors.html#methods>cors#methods in ktor docs</a>
+ * see - https://ktor.io/docs/cors.html#methods
  */
 fun Application.configureHTTP() {
     install(CORS) {

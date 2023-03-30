@@ -9,26 +9,24 @@ import io.ktor.server.auth.jwt.*
 import ndy.domain.user.domain.UserId
 import ndy.exception.AuthenticationException
 
+const val TOKEN_SCHEMA = "Token"
 
 /**
  * configure jwt in ktor
  *
  * see https://ktor.io/docs/jwt.htm
  */
-
-const val TOKEN_SCHEMA = "Token"
 fun Application.configureSecurity() {
 
     authentication {
         jwt {
-            val jwtAudience = EnvConfig.getString("jwt.audience")
-            realm = EnvConfig.getString("jwt.realm")
-            authSchemes(TOKEN_SCHEMA)
+            authSchemes(TOKEN_SCHEMA /* default : "Bearer" */)
 
+            realm = EnvConfig.getString("jwt.realm")
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
-                    .withAudience(jwtAudience)
+                    .withAudience(EnvConfig.getString("jwt.audience"))
                     .withIssuer(EnvConfig.getString("jwt.issuer"))
                     .build()
             )
@@ -40,6 +38,3 @@ fun Application.configureSecurity() {
         }
     }
 }
-
-private fun Application.readProperty(path: String) =
-    this.environment.config.property(path).getString()

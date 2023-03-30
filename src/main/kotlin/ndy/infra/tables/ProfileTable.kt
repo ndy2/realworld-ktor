@@ -16,14 +16,12 @@ object ProfileTable : ProfileRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    private fun resultRowToProfile(row: ResultRow): Profile {
-        return Profile(
-            id = ProfileId(row[Profiles.id]),
-            username = Username(row[Profiles.username]),
-            bio = row[Profiles.bio]?.let { Bio(it) },
-            image = row[Profiles.image]?.let { Image.ofFullPath(it) }
-        )
-    }
+    private fun resultRowToProfile(row: ResultRow) = Profile(
+        id = ProfileId(row[Profiles.id]),
+        username = Username(row[Profiles.username]),
+        bio = row[Profiles.bio]?.let { Bio(it) },
+        image = row[Profiles.image]?.let { Image.ofFullPath(it) },
+    )
 
     override suspend fun save(userId: UserId, username: Username): Profile {
         val insertStatement = Profiles.insert {
@@ -45,16 +43,16 @@ object ProfileTable : ProfileRepository {
         .singleOrNull()
 
     override suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
-        return if (listOf(username, bio, image).any { it != null }) {
+        return if (listOf(username, bio, image).any { it != null })
             Profiles.update({ Profiles.userId eq userId.value }) {
                 if (username != null) it[Profiles.username] = username.value
                 if (bio != null) it[Profiles.bio] = bio.value
                 if (image != null) it[Profiles.image] = image.fullPath
             }
-        } else 0
+        else 0
     }
 
-    override suspend fun existByUsername(username: Username): Boolean {
-        return !Profiles.select { Profiles.username eq username.value }.empty()
-    }
+    override suspend fun existByUsername(username: Username) = Profiles
+        .select { Profiles.username eq username.value }
+        .empty().not()
 }

@@ -28,6 +28,10 @@ fun Application.configureSerialization() {
     }
 }
 
+/**
+ * custom converter that contains delegate for
+ * serialization & deserialization each
+ */
 class MyConverter(
     private val serializer: ContentConverter,
     private val deserializer: ContentConverter
@@ -49,5 +53,4 @@ class MyConverter(
     ): Any? {
         return deserializer.deserialize(charset, typeInfo, content)
     }
-
 }
