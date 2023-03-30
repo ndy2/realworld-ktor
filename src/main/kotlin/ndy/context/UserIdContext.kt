@@ -3,7 +3,6 @@ package ndy.context
 import ndy.domain.user.domain.UserId
 
 interface UserIdContext {
-
     val userId: ULong
 }
 
