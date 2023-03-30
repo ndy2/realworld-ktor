@@ -1,27 +1,26 @@
 package ndy.test.generator
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.uLong
+import io.kotest.property.arbitrary.*
 import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.*
-import ndy.test.util.alphaNumericString
-import ndy.test.util.ascii
 
 @Suppress("unused") // since they are registered automatically @BaseSpec#registerCustomArbs
 object ProfileArbs {
     val userIdArb = Arb.uLong().map(::UserId)
 
-    val usernameValueArb = createArb { rs -> rs.alphaNumericString(0..64) }
-    val usernameArb = createArb<Username>(usernameValueArb)
+    val usernameValueArb = Arb.string(4..64, Codepoint.alphanumeric())
+    val usernameArb = usernameValueArb.map { Username(it) }
 
-    val imageStorePathArb = createArb { "path/to/store" }
-    val imageFilNameArb = createArb { rs -> rs.alphaNumericString(5..200) }
-    val imageExtensionArb = createArb { listOf("png", "jpg", "jpeg").random() }
-    val imageArb = createArb<Image>(imageStorePathArb, imageExtensionArb, imageFilNameArb)
+    val imageStorePathArb = arbitrary { "path/to/store" }
+    val imageFilNameArb = Arb.string(5..10, Codepoint.alphanumeric())
+    val imageExtensionArb = Arb.choice(arbitrary { "jpeg" }, arbitrary { "jpg" }, arbitrary { "png" })
+    val imageArb = Arb.bind(imageStorePathArb, imageFilNameArb, imageExtensionArb) { store, filename, extension ->
+        Image(store, filename, extension)
+    }
 
-    val bioValueArb = createArb { rs -> rs.ascii(0..512) }
-    val BioArb = createArb<Bio>(bioValueArb)
+    val bioValueArb = Arb.string(0..512, Codepoint.ascii())
+    val bioArb = bioValueArb.map { Bio(it) }
 }

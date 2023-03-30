@@ -44,7 +44,7 @@ object ProfileTable : ProfileRepository {
         .map(::resultRowToProfile)
         .singleOrNull()
 
-    override suspend fun updateById(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
+    override suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
         return if (listOf(username, bio, image).any { it != null }) {
             Profiles.update({ Profiles.userId eq userId.value }) {
                 if (username != null) it[Profiles.username] = username.value

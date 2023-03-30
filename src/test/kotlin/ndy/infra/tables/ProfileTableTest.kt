@@ -4,6 +4,8 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
+import ndy.domain.profile.domain.Bio
+import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
 import ndy.test.extentions.DB
@@ -34,5 +36,28 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 }
             }
         }
+    }
+
+    test("update user") {
+        checkAll<UserId, Username, Bio?, Image?, Username?> { userId, username, bio, image, updatedUsername ->
+            newTransaction {
+                sut.save(userId, username)
+                val count = sut.updateByUserId(userId, updatedUsername, bio, image)
+
+                if (listOf(bio, image, updatedUsername).any { it != null }) count shouldBe 1
+                else count shouldBe 0
+            }
+
+            newTransaction {
+                val foundUser = sut.findByUserId(userId)
+                assertSoftly(foundUser!!) {
+                    if (updatedUsername == null) it.username shouldBe username
+                    else it.username shouldBe updatedUsername
+                    it.bio shouldBe bio
+                    it.image shouldBe image
+                }
+            }
+        }
+
     }
 })

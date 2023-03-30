@@ -1,22 +1,23 @@
 package ndy.test.generator
 
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.*
 import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.domain.*
-import ndy.test.util.alphaNumericString
-import ndy.test.util.ascii
 
 @Suppress("unused") // since they are registered automatically @BaseSpec#registerCustomArbs
 object UserArbs {
-    val emailValueArb = createArb { rs ->
-        val username = rs.alphaNumericString(3..10)
-        val domainName = rs.alphaNumericString(2..5)
-        val domainExtension = listOf("com", "org", "edu", "ac.kr", "net").random()
-        "$username@$domainName.$domainExtension"
-    }
-    val emailArb = createArb<Email>(emailValueArb)
+    val emailValueArb = Arb.email(
+        Arb.string(3..10, Codepoint.alphanumeric()),
+        Arb.domain(
+            tlds = listOf("com", "org", "edu", "ac.kr", "net"),
+            labelArb = Arb.string(2..5, Codepoint.alphanumeric())
+        )
+    )
+    val emailArb = emailValueArb.map { Email(it) }
 
-    val passwordValueArb = createArb { rs -> rs.ascii(8..32) }
-    val passwordEncoderArb = createArb<PasswordEncoder> { _ -> BcryptPasswordService }
-    val passwordVerifierArb = createArb<PasswordVerifier> { _ -> BcryptPasswordService }
-    val passwordArb = createArb<Password>(passwordValueArb, passwordEncoderArb)
+    val passwordValueArb = Arb.string(8..32, Codepoint.ascii())
+    val passwordEncoderArb = arbitrary { BcryptPasswordService }
+    val passwordVerifierArb = arbitrary { BcryptPasswordService }
+    val passwordArb = Arb.bind(passwordValueArb, passwordVerifierArb) { value, verifier -> Password(value, verifier) }
 }

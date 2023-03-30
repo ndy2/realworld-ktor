@@ -9,8 +9,6 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import ndy.resources.User
