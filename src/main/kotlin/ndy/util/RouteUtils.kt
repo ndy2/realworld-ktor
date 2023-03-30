@@ -42,7 +42,7 @@ suspend inline fun <reified T : Any> ApplicationCall.extract(key: String) = rece
 inline fun <reified T : Any> Route.authenticatedGet(
     vararg configurations: String? = arrayOf(null),
     optional: Boolean = false,
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) () -> Unit
+    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ): Route {
     return authenticate(
         configurations = configurations,
@@ -55,7 +55,7 @@ inline fun <reified T : Any> Route.authenticatedGet(
             val callContext = object : ApplicationCallContext {
                 override val call = this@get.call
             }
-            build(userContext, callContext)
+            build(userContext, callContext, it)
         }
     }
 }
@@ -69,7 +69,7 @@ inline fun <reified T : Any> Route.authenticatedGet(
 inline fun <reified T : Any> Route.authenticatedPut(
     vararg configurations: String? = arrayOf(null),
     optional: Boolean = false,
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) () -> Unit
+    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ): Route {
     return authenticate(
         configurations = configurations,
@@ -82,7 +82,7 @@ inline fun <reified T : Any> Route.authenticatedPut(
             val callContext = object : ApplicationCallContext {
                 override val call = this@put.call
             }
-            build(userContext, callContext)
+            build(userContext, callContext, it)
         }
     }
 }

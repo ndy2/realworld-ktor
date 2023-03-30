@@ -53,5 +53,8 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 }
             }
         }
+
+        // TODO - write test code
+        xtest("update profile") {}
     }
 })

@@ -5,12 +5,19 @@ import io.ktor.server.resources.post
 import io.ktor.server.routing.*
 import ndy.domain.profile.application.ProfileService
 import ndy.resources.Profiles
+import ndy.util.authenticatedGet
 import ndy.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.profileRouting() {
 
     val profileService by inject<ProfileService>()
+
+    authenticatedGet<Profiles.Username>(optional = true) {
+        // bind
+        val username = it.username
+
+    }
 
     post<Profiles.Username.Duplicated> {
         // bind
