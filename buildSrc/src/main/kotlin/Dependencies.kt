@@ -67,9 +67,6 @@ sealed class Dependencies {
         //https://kotest.io/docs/assertions/ktor-matchers.html
         const val ASSERTIONS_KTOR = "io.kotest.extensions:kotest-assertions-ktor:2.0.0"
 
-        //https://kotest.io/docs/extensions/koin.html
-        const val EXTENSIONS_KOIN = "io.kotest.extensions:kotest-extensions-koin:1.1.0"
-
         //https://kotest.io/docs/assertions/konform-matchers.html
         const val EXTENSIONS_KONFORM = "io.kotest.extensions:kotest-assertions-konform:1.0.2"
     }

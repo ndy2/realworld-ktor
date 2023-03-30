@@ -2,49 +2,17 @@ package ndy.test.extentions
 
 import de.sharpmind.ktor.EnvConfig
 import io.kotest.core.listeners.AfterEachListener
-import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.kotest.koin.KoinExtension
-import io.kotest.koin.KoinLifecycleMode
 import io.ktor.server.config.*
-import ndy.context.DefaultLoggingContext
-import ndy.context.LoggingContext
-import ndy.domain.profile.application.ProfileService
-import ndy.domain.profile.domain.ProfileRepository
-import ndy.domain.user.application.BcryptPasswordService
-import ndy.domain.user.application.UserService
-import ndy.domain.user.domain.PasswordEncoder
-import ndy.domain.user.domain.PasswordVerifier
-import ndy.domain.user.domain.UserRepository
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
-
-// see https://kotest.io/docs/extensions/koin.html
-val DI = KoinExtension(
-    module = module {
-        single<LoggingContext> { DefaultLoggingContext } // should be added for context(LoggingContext)
-
-        // user domain
-        single<UserRepository> { UserTable }
-        single<PasswordEncoder> { BcryptPasswordService }
-        single<PasswordVerifier> { BcryptPasswordService }
-        singleOf(::UserService)
-
-        // profile domain
-        single<ProfileRepository> { ProfileTable }
-        singleOf(::ProfileService)
-    },
-    mode = KoinLifecycleMode.Root
-)
 
 object DB : BeforeEachListener, AfterEachListener {
     private val database = Database.connect(
