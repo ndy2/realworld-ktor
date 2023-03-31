@@ -2,9 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.tag.domain.Tag
 import ndy.domain.tag.domain.TagRepository
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 
 object TagTable : TagRepository {
 
@@ -15,15 +13,19 @@ object TagTable : TagRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
+    override fun save(tag: Tag): Tag {
+        val insertStatement = Tags.insert {
+            it[name] = tag.name
+        }
+
+        return insertStatement.resultedValues?.singleOrNull()?.let(ResultRow::toTag)!!
+    }
+
     override fun findAll() = Tags
         .selectAll()
         .map(ResultRow::toTag)
 
-    override fun save(tag: Tag): Tag {
-        TODO("Not yet implemented")
-    }
-
-    override fun findAllWhereNameIn(names: List<String>): List<Tag> {
-        TODO("Not yet implemented")
-    }
+    override fun findAllWhereNameIn(names: List<String>) = Tags
+        .select { Tags.name inList names }
+        .map(ResultRow::toTag)
 }
