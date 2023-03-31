@@ -12,7 +12,6 @@ import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.profileIdContext
 import ndy.global.context.userIdContext
 import ndy.global.util.*
 
@@ -109,16 +108,15 @@ class ArticleService(
             ?: notFoundField(Article::slug, slug)
 
         // 2. check favorited & get favoritesCount
-        val favorited = with(profileIdContext()) {
+        val favorited = with(userIdContext()) {
             favoriteService.isFavorite(article.id)
         }
         val favoritesCount = favoriteService.getCount(article.id)
 
         // 3. check following
-        val following = with(profileIdContext()) {
+        val following =
             if (author.id == profileId) false
             else followService.isFollowing(author.id)
-        }
 
         // 4. find all tags
         val tagResults = tagService.getByTagIds(tagIds)
@@ -173,7 +171,7 @@ class ArticleService(
         val author = with(userIdContext()) { profileService.getByUserId() }
 
         // 3. add comment
-        val comment = with(profileIdContext()) { commentService.add(article.id, body) }
+        val comment = commentService.add(article.id, body)
 
         // 4. return
         CommentResult.from(comment, author)
@@ -219,16 +217,13 @@ class ArticleService(
             ?: notFoundField(Article::slug, slug)
 
         // 2. do favorite and get count
-        val favoritesCount = with(profileIdContext()) {
-            favoriteService.favorite(article.id)
-            favoriteService.getCount(article.id)
-        }
+        favoriteService.favorite(article.id)
+        val favoritesCount = favoriteService.getCount(article.id)
 
         // 3. check following
-        val following = with(profileIdContext()) {
+        val following =
             if (author.id == profileId) false
             else followService.isFollowing(author.id)
-        }
 
         // 4. find all tags
         val tagResults = tagService.getByTagIds(tagIds)
@@ -251,17 +246,14 @@ class ArticleService(
             .findWithAuthorAndTagIdsBySlug(slug)
             ?: notFoundField(Article::slug, slug)
 
-        // 2. do favorite and get count
-        val favoritesCount = with(profileIdContext()) {
-            favoriteService.unfavorite(article.id)
-            favoriteService.getCount(article.id)
-        }
+        // 2. do unfavorite and get count
+        favoriteService.unfavorite(article.id)
+        val favoritesCount = favoriteService.getCount(article.id)
 
         // 3. check following
-        val following = with(profileIdContext()) {
+        val following =
             if (author.id == profileId) false
             else followService.isFollowing(author.id)
-        }
 
         // 4. find all tags
         val tagResults = tagService.getByTagIds(tagIds)
