@@ -4,7 +4,10 @@ import ndy.domain.article.comment.application.CommentResult
 import ndy.domain.article.comment.application.CommentService
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleRepository
+import ndy.domain.article.favorite.application.FavoriteService
 import ndy.domain.profile.application.ProfileService
+import ndy.domain.profile.follow.application.FollowService
+import ndy.domain.tag.application.TagResult
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.userIdContext
@@ -15,9 +18,11 @@ import ndy.global.util.now
 
 class ArticleService(
     private val repository: ArticleRepository,
-    private val profileService: ProfileService,
-    private val commentService: CommentService,
     private val tagService: TagService,
+    private val profileService: ProfileService,
+    private val followService: FollowService,
+    private val commentService: CommentService,
+    private val favoriteService: FavoriteService,
 ) {
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = newTransaction {
@@ -59,7 +64,7 @@ class ArticleService(
             tagList = tagList,
             createdAt = article.createdAt,
             updatedAt = article.updatedAt,
-            favorited = false, // TODO - favorited, favoritesCount, author,following
+            favorited = false,
             favoritesCount = 0,
             author = AuthorResult(
                 username = author.username,
@@ -76,8 +81,10 @@ class ArticleService(
         val (article, author) = repository.findBySlugWithAuthor(slug) ?: notFoundField(Article::slug, slug)
 
         // 2. check favorited & following
+//        with(userIdContext())
 
         // 3. find all tags
+        val tagResults = tagService.getByTagIds(emptyList()) // TODO requires tagIds
 
         // 3. return
         ArticleResult(
@@ -85,7 +92,7 @@ class ArticleService(
             title = article.title,
             description = article.description,
             body = article.body,
-            tagList = listOf("dargons", "training"), // TODO - tagList, favorited, favoritesCount, author.following
+            tagList = tagResults.map(TagResult::name),
             createdAt = article.createdAt,
             updatedAt = article.updatedAt,
             favorited = false,

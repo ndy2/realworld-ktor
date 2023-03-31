@@ -1,6 +1,7 @@
 package ndy.domain.tag.application
 
 import ndy.domain.tag.domain.Tag
+import ndy.domain.tag.domain.TagId
 import ndy.domain.tag.domain.TagRepository
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.util.mandatoryTransaction
@@ -29,5 +30,13 @@ class TagService(
             // else save new tag
                 ?: repository.save(Tag(name = name)).id
         }
+    }
+
+    suspend fun getByTagIds(tagIds: List<TagId>) = newTransaction {
+        // find all tags
+        val tags = repository.findAllWhereIdIn(tagIds)
+
+        // return
+        tags.map(TagResult::ofEntity)
     }
 }

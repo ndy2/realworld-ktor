@@ -10,7 +10,7 @@ interface ArticleRepository {
 
     fun save(article: Article, authorId: AuthorId, tagIds: List<TagId>): Article
 
-    fun findBySlugWithAuthor(slug: String): ArticleWithAuthor?
+    fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? // TODO requires TagIds TOO!
 
     /**
      * @param slug target article slug
