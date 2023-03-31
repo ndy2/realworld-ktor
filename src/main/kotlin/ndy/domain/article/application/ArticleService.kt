@@ -114,7 +114,7 @@ class ArticleService(
 
         // 3. check following
         val following = with(profileIdContext()) {
-            if (author.id== profileId) false
+            if (author.id == profileId) false
             else followService.isFollowing(author.id)
         }
 
@@ -163,18 +163,18 @@ class ArticleService(
 
     context (AuthenticatedUserContext)
     suspend fun addComment(slug: String, body: String) = requiresNewTransaction {
-        CommentResult(
-            1u,
-            createdAt = now(),
-            updatedAt = now(),
-            body = "It takes a Jacobian",
-            author = CommentResult.AuthorResult(
-                username = "jake",
-                bio = "I work at statefarm",
-                image = "https://i.stack.imgur.com/xHWG8.jpg",
-                following = false
-            )
-        )
+        // 1. check article exists
+        val (article, _) = repository.findBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
+
+        // 2. get author (current user)
+        val author = with(userIdContext()) { profileService.getByUserId() }
+
+        // 3. add comment
+        val comment = with(profileIdContext()) { commentService.add(article.id, body) }
+
+        // 4. return
+        CommentResult.from(comment, author)
     }
 
     context (AuthenticatedUserContext /* optional = true */)
