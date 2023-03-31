@@ -2,7 +2,7 @@ package ndy.plugins
 
 import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.*
-import ndy.infra.tables.*
+import ndy.infra.tables.ArticleTable.ArticleTags
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.FollowTable.Follows
 import ndy.infra.tables.ProfileTable.Profiles
@@ -27,6 +27,7 @@ fun Application.configureDatabases() {
 
     transaction(database) {
         SchemaUtils.create(Articles)
+        SchemaUtils.create(ArticleTags)
 //        SchemaUtils.create(Comments) // FIxME
         SchemaUtils.create(Follows)
         SchemaUtils.create(Profiles)

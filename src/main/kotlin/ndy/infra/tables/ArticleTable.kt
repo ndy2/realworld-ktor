@@ -26,7 +26,7 @@ object ArticleTable : ArticleRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    object ArticleTags : Table() {
+    object ArticleTags : Table("ARTICLE_TAG") {
         val article = reference("article_id", Articles.id, onDelete = CASCADE)
         val tag = reference("tag_id", Tags.id)
     }
@@ -34,6 +34,7 @@ object ArticleTable : ArticleRepository {
     override fun save(article: Article, authorId: AuthorId, tagIds: List<TagId>): Article {
         // insert article
         val articleInsertStatement = Articles.insert {
+            it[Articles.authorId] = authorId.value
             it[slug] = article.slug
             it[title] = article.title
             it[description] = article.description

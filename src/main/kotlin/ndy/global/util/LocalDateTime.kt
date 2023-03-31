@@ -7,4 +7,4 @@ import kotlinx.datetime.toLocalDateTime
 
 fun now() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
-val notUsed = LocalDateTime(1900, 1, 1, 0, 0, 0, 0)
+val notUsed = LocalDateTime(1900, 1, 1, 0, 0, 0, 1)
