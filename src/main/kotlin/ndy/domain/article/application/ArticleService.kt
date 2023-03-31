@@ -2,6 +2,8 @@ package ndy.domain.article.application
 
 import ndy.domain.article.comment.application.CommentResult
 import ndy.domain.article.comment.application.CommentService
+import ndy.domain.article.comment.domain.Author
+import ndy.domain.article.comment.domain.CommentId
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.Article.Companion.createSlug
 import ndy.domain.article.domain.ArticleRepository
@@ -178,17 +180,25 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext /* optional = true */)
+    @OptIn(ExperimentalStdlibApi::class)
     suspend fun getComments(slug: String) = requiresNewTransaction {
         // 1. check articles exists
         val (article, _) = repository.findBySlug(slug)
             ?: notFoundField(Article::slug, slug)
 
         // 2. get all comments with its author
+        val (comments, authors) = commentService.getWithAuthorByArticleId(article.id).unzip()
+        val size = comments.size
 
-        // 3. get list of following
+        // 3. if authenticated user get list of following
+        //@formatter:off
+        val followings =
+            if (profileIdNullable == null) { List(size) { false } }
+            else followService.isFollowingList(authors.map(Author::id))
+        //@formatter:on
 
         // 4. zip and return
-
+        (0..<size).map { CommentResult.from(comments[it], authors[it], followings[it]) }
     }
 
     context (AuthenticatedUserContext)
@@ -198,6 +208,7 @@ class ArticleService(
             ?: notFoundField(Article::slug, slug)
 
         // 2. delete it
+        commentService.delete(CommentId(commentId), article.id)
     }
 
     context (AuthenticatedUserContext)
