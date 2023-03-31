@@ -56,8 +56,8 @@ that I used to studied in the `Spring Framework`. Well that must be case by case
 - [x] Get Profile - test WIP
 - [x] Follow user - test WIP
 - [x] Unfollow user - test WIP
-- [ ] List Articles
-- [ ] Feed Articles
+- [ ] List Articles (a.k.a. filter)
+- [ ] Feed Articles (a.k.a. filter)
 - [x] Get Article - no test yet
 - [x] Create Article - no test yet
 - [x] Update Article - no test yet
