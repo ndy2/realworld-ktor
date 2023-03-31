@@ -2,6 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleId
+import ndy.domain.article.domain.AuthorId
 import ndy.domain.profile.domain.*
 import ndy.domain.tag.domain.TagId
 import ndy.domain.user.domain.Email
@@ -34,13 +35,14 @@ fun resultRowToProfile(row: ResultRow) = Profile(
     image = row[Profiles.image]?.let { Image.ofFullPath(it) },
 )
 
-fun resultRowToArticle(row: ResultRow, tagIds: List<TagId>) = Article(
+fun resultRowAndTagIdsToArticle(row: ResultRow, tagIds: List<TagId>) = Article(
     id = ArticleId(row[Articles.id]),
     slug = row[Articles.slug],
     title = row[Articles.title],
     description = row[Articles.description],
     body = row[Articles.body],
     tagIds = tagIds,
+    authorId = AuthorId(row[Articles.authorId]),
     createdAt = row[Articles.createdAt],
     updatedAt = row[Articles.updatedAt],
 )

@@ -4,6 +4,7 @@ import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleRepository
 import ndy.domain.article.domain.ArticleWithAuthor
 import ndy.domain.profile.domain.ProfileId
+import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.Table
@@ -15,6 +16,7 @@ object ArticleTable : ArticleRepository {
 
     object Articles : Table() {
         val id = ulong("id").autoIncrement()
+        val authorId = ulong("author_id").references(Profiles.id)
         val slug = varchar("slug", 128)
         val title = varchar("title", 128)
         val description = varchar("description", 256)
@@ -47,7 +49,7 @@ object ArticleTable : ArticleRepository {
         article.tagIds.forEach { tagId -> insertArticleTags(articleId, tagId.value) }
 
         // return
-        return resultRowToArticle(articleResultRow, article.tagIds)
+        return resultRowAndTagIdsToArticle(articleResultRow, article.tagIds)
     }
 
     override fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? {
