@@ -90,7 +90,7 @@ object ArticleTable : ArticleRepository {
 
     override fun findBySlug(slug: String) = Articles
         .select { Articles.slug eq slug }
-        .map { it.toArticle() to it.toAuthorId() }
+        .map { it.toArticle() to AuthorId(it[Articles.authorId]) }
         .singleOrNull()
 
     override fun deleteBySlug(slug: String) = Articles

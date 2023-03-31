@@ -6,6 +6,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import ndy.infra.tables.ArticleTable.ArticleTags
 import ndy.infra.tables.ArticleTable.Articles
+import ndy.infra.tables.CommentTable
+import ndy.infra.tables.CommentTable.Comments
 import ndy.infra.tables.FavoriteTable
 import ndy.infra.tables.FavoriteTable.Favorites
 import ndy.infra.tables.FollowTable.Follows
@@ -27,7 +29,7 @@ object DB : BeforeEachListener, AfterEachListener {
     override suspend fun beforeEach(testCase: TestCase) = transaction(database) {
         SchemaUtils.create(Articles)
         SchemaUtils.create(ArticleTags)
-//        SchemaUtils.create(Comments) // FIxME
+        SchemaUtils.create(Comments)
         SchemaUtils.create(Follows)
         SchemaUtils.create(Favorites)
         SchemaUtils.create(Profiles)

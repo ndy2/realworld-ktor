@@ -179,12 +179,25 @@ class ArticleService(
 
     context (AuthenticatedUserContext /* optional = true */)
     suspend fun getComments(slug: String) = requiresNewTransaction {
-        emptyList<CommentResult>()
+        // 1. check articles exists
+        val (article, _) = repository.findBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
+
+        // 2. get all comments with its author
+
+        // 3. get list of following
+
+        // 4. zip and return
+
     }
 
     context (AuthenticatedUserContext)
-    suspend fun deleteComment(slug: String, commentId: ULong): Nothing = requiresNewTransaction {
-        TODO("Not yet implemented")
+    suspend fun deleteComment(slug: String, commentId: ULong) = requiresNewTransaction {
+        // 1. check articles exists
+        val (article, _) = repository.findBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
+
+        // 2. delete it
     }
 
     context (AuthenticatedUserContext)

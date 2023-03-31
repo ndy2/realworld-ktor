@@ -1,8 +1,9 @@
 package ndy.infra.tables
 
+import ndy.domain.article.comment.domain.Comment
+import ndy.domain.article.comment.domain.CommentId
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleId
-import ndy.domain.article.domain.AuthorId
 import ndy.domain.profile.domain.*
 import ndy.domain.tag.domain.Tag
 import ndy.domain.tag.domain.TagId
@@ -11,6 +12,7 @@ import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.infra.tables.ArticleTable.Articles
+import ndy.infra.tables.CommentTable.Comments
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import ndy.infra.tables.UserTable.Users
@@ -47,8 +49,11 @@ fun ResultRow.toArticle() = Article(
     updatedAt = this[Articles.updatedAt],
 )
 
-fun ResultRow.toAuthorId() = AuthorId(
-    value = this[Articles.authorId]
+fun ResultRow.toComment() = Comment(
+    id = CommentId(this[Comments.id]),
+    body = this[Comments.body],
+    createdAt = this[Comments.createdAt],
+    updatedAt = this[Comments.updatedAt],
 )
 
 fun ResultRow.toTag() = Tag(
