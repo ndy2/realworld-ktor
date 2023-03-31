@@ -61,8 +61,8 @@ class FollowServiceTest : BaseSpec(DB, body = {
                 // assert
                 // @formatter:off
             requiresNewTransaction {
-                (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.checkFollow(it.second) shouldBe false }}
-                (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.checkFollow(it.second) shouldBe true }}
+                (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe false }}
+                (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe true }}
             }
             // @formatter:on
             }

@@ -65,7 +65,7 @@ class ProfileService(
         // action - check following
         val following =
             if (userIdNullable == null) false // false if not authenticated
-            else followService.checkFollow(targetProfileId = profile.id)
+            else followService.isFollowing(targetProfileId = profile.id)
 
         // return
         ProfileResult.ofEntity(profile, following)

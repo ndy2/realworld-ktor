@@ -114,8 +114,8 @@ class ArticleService(
 
         // 3. check following
         val following = with(profileIdContext()) {
-            if (author.id.value == profileId) false
-            else followService.checkFollow(author.id)
+            if (author.id== profileId) false
+            else followService.isFollowing(author.id)
         }
 
         // 4. find all tags
@@ -202,8 +202,8 @@ class ArticleService(
 
         // 3. check following
         val following = with(profileIdContext()) {
-            if (author.id.value == profileId) false
-            else followService.checkFollow(author.id)
+            if (author.id == profileId) false
+            else followService.isFollowing(author.id)
         }
 
         // 4. find all tags
@@ -235,8 +235,8 @@ class ArticleService(
 
         // 3. check following
         val following = with(profileIdContext()) {
-            if (author.id.value == profileId) false
-            else followService.checkFollow(author.id)
+            if (author.id == profileId) false
+            else followService.isFollowing(author.id)
         }
 
         // 4. find all tags

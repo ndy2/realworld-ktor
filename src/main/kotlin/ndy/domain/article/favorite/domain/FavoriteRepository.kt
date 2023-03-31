@@ -9,4 +9,5 @@ interface FavoriteRepository {
     suspend fun save(profileId: ProfileId, articleId: ArticleId)
     suspend fun delete(profileId: ProfileId, articleId: ArticleId)
     suspend fun exists(profileId: ProfileId, articleId: ArticleId): Boolean
+    suspend fun countByArticleId(articleId: ArticleId): Long
 }

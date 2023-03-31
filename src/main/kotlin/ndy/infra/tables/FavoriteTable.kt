@@ -36,4 +36,8 @@ object FavoriteTable : FavoriteRepository {
             Favorites.articleId eq articleId.value
         }
         .empty().not()
+
+    override suspend fun countByArticleId(articleId: ArticleId) = Favorites
+        .select { Favorites.articleId eq articleId.value }
+        .count()
 }
