@@ -8,6 +8,7 @@ import ndy.domain.profile.application.ProfileService
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.userIdContext
+import ndy.global.util.forbiddenIf
 import ndy.global.util.notFoundField
 import ndy.global.util.now
 
@@ -33,7 +34,7 @@ class ArticleService(
         val tagIds = tagService.getOrSaveList(tagList)
 
         // 2. create article
-        val slug = title.lowercase().replace(" ", "-")
+        val slug = getSlug(title)
         val article = Article(
             slug = slug,
             title = title,
@@ -50,6 +51,7 @@ class ArticleService(
         // 4. find author profile
         val author = with(userIdContext(userId)) { profileService.getByUserId() }
 
+        // 5. combine to result
         return ArticleResult(
             slug = article.slug,
             title = article.title,
@@ -99,21 +101,40 @@ class ArticleService(
         )
     }
 
-    suspend fun update(title: String?, description: String?, body: String?): ArticleResult {
+    context (AuthenticatedUserContext)
+    suspend fun update(slug: String, title: String?, description: String?, body: String?): ArticleResult {
+        // 1. update article with new slug
+        val updateSlug = title?.let { getSlug(it) } ?: slug
+        val result = repository.updateBySlug(slug, updateSlug, title, description, body)
+            ?: notFoundField(Article::slug, slug)
+        val article = result.first
+        val authorId = result.second
+
+        // 2. check updatable - is current user writer of the article
+        forbiddenIf(profileId != authorId)
+
+        // 3. get author (current user) profile
+        val author = with(userIdContext(userId)) { profileService.getByUserId() }
+
+        // 4. check favorited
+
+        // 5. find all tags
+
+        // 6. return
         return ArticleResult(
-            slug = "how-to-train-your-dragon",
-            title = "How to train your dragon",
-            description = "Ever wonder how?",
-            body = "It takes a Jacobian",
-            tagList = listOf("dargons", "training"),
-            createdAt = now(),
-            updatedAt = now(),
+            slug = article.slug,
+            title = article.title,
+            description = article.description,
+            body = article.body,
+            tagList = listOf("dargons", "training"), // TODO - tagList, favorited, favoritesCount
+            createdAt = article.createdAt,
+            updatedAt = article.updatedAt,
             favorited = false,
             favoritesCount = 0,
             author = AuthorResult(
-                username = "jake",
-                bio = "I work at statefarm",
-                image = "https://i.stack.imgur.com/xHWG8.jpg",
+                username = author.username,
+                bio = author.bio,
+                image = author.image,
                 following = false
             )
         )
@@ -154,3 +175,5 @@ class ArticleService(
         TODO("Not yet implemented")
     }
 }
+
+private fun getSlug(title: String) = title.lowercase().replace(" ", "-")

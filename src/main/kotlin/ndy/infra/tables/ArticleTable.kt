@@ -53,6 +53,16 @@ object ArticleTable : ArticleRepository {
         TODO("Not yet implemented")
     }
 
+    override fun updateBySlug(
+        slug: String,
+        updatedSlug: String,
+        title: String?,
+        description: String?,
+        body: String?
+    ): Pair<Article, ProfileId>? {
+        TODO("Not yet implemented")
+    }
+
     private fun insertArticleTags(articleId: ULong, tagId: ULong) {
         ArticleTags.insert {
             it[article] = articleId

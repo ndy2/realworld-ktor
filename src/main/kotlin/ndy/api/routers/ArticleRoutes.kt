@@ -92,10 +92,12 @@ fun Route.articleRouting() {
      */
     authenticatedPut<Articles.Slug> {
         // bind
+        val slug = it.slug
         val request = call.extract<ArticleUpdateRequest>("article")
 
         // action
         val result = service.update(
+            slug = slug,
             title = request.title,
             description = request.description,
             body = request.body,
