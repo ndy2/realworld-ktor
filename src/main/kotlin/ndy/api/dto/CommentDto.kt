@@ -2,8 +2,8 @@ package ndy.api.dto
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
-import ndy.domain.article.comment.CommentResult
-import ndy.domain.article.comment.CommentResult.AuthorResult
+import ndy.domain.article.comment.application.CommentResult
+import ndy.domain.article.comment.application.CommentResult.AuthorResult
 
 
 @Serializable

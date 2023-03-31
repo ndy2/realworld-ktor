@@ -1,4 +1,4 @@
-package ndy.domain.article.comment
+package ndy.domain.article.comment.application
 
 import java.time.LocalDateTime
 

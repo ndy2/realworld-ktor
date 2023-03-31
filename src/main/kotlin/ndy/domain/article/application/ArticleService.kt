@@ -1,10 +1,15 @@
 package ndy.domain.article.application
 
-import ndy.domain.article.comment.CommentResult
+import ndy.domain.article.comment.application.CommentResult
+import ndy.domain.article.comment.application.CommentService
+import ndy.domain.article.domain.ArticleRepository
 import ndy.global.context.AuthenticatedUserContext
 import java.time.LocalDateTime
 
-class ArticleService {
+class ArticleService(
+    private val repository: ArticleRepository,
+    private val commentService: CommentService,
+) {
 
     context (AuthenticatedUserContext/* optional = true */)
     fun searchByCond(searchCond: ArticleSearchCond): List<ArticleResult> {

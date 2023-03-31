@@ -1,20 +1,24 @@
 package ndy.plugins
 
 import io.ktor.server.application.*
-import ndy.global.context.DefaultLoggingContext
-import ndy.global.context.LoggingContext
+import ndy.domain.article.application.ArticleService
+import ndy.domain.article.comment.application.CommentService
+import ndy.domain.article.comment.domain.CommentRepository
+import ndy.domain.article.domain.ArticleRepository
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.profile.follow.domain.FollowRepository
+import ndy.domain.tag.application.TagService
+import ndy.domain.tag.domain.TagRepository
 import ndy.domain.user.application.BcryptPasswordService
 import ndy.domain.user.application.UserService
 import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
-import ndy.infra.tables.FollowTable
-import ndy.infra.tables.ProfileTable
-import ndy.infra.tables.UserTable
+import ndy.global.context.DefaultLoggingContext
+import ndy.global.context.LoggingContext
+import ndy.infra.tables.*
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -50,7 +54,19 @@ private val appModule = module {
     single<ProfileRepository> { ProfileTable }
     singleOf(::ProfileService)
 
-    // follow domain
+    // follow
     single<FollowRepository> { FollowTable }
     singleOf(::FollowService)
+
+    // article domain
+    single<ArticleRepository> { ArticleTable }
+    singleOf(::ArticleService)
+
+    // comment
+    single<CommentRepository> { CommentTable }
+    singleOf(::CommentService)
+
+    // tag domain
+    single<TagRepository> { TagTable }
+    singleOf(::TagService)
 }
