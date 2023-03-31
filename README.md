@@ -58,16 +58,16 @@ that I used to studied in the `Spring Framework`. Well that must be case by case
 - [x] Unfollow user - test WIP
 - [ ] List Articles
 - [ ] Feed Articles
-- [ ] Get Article
-- [ ] Create Article
-- [ ] Update Article
-- [ ] Delete Article
+- [x] Get Article - no test yet
+- [x] Create Article - no test yet
+- [x] Update Article - no test yet
+- [x] Delete Article - no test yet
 - [ ] Add Comments to an Article
 - [ ] Get Comments from an Article
 - [ ] Delete Comment
-- [ ] Favorite Article
-- [ ] Unfavorite Article
-- [ ] Get Tags
+- [x] Favorite Article - no test yet
+- [x] Unfavorite Article - no test yet
+- [x] Get Tags - no test yet
 
 ## Getting started
 
