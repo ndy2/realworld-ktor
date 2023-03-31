@@ -16,6 +16,10 @@ import org.koin.ktor.ext.inject
 fun Route.userRouting() {
     val userService by inject<UserService>()
 
+    /**
+     * Registration (sign up)
+     * POST /api/users
+     */
     post<Users> {
         // bind
         val request = call.extract<RegistrationRequest>("user")
@@ -32,6 +36,10 @@ fun Route.userRouting() {
         call.created(mapOf("user" to response))
     }
 
+    /**
+     * Authentication (login)
+     * POST /api/users
+     */
     post<Users.Login> {
         // bind
         val request = call.extract<LoginRequest>("user")
@@ -47,6 +55,10 @@ fun Route.userRouting() {
         call.okUser(response)
     }
 
+    /**
+     * Get Current User
+     * GET /api/user
+     */
     authenticatedGet<User> {
         // action
         val result = userService.getById()
@@ -56,6 +68,10 @@ fun Route.userRouting() {
         call.okUser(response)
     }
 
+    /**
+     * Update User
+     * PUT /api/user
+     */
     authenticatedPut<User> {
         // bind
         val request = call.extract<UserUpdateRequest>("user")

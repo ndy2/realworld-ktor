@@ -16,6 +16,10 @@ fun Route.profileRouting() {
 
     val service by inject<ProfileService>()
 
+    /**
+     * Get Profile
+     * GET /api/profiles/{username}
+     */
     authenticatedGet<Profiles.Username>(optional = true) {
         // bind
         val username = it.username
@@ -28,6 +32,10 @@ fun Route.profileRouting() {
         call.okProfile(response)
     }
 
+    /**
+     * Follow User
+     * POST /api/profiles/{username}/follow
+     */
     authenticatedPost<Profiles.Username.Follow> {
         // bind
         val username = it.parent.username
@@ -40,6 +48,10 @@ fun Route.profileRouting() {
         call.okProfile(response)
     }
 
+    /**
+     * Unfollow User
+     * DELETE /api/profiles/{username}/follow
+     */
     authenticatedDelete<Profiles.Username.Follow> {
         // bind
         val username = it.parent.username
@@ -52,6 +64,12 @@ fun Route.profileRouting() {
         call.okProfile(response)
     }
 
+    /**
+     * Check Username Duplicated
+     * POST /api/profiles/{username}/duplicated
+     * *
+     * for convenience in test (it's more like real scenario)
+     */
     post<Profiles.Username.Duplicated> {
         // bind
         val username = it.parent.username

@@ -13,6 +13,10 @@ fun Route.articleRouting() {
 
     val service by inject<ArticleService>()
 
+    /**
+     * List Articles
+     * GET /api/articles
+     */
     authenticatedGet<Articles>(optional = true) {
         // bind
         val queryParams = it
@@ -32,6 +36,10 @@ fun Route.articleRouting() {
         call.okArticleList(responseList)
     }
 
+    /**
+     * Feed Articles
+     * GET /api/articles/feed
+     */
     authenticatedGet<Articles.Feed> {
         // action
         val resultList = service.getFeed()
@@ -41,6 +49,10 @@ fun Route.articleRouting() {
         call.okArticleList(responseList)
     }
 
+    /**
+     * Get Article
+     * GET /api/articles/{slug}
+     */
     authenticatedGet<Articles.Slug>(optional = true) {
         // bind
         val slug = it.slug
@@ -53,6 +65,10 @@ fun Route.articleRouting() {
         call.okArticle(response)
     }
 
+    /**
+     * Create Article
+     * POST /api/articles
+     */
     authenticatedPost<Articles> {
         // bind
         val request = call.extract<ArticleCreateRequest>("article")
@@ -70,6 +86,10 @@ fun Route.articleRouting() {
         call.okArticle(response)
     }
 
+    /**
+     * Update Article
+     * PUT /api/articles/{slug}
+     */
     authenticatedPut<Articles.Slug> {
         // bind
         val request = call.extract<ArticleUpdateRequest>("article")
@@ -86,6 +106,10 @@ fun Route.articleRouting() {
         call.okArticle(response)
     }
 
+    /**
+     * Delete Article
+     * DELETE /api/articles/{slug}
+     */
     authenticatedDelete<Articles.Slug> {
         // bind
         val slug = it.slug
@@ -97,6 +121,10 @@ fun Route.articleRouting() {
         call.noContent()
     }
 
+    /**
+     * Add Comments to an Article
+     * POST /api/articles/{slug}/comments
+     */
     authenticatedPost<Articles.Slug.Comments> {
         // bind
         val slug = it.parent.slug
@@ -109,6 +137,10 @@ fun Route.articleRouting() {
         call.okComment(result)
     }
 
+    /**
+     * Get Comments from an Article
+     * GET /api/articles/{slug}/comments
+     */
     authenticatedGet<Articles.Slug.Comments>(optional = true) {
         // bind
         val slug = it.parent.slug
@@ -121,6 +153,10 @@ fun Route.articleRouting() {
         call.okCommentList(responseList)
     }
 
+    /**
+     * Delete Comment
+     * DELETE /api/articles/{slug}/comments/{id}
+     */
     authenticatedDelete<Articles.Slug.Comments.Id> {
         // bind
         val slug = it.parent.parent.slug
@@ -133,6 +169,10 @@ fun Route.articleRouting() {
         call.noContent()
     }
 
+    /**
+     * Favorite Article
+     * POST /api/articles/{slug}/favorite
+     */
     authenticatedPost<Articles.Slug.Favorite> {
         // bind
         val slug = it.parent.slug
@@ -145,6 +185,10 @@ fun Route.articleRouting() {
         call.okArticle(response)
     }
 
+    /**
+     * Unfavorite Article
+     * DELETE /api/articles/{slug}/favorite
+     */
     authenticatedDelete<Articles.Slug.Favorite> {
         // bind
         val slug = it.parent.slug

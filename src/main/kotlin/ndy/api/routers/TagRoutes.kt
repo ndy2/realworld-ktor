@@ -12,6 +12,10 @@ fun Route.tagRouting() {
 
     val service by inject<TagService>()
 
+    /**
+     * Get Tags
+     * GET /api/tags
+     */
     get<Tags> {
         // action
         service.getAll()
