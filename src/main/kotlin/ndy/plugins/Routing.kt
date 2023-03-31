@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import ndy.api.routers.articleRouting
 import ndy.api.routers.profileRouting
+import ndy.api.routers.tagRouting
 import ndy.api.routers.userRouting
 import ndy.global.context.DefaultLoggingContext
 
@@ -20,6 +21,7 @@ fun Application.configureRouting() {
                 userRouting()
                 profileRouting()
                 articleRouting()
+                tagRouting()
             }
         }
     }
