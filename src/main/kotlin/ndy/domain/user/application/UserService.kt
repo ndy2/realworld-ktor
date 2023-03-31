@@ -29,7 +29,7 @@ class UserService(
         val token = JwtTokenService.createToken(user)
 
         // 4. get profile - TODO apply join query
-        val profileResult = with(userIdContext(user.id)) { profileService.getByUserId() }
+        val profileResult = with(userIdContext(user.id)) { profileService.getByUserId() }.await()
 
         // 4. return
         UserLoginResult(
@@ -65,7 +65,7 @@ class UserService(
         // 2. get profile - TODO apply join query
         val profileResult = with(userIdContext(userId)) {
             profileService.getByUserId()
-        }
+        }.await()
 
         // 3. return
         UserResult(
@@ -89,9 +89,9 @@ class UserService(
 
         // 3. update profile and find it - TODO apply join query
         val profileResult = with(userIdContext(userId)) {
-            profileService.update(username, bio, image)
+            profileService.update(username, bio, image).await()
             profileService.getByUserId()
-        }
+        }.await()
 
         // 4. combine result
         UserResult(

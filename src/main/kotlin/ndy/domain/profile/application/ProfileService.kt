@@ -7,10 +7,7 @@ import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.exception.UsernameDuplicatedException
-import ndy.util.mandatoryTransaction
-import ndy.util.newTransaction
-import ndy.util.notFound
-import ndy.util.notFoundField
+import ndy.util.*
 
 class ProfileService(
     private val repository: ProfileRepository,
@@ -18,7 +15,7 @@ class ProfileService(
 ) {
 
     context (UserIdContext)
-    suspend fun register(username: String) = mandatoryTransaction {
+    suspend fun register(username: String) = asyncTransaction {
         // validate
         if (checkUsernameDuplicated(username)) throw UsernameDuplicatedException(username)
 
@@ -32,7 +29,7 @@ class ProfileService(
     }
 
     context (UserIdContext)
-    suspend fun getByUserId() = mandatoryTransaction {
+    suspend fun getByUserId() = asyncTransaction {
         // validate/action
         val profile = repository.findByUserId(UserId(userId)) ?: notFound<User>(userId)
 
@@ -46,7 +43,7 @@ class ProfileService(
     }
 
     context (UserIdContext)
-    suspend fun update(username: String?, bio: String?, image: String?) = mandatoryTransaction {
+    suspend fun update(username: String?, bio: String?, image: String?) = asyncTransaction {
         // validate
         username?.let { if (checkUsernameDuplicated(it)) throw UsernameDuplicatedException(it) }
 
