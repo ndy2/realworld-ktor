@@ -2,6 +2,14 @@ package ndy.domain.article.application
 
 import java.time.LocalDateTime
 
+data class ArticleSearchCond(
+    val tag: String?,
+    val author: String?,
+    val favorited: String?,
+    val limit: Int,
+    val offset: Int,
+)
+
 data class ArticleResult(
     val slug: String,
     val title: String,

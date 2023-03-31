@@ -3,8 +3,13 @@ package ndy.api.resources
 import io.ktor.resources.*
 
 @Resource("/articles")
-class Articles(val tag: String, val author: String, val favorite: String, val limit: Int = 20, val offset: Int = 0) {
-
+class Articles(
+    val tag: String? = null,
+    val author: String? = null,
+    val favorited: String? = null,
+    val limit: Int = 20,
+    val offset: Int = 0
+) {
     @Resource("/feed")
     class Feed(val parent: Articles)
 
@@ -15,7 +20,7 @@ class Articles(val tag: String, val author: String, val favorite: String, val li
         class Comments(val parent: Slug) {
 
             @Resource("/{id}")
-            class Id(val parent: Comments)
+            class Id(val parent: Comments, val id: Int)
         }
 
         @Resource("/favorite")
