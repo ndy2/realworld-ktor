@@ -4,7 +4,7 @@ import io.konform.validation.Validation
 import io.konform.validation.jsonschema.maxLength
 import io.konform.validation.jsonschema.minLength
 import io.konform.validation.jsonschema.pattern
-import ndy.util.checkAndThrow
+import ndy.global.util.checkAndThrow
 
 data class Email(
     val value: String

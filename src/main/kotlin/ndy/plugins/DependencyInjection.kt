@@ -1,8 +1,8 @@
 package ndy.plugins
 
 import io.ktor.server.application.*
-import ndy.context.DefaultLoggingContext
-import ndy.context.LoggingContext
+import ndy.global.context.DefaultLoggingContext
+import ndy.global.context.LoggingContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.follow.application.FollowService

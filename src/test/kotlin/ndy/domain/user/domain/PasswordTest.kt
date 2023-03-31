@@ -7,7 +7,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.kotest.property.azstring
 import io.kotest.property.checkAll
-import ndy.exception.RealworldRuntimeException
+import ndy.global.exception.RealworldRuntimeException
 import ndy.test.generator.UserArbs.passwordEncoderArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.UserArbs.passwordVerifierArb

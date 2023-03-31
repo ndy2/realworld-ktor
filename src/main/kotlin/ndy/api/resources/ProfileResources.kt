@@ -1,4 +1,4 @@
-package ndy.resources
+package ndy.api.resources
 
 import io.ktor.resources.*
 

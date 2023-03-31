@@ -1,4 +1,4 @@
-package ndy.exception
+package ndy.global.exception
 
 /**
  * Root RuntimeException for Realworld Application

@@ -1,4 +1,4 @@
-package ndy.util
+package ndy.global.util
 
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.transactions.TransactionManager

@@ -1,4 +1,4 @@
-package ndy.context
+package ndy.global.context
 
 import ndy.domain.user.domain.UserId
 

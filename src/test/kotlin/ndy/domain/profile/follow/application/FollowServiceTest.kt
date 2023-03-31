@@ -5,12 +5,12 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 import io.kotest.property.assume
 import io.kotest.property.checkAll
-import ndy.context.AuthenticatedUserContext
+import ndy.global.context.AuthenticatedUserContext
 import ndy.domain.user.domain.UserId
 import ndy.infra.tables.FollowTable
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
-import ndy.util.newTransaction
+import ndy.global.util.newTransaction
 import kotlin.random.Random
 import kotlin.random.nextULong
 

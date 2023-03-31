@@ -1,12 +1,12 @@
 package ndy.domain.user.application
 
-import ndy.context.AuthenticatedUserContext
-import ndy.context.userIdContext
+import ndy.global.context.AuthenticatedUserContext
+import ndy.global.context.userIdContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
-import ndy.util.authenticationFail
-import ndy.util.newTransaction
-import ndy.util.notFound
+import ndy.global.util.authenticationFail
+import ndy.global.util.newTransaction
+import ndy.global.util.notFound
 
 class UserService(
     private val repository: UserRepository,
@@ -87,23 +87,3 @@ class UserService(
         )
     }
 }
-
-data class UserRegisterResult(
-    val username: String,
-    val email: String,
-)
-
-data class UserLoginResult(
-    val email: String,
-    val token: String?,
-    val username: String,
-    val bio: String?,
-    val image: String?,
-)
-
-data class UserResult(
-    val email: String,
-    val username: String,
-    val bio: String?,
-    val image: String?,
-)

@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.assume
 import io.kotest.property.checkAll
-import ndy.context.userIdContext
+import ndy.global.context.userIdContext
 import ndy.domain.profile.follow.application.FollowService
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
@@ -20,7 +20,7 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.util.newTransaction
+import ndy.global.util.newTransaction
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 

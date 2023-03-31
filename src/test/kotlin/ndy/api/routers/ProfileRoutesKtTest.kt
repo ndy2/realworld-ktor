@@ -1,4 +1,4 @@
-package ndy.routers
+package ndy.api.routers
 
 import ndy.test.spec.BaseSpec
 import ndy.test.util.xintegrationTest

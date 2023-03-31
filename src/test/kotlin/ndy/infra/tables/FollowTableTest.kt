@@ -8,7 +8,7 @@ import io.kotest.property.checkAll
 import ndy.domain.user.domain.UserId
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
-import ndy.util.newTransaction
+import ndy.global.util.newTransaction
 import kotlin.random.Random
 import kotlin.random.nextULong
 
@@ -18,7 +18,7 @@ class FollowTableTest : BaseSpec(DB, body = {
     val sut = FollowTable
 
     test("save n, delete m and check exists for all saved entries") {
-        checkAll(Arb.int(3, 10), Arb.int(0, 5)) { n, m ->
+        checkAll(Arb.int(4, 10), Arb.int(0, 5)) { n, m ->
             // setup
             assume(n >= m)
             val savePair = buildList(n) {

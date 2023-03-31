@@ -1,3 +1,3 @@
-package ndy.exception
+package ndy.global.exception
 
 class ValidationException(message: String?, e: Exception?) : RealworldRuntimeException(message, e)

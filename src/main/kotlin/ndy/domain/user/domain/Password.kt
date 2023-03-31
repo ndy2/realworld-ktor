@@ -1,7 +1,7 @@
 package ndy.domain.user.domain
 
-import ndy.exception.AuthenticationException
-import ndy.util.checkValidation
+import ndy.global.exception.AuthenticationException
+import ndy.global.util.checkValidation
 import kotlin.reflect.KProperty
 
 const val MAX_USER_PASSWORD_LENGTH = 32

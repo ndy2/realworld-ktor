@@ -1,13 +1,16 @@
 package ndy.domain.profile.application
 
-import ndy.context.AuthenticatedUserContext
-import ndy.context.UserIdContext
 import ndy.domain.profile.domain.*
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
-import ndy.exception.UsernameDuplicatedException
-import ndy.util.*
+import ndy.global.context.AuthenticatedUserContext
+import ndy.global.context.UserIdContext
+import ndy.global.exception.UsernameDuplicatedException
+import ndy.global.util.mandatoryTransaction
+import ndy.global.util.newTransaction
+import ndy.global.util.notFound
+import ndy.global.util.notFoundField
 
 class ProfileService(
     private val repository: ProfileRepository,
@@ -118,9 +121,3 @@ class ProfileService(
     }
 }
 
-data class ProfileResult(
-    val username: String,
-    val bio: String? = null,
-    val image: String? = null,
-    val following: Boolean = false
-)

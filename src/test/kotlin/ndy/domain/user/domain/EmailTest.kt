@@ -4,7 +4,7 @@ import io.kotest.assertions.konform.shouldBeValid
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.property.checkAll
-import ndy.exception.RealworldRuntimeException
+import ndy.global.exception.RealworldRuntimeException
 import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.spec.BaseSpec
 

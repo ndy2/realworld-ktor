@@ -1,8 +1,8 @@
-package ndy.context
+package ndy.global.context
 
 import io.ktor.server.application.*
 import ndy.domain.user.domain.UserId
-import ndy.util.userId
+import ndy.global.util.userId
 
 /**
  * context of authenticated user

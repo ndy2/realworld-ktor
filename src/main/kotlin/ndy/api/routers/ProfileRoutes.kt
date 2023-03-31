@@ -1,16 +1,15 @@
-package ndy.routers
+package ndy.api.routers
 
 import io.ktor.server.application.*
 import io.ktor.server.resources.post
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
-import ndy.domain.profile.application.ProfileResult
+import ndy.api.dto.ProfileResponse
+import ndy.api.resources.Profiles
 import ndy.domain.profile.application.ProfileService
-import ndy.resources.Profiles
-import ndy.util.authenticatedDelete
-import ndy.util.authenticatedGet
-import ndy.util.authenticatedPost
-import ndy.util.ok
+import ndy.global.util.authenticatedDelete
+import ndy.global.util.authenticatedGet
+import ndy.global.util.authenticatedPost
+import ndy.global.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.profileRouting() {
@@ -67,21 +66,4 @@ fun Route.profileRouting() {
 
 private suspend inline fun <reified T> ApplicationCall.okProfile(response: T) {
     ok(mapOf("profile" to response))
-}
-
-@Serializable
-data class ProfileResponse(
-    val username: String,
-    val bio: String?,
-    val image: String?,
-    val following: Boolean,
-) {
-    companion object {
-        fun ofResult(result: ProfileResult) = ProfileResponse(
-            username = result.username,
-            bio = result.bio,
-            image = result.image,
-            following = result.following
-        )
-    }
 }

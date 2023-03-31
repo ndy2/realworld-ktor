@@ -8,9 +8,9 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
-import ndy.exception.AuthenticationException
-import ndy.exception.EntityNotFoundException
-import ndy.exception.ValidationException
+import ndy.global.exception.AuthenticationException
+import ndy.global.exception.EntityNotFoundException
+import ndy.global.exception.ValidationException
 
 fun Application.configureExceptionHandling() {
 

@@ -1,16 +1,16 @@
-package ndy.routers
+package ndy.api.routers
 
 import io.ktor.server.application.*
 import io.ktor.server.resources.post
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
-import ndy.domain.user.application.UserLoginResult
-import ndy.domain.user.application.UserRegisterResult
-import ndy.domain.user.application.UserResult
+import ndy.api.dto.LoginRequest
+import ndy.api.dto.RegistrationRequest
+import ndy.api.dto.UserResponse
+import ndy.api.dto.UserUpdateRequest
+import ndy.api.resources.User
+import ndy.api.resources.Users
 import ndy.domain.user.application.UserService
-import ndy.resources.User
-import ndy.resources.Users
-import ndy.util.*
+import ndy.global.util.*
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
@@ -77,62 +77,4 @@ fun Route.userRouting() {
 
 private suspend inline fun <reified T : Any> ApplicationCall.okUser(response: T) {
     ok(mapOf("user" to response))
-}
-
-@Serializable
-data class LoginRequest(
-    val email: String,
-    val password: String
-)
-
-@Serializable
-data class RegistrationRequest(
-    val username: String,
-    val email: String,
-    val password: String,
-)
-
-@Serializable
-data class UserUpdateRequest(
-    val email: String?,
-    val password: String?,
-    val username: String?,
-    val bio: String?,
-    val image: String?,
-)
-
-@Serializable
-data class UserResponse(
-    val email: String,
-    val token: String?,
-    val username: String,
-    val bio: String?,
-    val image: String?,
-) {
-    companion object {
-        fun ofResult(result: UserResult, token: String?) = UserResponse(
-            email = result.email,
-            token = token,
-            username = result.username,
-            bio = result.bio,
-            image = result.image,
-        )
-
-        fun ofLoginResult(result: UserLoginResult) = UserResponse(
-            email = result.email,
-            token = result.token,
-            username = result.username,
-            bio = result.bio,
-            image = result.image,
-        )
-
-        fun ofRegisterResult(result: UserRegisterResult) = UserResponse(
-            email = result.email,
-            token = null,
-            username = result.username,
-            bio = null,
-            image = null,
-        )
-
-    }
 }

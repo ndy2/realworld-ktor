@@ -1,4 +1,4 @@
-package ndy.routers.user
+package ndy.api.routers
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.ktor.client.shouldHaveStatus
@@ -12,12 +12,12 @@ import io.ktor.client.plugins.resources.*
 import io.ktor.client.request.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
-import ndy.resources.User
-import ndy.resources.Users
-import ndy.routers.LoginRequest
-import ndy.routers.RegistrationRequest
-import ndy.routers.UserResponse
-import ndy.routers.UserUpdateRequest
+import ndy.api.dto.LoginRequest
+import ndy.api.dto.RegistrationRequest
+import ndy.api.dto.UserResponse
+import ndy.api.dto.UserUpdateRequest
+import ndy.api.resources.User
+import ndy.api.resources.Users
 import ndy.test.generator.ProfileArbs.bioValueArb
 import ndy.test.generator.ProfileArbs.imageFullPathArb
 import ndy.test.generator.ProfileArbs.usernameValueArb

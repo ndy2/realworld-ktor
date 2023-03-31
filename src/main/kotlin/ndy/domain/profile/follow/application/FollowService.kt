@@ -1,6 +1,6 @@
 package ndy.domain.profile.follow.application
 
-import ndy.context.AuthenticatedUserContext
+import ndy.global.context.AuthenticatedUserContext
 import ndy.domain.profile.follow.domain.FollowRepository
 import ndy.domain.user.domain.UserId
 

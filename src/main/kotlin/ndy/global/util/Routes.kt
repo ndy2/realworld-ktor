@@ -1,4 +1,4 @@
-package ndy.util
+package ndy.global.util
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -10,10 +10,10 @@ import io.ktor.server.resources.put
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
-import ndy.context.ApplicationCallContext
-import ndy.context.AuthenticatedUserContext
-import ndy.context.applicationCallContext
-import ndy.context.authenticatedUserContext
+import ndy.global.context.ApplicationCallContext
+import ndy.global.context.AuthenticatedUserContext
+import ndy.global.context.applicationCallContext
+import ndy.global.context.authenticatedUserContext
 import ndy.domain.user.domain.UserId
 import ndy.plugins.TOKEN_SCHEMA
 

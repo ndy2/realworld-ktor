@@ -42,15 +42,12 @@ tasks.jacocoTestReport {
     classDirectories.setFrom(files(classDirectories.files.map {
         fileTree(it).apply {
             exclude(
-                "ndy/ApplicationKt.class",
-                "ndy/context/**/*.*",
-                "ndy/exception/**/*.*",
+                "ndy/api/dto/**/*.*",
+                "ndy/api/resources/**/*.*",
+                "ndy/global/**/*.*",
                 "ndy/plugins/**/*.*",
-                "ndy/util/**/*.*",
-                "ndy/resources/**/*.*",
-                "ndy/**/*Request*.*",
-                "ndy/**/*Response*.*",
                 "ndy/**/*Result.*",
+                "ndy/ApplicationKt.class",
             )
         }
     }))

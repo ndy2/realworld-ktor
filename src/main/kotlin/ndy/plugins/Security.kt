@@ -7,7 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import ndy.domain.user.domain.UserId
-import ndy.exception.AuthenticationException
+import ndy.global.exception.AuthenticationException
 
 const val TOKEN_SCHEMA = "Token"
 

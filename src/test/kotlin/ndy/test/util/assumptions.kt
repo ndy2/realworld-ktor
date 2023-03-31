@@ -4,7 +4,7 @@ import io.kotest.property.assume
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
-import ndy.util.newTransaction
+import ndy.global.util.newTransaction
 
 
 context (ProfileRepository)

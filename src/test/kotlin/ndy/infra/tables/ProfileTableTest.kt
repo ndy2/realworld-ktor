@@ -15,7 +15,7 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.util.newTransaction
+import ndy.global.util.newTransaction
 
 class ProfileTableTest : BaseSpec(DB, body = {
 
