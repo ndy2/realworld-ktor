@@ -12,6 +12,8 @@ typealias ArticleRow = Pair<Article, ProfileId>
 interface ArticleRepository {
 
     fun save(article: Article, authorId: ProfileId): Article
+
+    // TODO - Article ->  Pair<Article, Author> , introduce typeAlias Profile=Author @ Article domain
     fun findBySlugWithAuthor(slug: String): Article?
 
     /**
@@ -28,7 +30,7 @@ interface ArticleRepository {
         body: String?
     ): ArticleRow?
 
-    fun findRowBySlug(slug: String) : ArticleRow?
+    fun findRowBySlug(slug: String): ArticleRow?
 
     fun deleteBySlug(slug: String)
 }
