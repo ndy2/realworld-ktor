@@ -24,12 +24,48 @@ class ArticleService(
 ) {
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = requiresNewTransaction {
-        emptyList<ArticleResult>()
+        listOf(
+            ArticleResult(
+                slug = "how-to-train-your-dragon",
+                title = "How to train your dragon",
+                description = "Ever wonder how?",
+                body = "It takes a Jacobian",
+                tagList = listOf("dargons", "training"),
+                createdAt = now(),
+                updatedAt = now(),
+                favorited = false,
+                favoritesCount = 0,
+                author = AuthorResult(
+                    username = "jake",
+                    bio = "I work at statefarm",
+                    image = "https://i.stack.imgur.com/xHWG8.jpg",
+                    following = false
+                )
+            )
+        )
     }
 
     context (AuthenticatedUserContext)
     suspend fun getFeed() = requiresNewTransaction {
-        emptyList<ArticleResult>()
+        listOf(
+            ArticleResult(
+                slug = "how-to-train-your-dragon",
+                title = "How to train your dragon",
+                description = "Ever wonder how?",
+                body = "It takes a Jacobian",
+                tagList = listOf("dargons", "training"),
+                createdAt = now(),
+                updatedAt = now(),
+                favorited = false,
+                favoritesCount = 0,
+                author = AuthorResult(
+                    username = "jake",
+                    bio = "I work at statefarm",
+                    image = "https://i.stack.imgur.com/xHWG8.jpg",
+                    following = false
+                )
+            )
+        )
     }
 
     context (AuthenticatedUserContext)
@@ -46,7 +82,7 @@ class ArticleService(
                 body = body,
             )
 
-            // 3. save it!
+            // 3. save it
             repository.save(article, authorId, tagIds)
 
             // 4. find author (currentUser) profile

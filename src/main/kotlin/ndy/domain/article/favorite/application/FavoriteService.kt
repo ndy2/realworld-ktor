@@ -11,7 +11,6 @@ class FavoriteService {
         true
     }
 
-
     suspend fun getCount(id: ArticleId) = mandatoryTransaction {
         1
     }

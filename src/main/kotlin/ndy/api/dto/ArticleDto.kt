@@ -66,3 +66,8 @@ data class ArticleResponse(
     }
 }
 
+@Serializable
+data class ArticleResponseList(
+    val articles: List<ArticleResponse>,
+    val articlesCount: Int,
+)

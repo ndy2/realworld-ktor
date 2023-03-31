@@ -5,6 +5,8 @@ import ndy.domain.article.application.ArticleService
 import ndy.domain.article.comment.application.CommentService
 import ndy.domain.article.comment.domain.CommentRepository
 import ndy.domain.article.domain.ArticleRepository
+import ndy.domain.article.favorite.application.FavoriteService
+import ndy.domain.article.favorite.domain.FavoriteRepository
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.follow.application.FollowService
@@ -65,6 +67,9 @@ private val appModule = module {
     // comment
     single<CommentRepository> { CommentTable }
     singleOf(::CommentService)
+
+    // favorite
+    single { FavoriteService() } // TODO - add repository
 
     // tag domain
     single<TagRepository> { TagTable }

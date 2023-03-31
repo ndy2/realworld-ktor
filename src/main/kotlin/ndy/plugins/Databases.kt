@@ -2,9 +2,12 @@ package ndy.plugins
 
 import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.*
-import ndy.infra.tables.FollowTable
-import ndy.infra.tables.ProfileTable
-import ndy.infra.tables.UserTable
+import ndy.infra.tables.*
+import ndy.infra.tables.ArticleTable.Articles
+import ndy.infra.tables.FollowTable.Follows
+import ndy.infra.tables.ProfileTable.Profiles
+import ndy.infra.tables.TagTable.Tags
+import ndy.infra.tables.UserTable.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,8 +26,11 @@ fun Application.configureDatabases() {
     )
 
     transaction(database) {
-        SchemaUtils.create(UserTable.Users)
-        SchemaUtils.create(ProfileTable.Profiles)
-        SchemaUtils.create(FollowTable.Follows)
+        SchemaUtils.create(Articles)
+//        SchemaUtils.create(Comments) // FIxME
+        SchemaUtils.create(Follows)
+        SchemaUtils.create(Profiles)
+        SchemaUtils.create(Tags)
+        SchemaUtils.create(Users)
     }
 }

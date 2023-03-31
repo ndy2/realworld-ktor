@@ -210,7 +210,7 @@ private suspend inline fun ApplicationCall.okArticle(response: ArticleResponse) 
 }
 
 private suspend inline fun ApplicationCall.okArticleList(responseList: List<ArticleResponse>) {
-    ok(mapOf("articles" to responseList, "articlesCount" to responseList.size))
+    ok(ArticleResponseList(responseList, responseList.size))
 }
 
 private suspend inline fun ApplicationCall.okComment(response: CommentResponse) {

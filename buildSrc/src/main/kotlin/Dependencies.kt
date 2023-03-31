@@ -87,6 +87,9 @@ sealed class Dependencies {
 
         //https://github.com/Kotlin/kotlinx-datetime
         const val KOTLINX_DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0" // serialize date and time
+
+        //https://github.com/Kotlin/kotlinx.serialization
+        const val KOTLINX_SERIALIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
     }
 }
 
