@@ -2,7 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleRepository
-import ndy.domain.article.domain.ArticleRow
+import ndy.domain.article.domain.ArticleWithAuthor
 import ndy.domain.profile.domain.ProfileId
 import ndy.infra.tables.TagTable.Tags
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
@@ -50,7 +50,7 @@ object ArticleTable : ArticleRepository {
         return resultRowToArticle(articleResultRow, article.tagIds)
     }
 
-    override fun findBySlugWithAuthor(slug: String): Article? {
+    override fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? {
         TODO("Not yet implemented")
     }
 
@@ -60,11 +60,11 @@ object ArticleTable : ArticleRepository {
         title: String?,
         description: String?,
         body: String?
-    ): ArticleRow? {
+    ): Article? {
         TODO("Not yet implemented")
     }
 
-    override fun findRowBySlug(slug: String): ArticleRow? {
+    override fun findBySlug(slug: String): Article? {
         TODO("Not yet implemented")
     }
 

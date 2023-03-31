@@ -1,20 +1,13 @@
 package ndy.domain.article.domain
 
-import ndy.domain.profile.domain.ProfileId
-
-/**
- * implies single article row with its author id
- * first - article
- * second - authorId
- */
-typealias ArticleRow = Pair<Article, ProfileId>
+typealias ArticleWithAuthor = Pair<Article, Author>
 
 interface ArticleRepository {
 
-    fun save(article: Article, authorId: ProfileId): Article
+    fun save(article: Article, authorId: AuthorId): Article
 
     // TODO - Article ->  Pair<Article, Author> , introduce typeAlias Profile=Author @ Article domain
-    fun findBySlugWithAuthor(slug: String): Article?
+    fun findBySlugWithAuthor(slug: String): ArticleWithAuthor?
 
     /**
      * @param slug target article slug
@@ -28,9 +21,9 @@ interface ArticleRepository {
         title: String?,
         description: String?,
         body: String?
-    ): ArticleRow?
+    ): Article?
 
-    fun findRowBySlug(slug: String): ArticleRow?
+    fun findBySlug(slug: String): Article?
 
     fun deleteBySlug(slug: String)
 }
