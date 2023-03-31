@@ -1,10 +1,8 @@
 package ndy.api.dto
 
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import ndy.domain.article.comment.application.CommentResult
 import ndy.domain.article.comment.application.CommentResult.AuthorResult
-
 
 @Serializable
 data class CommentAddRequest(
@@ -14,16 +12,16 @@ data class CommentAddRequest(
 @Serializable
 data class CommentResponse(
     val id: ULong,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: String,
+    val updatedAt: String,
     val body: String,
     val author: AuthorResponse
 ) {
     companion object {
         fun ofResult(result: CommentResult) = CommentResponse(
             id = result.id,
-            createdAt = LocalDateTime.parse(result.createdAt.toString()),
-            updatedAt = LocalDateTime.parse(result.createdAt.toString()),
+            createdAt = "${result.createdAt}Z",// It is hard to customize serializer for kotlinx.datetime.LocalDateTime ...
+            updatedAt = "${result.updatedAt}Z",
             body = result.body,
             author = AuthorResponse.ofResult(result.author)
         )
