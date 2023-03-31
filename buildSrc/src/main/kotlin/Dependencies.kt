@@ -83,6 +83,9 @@ sealed class Dependencies {
 
         //https://github.com/konform-kt/konform
         const val KONFORM = "io.konform:konform:0.4.0" // validation
+
+        //https://github.com/Kotlin/kotlinx-datetime
+        const val KOTLINX_DATETIME =  "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0" // serialize date and time
     }
 }
 
