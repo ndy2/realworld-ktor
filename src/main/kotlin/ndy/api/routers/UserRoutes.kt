@@ -91,6 +91,6 @@ fun Route.userRouting() {
     }
 }
 
-private suspend inline fun <reified T : Any> ApplicationCall.okUser(response: T) {
+private suspend inline fun ApplicationCall.okUser(response: UserResponse) {
     ok(mapOf("user" to response))
 }

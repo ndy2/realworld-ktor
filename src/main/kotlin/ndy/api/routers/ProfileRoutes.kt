@@ -82,6 +82,6 @@ fun Route.profileRouting() {
     }
 }
 
-private suspend inline fun <reified T> ApplicationCall.okProfile(response: T) {
+private suspend inline fun ApplicationCall.okProfile(response: ProfileResponse) {
     ok(mapOf("profile" to response))
 }

@@ -134,7 +134,8 @@ fun Route.articleRouting() {
         val result = service.addComment(slug, request.body)
 
         // response
-        call.okComment(result)
+        val response = CommentResponse.ofResult(result)
+        call.okComment(response)
     }
 
     /**
@@ -202,19 +203,19 @@ fun Route.articleRouting() {
     }
 }
 
-private suspend inline fun <reified T> ApplicationCall.okArticle(response: T) {
+private suspend inline fun ApplicationCall.okArticle(response: ArticleResponse) {
     ok(mapOf("article" to response))
 }
 
-private suspend inline fun <reified T> ApplicationCall.okArticleList(responseList: List<T>) {
+private suspend inline fun ApplicationCall.okArticleList(responseList: List<ArticleResponse>) {
     ok(mapOf("articles" to responseList, "articlesCount" to responseList.size))
 }
 
-private suspend inline fun <reified T> ApplicationCall.okComment(response: T) {
+private suspend inline fun ApplicationCall.okComment(response: CommentResponse) {
     ok(mapOf("comment" to response))
 }
 
-private suspend inline fun <reified T> ApplicationCall.okCommentList(responseList: List<T>) {
+private suspend inline fun ApplicationCall.okCommentList(responseList: List<CommentResponse>) {
     ok(mapOf("comment" to responseList))
 }
 
