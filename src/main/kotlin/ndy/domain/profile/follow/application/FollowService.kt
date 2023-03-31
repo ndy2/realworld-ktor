@@ -22,9 +22,4 @@ class FollowService(
     suspend fun checkFollow(targetProfileId: ProfileId): Boolean {
         return repository.exists(profileId, targetProfileId)
     }
-
-    context (ProfileIdContext)
-    fun isFollowing(followeeId: ProfileId): Boolean {
-        TODO("Not yet implemented")
-    }
 }
