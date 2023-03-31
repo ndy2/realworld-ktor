@@ -3,6 +3,8 @@ package ndy.domain.article.domain
 import kotlinx.datetime.LocalDateTime
 import ndy.domain.profile.domain.Profile
 import ndy.domain.profile.domain.ProfileId
+import ndy.global.util.notUsed
+import ndy.global.util.now
 
 // Profile implies Author @ profile domain
 typealias Author = Profile
@@ -22,17 +24,17 @@ data class Article(
             title: String,
             description: String,
             body: String,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime
         ) = Article(
             id = ArticleId(0u),
             slug = title.lowercase().replace(" ", "-"),
             title = title,
             description = description,
             body = body,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
+            createdAt = now(),
+            updatedAt = notUsed,
         )
+
+        fun createSlug(title: String) = title.lowercase().replace(" ", "-")
     }
 }
 

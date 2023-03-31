@@ -3,18 +3,16 @@ package ndy.domain.article.application
 import ndy.domain.article.comment.application.CommentResult
 import ndy.domain.article.comment.application.CommentService
 import ndy.domain.article.domain.Article
+import ndy.domain.article.domain.Article.Companion.createSlug
 import ndy.domain.article.domain.ArticleRepository
 import ndy.domain.article.favorite.application.FavoriteService
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
-import ndy.domain.tag.application.TagResult
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
+import ndy.global.context.profileIdContext
 import ndy.global.context.userIdContext
-import ndy.global.util.forbiddenIf
-import ndy.global.util.newTransaction
-import ndy.global.util.notFoundField
-import ndy.global.util.now
+import ndy.global.util.*
 
 class ArticleService(
     private val repository: ArticleRepository,
@@ -25,128 +23,100 @@ class ArticleService(
     private val favoriteService: FavoriteService,
 ) {
     context (AuthenticatedUserContext/* optional = true */)
-    suspend fun searchByCond(searchCond: ArticleSearchCond) = newTransaction {
+    suspend fun searchByCond(searchCond: ArticleSearchCond) = requiresNewTransaction {
         emptyList<ArticleResult>()
     }
 
     context (AuthenticatedUserContext)
-    suspend fun getFeed() = newTransaction {
+    suspend fun getFeed() = requiresNewTransaction {
         emptyList<ArticleResult>()
     }
 
     context (AuthenticatedUserContext)
-    suspend fun create(title: String, description: String, body: String, tagList: List<String>) = newTransaction {
-        // 1. handle all tags - ask to tagService and get all list of tag Ids
-        val tagIds = tagService.getOrSaveList(tagList)
+    suspend fun create(title: String, description: String, body: String, tagList: List<String>) =
+        requiresNewTransaction {
+            // 1. handle all tags - ask to tagService and get all list of tag Ids
+            val tagIds = tagService.getOrSaveList(tagList)
 
-        // 2. create article
-        val authorId = profileId
-        val article = Article.ofCreate(
-            title = title,
-            description = description,
-            body = body,
-            createdAt = now(),
-            updatedAt = now(),
-        )
+            // 2. create article
+            val authorId = profileId
+            val article = Article.ofCreate(
+                title = title,
+                description = description,
+                body = body,
+            )
 
-        // 3. save it!
-        repository.save(article, authorId, tagIds)
+            // 3. save it!
+            repository.save(article, authorId, tagIds)
 
-        // 4. find author (currentUser) profile
-        val author = with(userIdContext()) { profileService.getByUserId() }
+            // 4. find author (currentUser) profile
+            val author = with(userIdContext()) { profileService.getByUserId() }
 
-        // 5. return
-        ArticleResult(
-            slug = article.slug,
-            title = article.title,
-            description = article.description,
-            body = article.body,
-            tagList = tagList,
-            createdAt = article.createdAt,
-            updatedAt = article.updatedAt,
-            favorited = false,
-            favoritesCount = 0,
-            author = AuthorResult(
-                username = author.username,
-                bio = author.bio,
-                image = author.image,
+            // 5. return
+            ArticleResult.from(
+                article = article,
+                tags = tagList,
+                favorited = false,
+                favoritesCount = 0,
+                author = author,
                 following = false
             )
-        )
-    }
+        }
 
     context (AuthenticatedUserContext /* optional = true */)
-    suspend fun getBySlug(slug: String) = newTransaction {
-        // 1. find article with author
-        val (article, author) = repository.findBySlugWithAuthor(slug) ?: notFoundField(Article::slug, slug)
+    suspend fun getBySlug(slug: String) = requiredTransaction {
+        // 1. find article with author and tagIds
+        val (article, author, tagIds) = repository
+            .findWithAuthorAndTagIdsBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
 
-        // 2. check favorited & following
-//        with(userIdContext())
+        // 2. check favorited & get favoritesCount
+        val favorited = with(profileIdContext()) {
+            favoriteService.isFavorite(article.id)
+        }
+        val favoritesCount = favoriteService.getCount(article.id)
 
-        // 3. find all tags
-        val tagResults = tagService.getByTagIds(emptyList()) // TODO requires tagIds
+        // 3. check following
+        val following = with(profileIdContext()) {
+            if (author.id.value == profileId) false
+            else followService.isFollowing(author.id)
+        }
 
-        // 3. return
-        ArticleResult(
-            slug = article.slug,
-            title = article.title,
-            description = article.description,
-            body = article.body,
-            tagList = tagResults.map(TagResult::name),
-            createdAt = article.createdAt,
-            updatedAt = article.updatedAt,
-            favorited = false,
-            favoritesCount = 0,
-            author = AuthorResult(
-                username = author.username.value,
-                bio = author.bio?.value,
-                image = author.image?.fullPath,
-                following = false
-            )
+        // 4. find all tags
+        val tagResults = tagService.getByTagIds(tagIds)
+
+        // 5. return
+        ArticleResult.from(
+            article = article,
+            tagResults = tagResults,
+            favorited = favorited,
+            favoritesCount = favoritesCount,
+            author = author,
+            following = following
         )
     }
 
     context (AuthenticatedUserContext)
-    suspend fun update(slug: String, title: String?, description: String?, body: String?) = newTransaction {
+    suspend fun update(slug: String, title: String?, description: String?, body: String?) = requiresNewTransaction {
         // 1. update article with new slug
-        val updateSlug = title?.let { getSlug(it) } ?: slug
-        val (article, authorId) = repository.updateBySlug(slug, updateSlug, title, description, body)
+        val updateSlug = title?.let { createSlug(it) } ?: slug
+        val (_, authorId) = repository
+            .updateBySlug(slug, updateSlug, title, description, body)
             ?: notFoundField(Article::slug, slug)
 
         // 2. check updatable - is current user writer of the article
         forbiddenIf(profileId != authorId)
 
-        // 3. get author (current user) profile
-        val author = with(userIdContext()) { profileService.getByUserId() }
-
-        // 4. check favorited
-
-        // 5. find all tags
-
-        // 6. return
-        ArticleResult(
-            slug = article.slug,
-            title = article.title,
-            description = article.description,
-            body = article.body,
-            tagList = listOf("dargons", "training"), // TODO - tagList, favorited, favoritesCount
-            createdAt = article.createdAt,
-            updatedAt = article.updatedAt,
-            favorited = false,
-            favoritesCount = 0,
-            author = AuthorResult(
-                username = author.username,
-                bio = author.bio,
-                image = author.image,
-                following = false
-            )
-        )
+        // 3. get by slug
+        getBySlug(slug)
     }
 
     context (AuthenticatedUserContext)
-    suspend fun deleteBySlug(slug: String) = newTransaction {
+    suspend fun deleteBySlug(slug: String) = requiresNewTransaction {
         // 1. check article exists
-        val (_, authorId) = repository.findBySlug(slug) ?: notFoundField(Article::slug, slug)
+        val (_, authorId) = repository
+            .findBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
 
         // 2. check deletable - is current user writer of the article
         forbiddenIf(profileId != authorId)
@@ -156,7 +126,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun addComment(slug: String, body: String) = newTransaction {
+    suspend fun addComment(slug: String, body: String) = requiresNewTransaction {
         CommentResult(
             1u,
             createdAt = now(),
@@ -172,24 +142,78 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext /* optional = true */)
-    suspend fun getComments(slug: String) = newTransaction {
+    suspend fun getComments(slug: String) = requiresNewTransaction {
         emptyList<CommentResult>()
     }
 
     context (AuthenticatedUserContext)
-    suspend fun deleteComment(slug: String, commentId: ULong): Nothing = newTransaction {
+    suspend fun deleteComment(slug: String, commentId: ULong): Nothing = requiresNewTransaction {
         TODO("Not yet implemented")
     }
 
     context (AuthenticatedUserContext)
-    suspend fun favorite(slug: String): Nothing = newTransaction {
-        TODO("Not yet implemented")
+    suspend fun favorite(slug: String) = requiresNewTransaction {
+        // 1. get article with author and tagIds
+        val (article, author, tagIds) = repository
+            .findWithAuthorAndTagIdsBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
+
+        // 2. do favorite and get count
+        val favoritesCount = with(profileIdContext()) {
+            favoriteService.favorite(article.id)
+            favoriteService.getCount(article.id)
+        }
+
+        // 3. check following
+        val following = with(profileIdContext()) {
+            if (author.id.value == profileId) false
+            else followService.isFollowing(author.id)
+        }
+
+        // 4. find all tags
+        val tagResults = tagService.getByTagIds(tagIds)
+
+        // 5. return
+        ArticleResult.from(
+            article = article,
+            tagResults = tagResults,
+            favorited = true,
+            favoritesCount = favoritesCount,
+            author = author,
+            following = following
+        )
     }
 
     context (AuthenticatedUserContext)
-    suspend fun unfavorite(slug: String): Nothing = newTransaction {
-        TODO("Not yet implemented")
+    suspend fun unfavorite(slug: String) = requiresNewTransaction {
+        // 1. get article with author and tagIds
+        val (article, author, tagIds) = repository
+            .findWithAuthorAndTagIdsBySlug(slug)
+            ?: notFoundField(Article::slug, slug)
+
+        // 2. do favorite and get count
+        val favoritesCount = with(profileIdContext()) {
+            favoriteService.unfavorite(article.id)
+            favoriteService.getCount(article.id)
+        }
+
+        // 3. check following
+        val following = with(profileIdContext()) {
+            if (author.id.value == profileId) false
+            else followService.isFollowing(author.id)
+        }
+
+        // 4. find all tags
+        val tagResults = tagService.getByTagIds(tagIds)
+
+        // 5. return
+        ArticleResult.from(
+            article = article,
+            tagResults = tagResults,
+            favorited = false,
+            favoritesCount = favoritesCount,
+            author = author,
+            following = following
+        )
     }
 }
-
-private fun getSlug(title: String) = title.lowercase().replace(" ", "-")

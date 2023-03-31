@@ -3,14 +3,13 @@ package ndy.domain.article.domain
 import ndy.domain.tag.domain.TagId
 
 typealias ArticleWithAuthorId = Pair<Article, AuthorId>
-typealias ArticleWithAuthor = Pair<Article, Author>
-typealias ArticleWithTagIds = Pair<Article, List<TagId>>
+typealias ArticleWithAuthorAndTagIds = Triple<Article, Author, List<TagId>>
 
 interface ArticleRepository {
 
     fun save(article: Article, authorId: AuthorId, tagIds: List<TagId>): Article
 
-    fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? // TODO requires TagIds TOO!
+    fun findWithAuthorAndTagIdsBySlug(slug: String): ArticleWithAuthorAndTagIds?
 
     /**
      * @param slug target article slug

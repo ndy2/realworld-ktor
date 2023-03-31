@@ -13,8 +13,8 @@ import org.jetbrains.exposed.sql.select
 object FollowTable : FollowRepository {
 
     object Follows : Table() {
-        val followerId = ulong("follower_id").references(Profiles.id)
-        val followeeId = ulong("followee_id").references(Profiles.id)
+        val followerId = ulong("follower_id")/*.references(Profiles.id)*/
+        val followeeId = ulong("followee_id")/*.references(Profiles.id)*/
     }
 
     override suspend fun save(followerId: ProfileId, followeeId: ProfileId) {

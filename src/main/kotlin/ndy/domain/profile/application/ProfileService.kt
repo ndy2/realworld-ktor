@@ -8,7 +8,7 @@ import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.UserIdContext
 import ndy.global.exception.UsernameDuplicatedException
 import ndy.global.util.mandatoryTransaction
-import ndy.global.util.newTransaction
+import ndy.global.util.requiresNewTransaction
 import ndy.global.util.notFound
 import ndy.global.util.notFoundField
 
@@ -51,47 +51,47 @@ class ProfileService(
         )
     }
 
-    suspend fun checkUsernameDuplicated(username: String) = newTransaction {
+    suspend fun checkUsernameDuplicated(username: String) = requiresNewTransaction {
         // action/return
         repository.existByUsername(Username(username))
     }
 
     context (AuthenticatedUserContext/* optional = true */)
-    suspend fun getByUsername(username: String) = newTransaction {
+    suspend fun getByUsername(username: String) = requiresNewTransaction {
         // validate - user exists & setup - find target userId
-        val (profile, profileId) = Username(username)
+        val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
 
         // action - check following
         val following =
             if (userIdNullable == null) false // false if not authenticated
-            else followService.checkFollow(profileId)
+            else followService.checkFollow(targetProfileId = profile.id)
 
         // return
         ProfileResult.ofEntity(profile, following)
     }
 
     context (AuthenticatedUserContext)
-    suspend fun follow(username: String) = newTransaction {
+    suspend fun follow(username: String) = requiresNewTransaction {
         // validate - user exists & setup - find target userId
-        val (profile, profileId) = Username(username)
+        val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
 
         // action
-        followService.follow(profileId)
+        followService.follow(targetProfileId = profile.id)
 
         // return
         ProfileResult.ofEntity(profile, true)
     }
 
     context (AuthenticatedUserContext)
-    suspend fun unfollow(username: String) = newTransaction {
+    suspend fun unfollow(username: String) = requiresNewTransaction {
         // validate - user exists & setup - find target userId
-        val (profile, profileId) = Username(username)
+        val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
 
         // action
-        followService.unfollow(profileId)
+        followService.unfollow(targetProfileId = profile.id)
 
         // return
         ProfileResult.ofEntity(profile, false)

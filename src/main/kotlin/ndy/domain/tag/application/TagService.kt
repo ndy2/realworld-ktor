@@ -5,12 +5,12 @@ import ndy.domain.tag.domain.TagId
 import ndy.domain.tag.domain.TagRepository
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.util.mandatoryTransaction
-import ndy.global.util.newTransaction
+import ndy.global.util.requiresNewTransaction
 
 class TagService(
     private val repository: TagRepository
 ) {
-    suspend fun getAll() = newTransaction {
+    suspend fun getAll() = requiresNewTransaction {
         // find all tags
         val tags = repository.findAll()
 
@@ -32,7 +32,7 @@ class TagService(
         }
     }
 
-    suspend fun getByTagIds(tagIds: List<TagId>) = newTransaction {
+    suspend fun getByTagIds(tagIds: List<TagId>) = requiresNewTransaction {
         // find all tags
         val tags = repository.findAllWhereIdIn(tagIds)
 

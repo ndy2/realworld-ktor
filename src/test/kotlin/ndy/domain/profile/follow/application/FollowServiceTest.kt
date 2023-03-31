@@ -8,7 +8,7 @@ import io.kotest.property.checkAll
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.util.newTransaction
+import ndy.global.util.requiresNewTransaction
 import ndy.infra.tables.FollowTable
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
@@ -45,22 +45,22 @@ class FollowServiceTest : BaseSpec(DB, body = {
                 assume(n >= m)
                 val savePair = buildList(n) {
                     repeat(n) {
-                        val followerId = UserId(Random.nextULong())
-                        val followeeId = UserId(Random.nextULong())
+                        val followerId = ProfileId(Random.nextULong())
+                        val followeeId = ProfileId(Random.nextULong())
                         add(followerId to followeeId)
                     }
                 }
                 val deleteList = savePair.slice(0..<m)
 
                 // action
-                newTransaction {
+                requiresNewTransaction {
                     savePair.forEach { with(userContext(it.first)) { sut.follow(it.second) } }
                     deleteList.forEach { with(userContext(it.first)) { sut.unfollow(it.second) } }
                 }
 
                 // assert
                 // @formatter:off
-            newTransaction {
+            requiresNewTransaction {
                 (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.checkFollow(it.second) shouldBe false }}
                 (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.checkFollow(it.second) shouldBe true }}
             }
@@ -70,10 +70,10 @@ class FollowServiceTest : BaseSpec(DB, body = {
     }
 })
 
-fun userContext(userId: UserId) =
+fun userContext(profileId: ProfileId) =
     object : AuthenticatedUserContext {
-        override val userId = userId
-        override val userIdNullable = userId
-        override val profileId = ProfileId(0u)
-        override val profileIdNullable = null
+        override val userId = UserId(0u)
+        override val userIdNullable = null
+        override val profileId = profileId
+        override val profileIdNullable = profileId
     }

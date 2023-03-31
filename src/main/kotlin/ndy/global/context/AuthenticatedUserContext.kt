@@ -55,6 +55,7 @@ interface ProfileIdContext {
     val profileId: ULong
 }
 
+/* always use this method to create ProfileIdContext - except for test */
 context (AuthenticatedUserContext)
 fun profileIdContext(): ProfileIdContext {
     return object : ProfileIdContext {

@@ -2,6 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.article.domain.*
 import ndy.domain.tag.domain.TagId
+import ndy.global.util.now
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import org.jetbrains.exposed.sql.*
@@ -55,11 +56,18 @@ object ArticleTable : ArticleRepository {
         return articleResultRow.toArticle()
     }
 
-    override fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? =
-        (Articles innerJoin Profiles)
+    override fun findWithAuthorAndTagIdsBySlug(slug: String): ArticleWithAuthorAndTagIds? {
+        val articleWithAuthor = (Articles innerJoin Profiles)
             .select { Articles.slug eq slug }
             .map { it.toArticle() to it.toProfile() }
-            .singleOrNull()
+            .singleOrNull() ?: return null
+        val articleId = articleWithAuthor.first.id
+
+        val tagIds = ArticleTags
+            .select { ArticleTags.article eq articleId.value }
+            .map { TagId(it[ArticleTags.tag]) }
+        return ArticleWithAuthorAndTagIds(articleWithAuthor.first, articleWithAuthor.second, tagIds)
+    }
 
     override fun updateBySlug(
         slug: String,
@@ -73,6 +81,7 @@ object ArticleTable : ArticleRepository {
             if (title != null) it[Articles.title] = title
             if (description != null) it[Articles.description] = description
             if (body != null) it[Articles.body] = body
+            it[Articles.updatedAt] = now()
         }
 
         return findBySlug(slug)

@@ -51,8 +51,7 @@ object ProfileTable : ProfileRepository {
         .empty().not()
 
     override suspend fun findProfileByUsername(username: Username) = Profiles
-        .slice(Profiles.id)
         .select { Profiles.username eq username.value }
-        .map { it.toProfile() to ProfileId(it[Profiles.id]) }
+        .map(ResultRow::toProfile)
         .singleOrNull()
 }

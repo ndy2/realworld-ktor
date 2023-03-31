@@ -2,8 +2,6 @@ package ndy.domain.profile.domain
 
 import ndy.domain.user.domain.UserId
 
-typealias ProfileWithProfileId =  Pair<Profile, ProfileId>
-
 interface ProfileRepository {
 
     suspend fun save(userId: UserId, username: Username): Profile
@@ -11,5 +9,5 @@ interface ProfileRepository {
     suspend fun findByUserId(userId: UserId): Profile?
     suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int
     suspend fun existByUsername(username: Username): Boolean
-    suspend fun findProfileByUsername(username: Username): ProfileWithProfileId?
+    suspend fun findProfileByUsername(username: Username): Profile?
 }

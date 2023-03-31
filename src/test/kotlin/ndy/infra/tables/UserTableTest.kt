@@ -11,7 +11,7 @@ import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.global.util.newTransaction
+import ndy.global.util.requiresNewTransaction
 
 class UserTableTest : BaseSpec(DB, body = {
 
@@ -20,7 +20,7 @@ class UserTableTest : BaseSpec(DB, body = {
     test("returns saved user and find it by id") {
         checkAll<Email, Password> { email, password ->
             // action
-            val savedUser = newTransaction { sut.save(email, password) }
+            val savedUser = requiresNewTransaction { sut.save(email, password) }
 
             // assert
             assertSoftly(savedUser) {
@@ -30,7 +30,7 @@ class UserTableTest : BaseSpec(DB, body = {
             }
 
             // action
-            val foundUser = newTransaction { sut.findUserById(savedUser.id) }
+            val foundUser = requiresNewTransaction { sut.findUserById(savedUser.id) }
 
             // assert
             assertSoftly(foundUser!!) {
@@ -45,17 +45,17 @@ class UserTableTest : BaseSpec(DB, body = {
     test("update user") {
         checkAll<Email, Password, Email?, Password?> { email, password, updateEmail, updatePassword ->
             // setup
-            val savedUserId = newTransaction { sut.save(email, password).id }
+            val savedUserId = requiresNewTransaction { sut.save(email, password).id }
 
             // action
-            val count = newTransaction { sut.updateById(savedUserId, updateEmail, updatePassword) }
+            val count = requiresNewTransaction { sut.updateById(savedUserId, updateEmail, updatePassword) }
 
             // assert - update count
             if (listOf(updateEmail, updatePassword).any { it != null }) count shouldBe 1
             else count shouldBe 0
 
             // assert - properly updated
-            val foundUser = newTransaction { sut.findUserById(savedUserId) }
+            val foundUser = requiresNewTransaction { sut.findUserById(savedUserId) }
             assertSoftly(foundUser!!) {
                 this.email shouldBeUpdatedToIf (updateEmail isNotNullOr email)
                 this.password shouldBeUpdatedToIf (updatePassword isNotNullOr password)
@@ -66,11 +66,11 @@ class UserTableTest : BaseSpec(DB, body = {
     test("findUserById with Profile") {
         checkAll<Email, Password, Username> { email, password, username ->
             // action
-            val savedUser = newTransaction { sut.save(email, password) }
-            val savedProfile = newTransaction { ProfileTable.save(savedUser.id, username) }
+            val savedUser = requiresNewTransaction { sut.save(email, password) }
+            val savedProfile = requiresNewTransaction { ProfileTable.save(savedUser.id, username) }
 
             // action
-            val foundUser = newTransaction { sut.findUserByIdWithProfile(savedUser.id) }!!
+            val foundUser = requiresNewTransaction { sut.findUserByIdWithProfile(savedUser.id) }!!
 
             // assert
             assertSoftly(foundUser) {
@@ -89,7 +89,7 @@ class UserTableTest : BaseSpec(DB, body = {
     }
 
     test("save user proc"){
-        newTransaction {
+        requiresNewTransaction {
             val user = sut.save(Email("haha@gmail.com"), Password("1234"))
             val profile =
                 ProfileTable.save(user.id, Username("haha"))
