@@ -41,14 +41,12 @@ class ArticleService(
             title = title,
             description = description,
             body = body,
-            tagIds = tagIds,
-            authorId = authorId,
             createdAt = now(),
             updatedAt = now(),
         )
 
         // 3. save it!
-        repository.save(article, authorId)
+        repository.save(article, authorId, tagIds)
 
         // 4. find author profile
         val author = with(userIdContext(userId)) { profileService.getByUserId() }
@@ -106,11 +104,11 @@ class ArticleService(
     suspend fun update(slug: String, title: String?, description: String?, body: String?) = newTransaction {
         // 1. update article with new slug
         val updateSlug = title?.let { getSlug(it) } ?: slug
-        val article = repository.updateBySlug(slug, updateSlug, title, description, body)
+        val (article, authorId) = repository.updateBySlug(slug, updateSlug, title, description, body)
             ?: notFoundField(Article::slug, slug)
 
         // 2. check updatable - is current user writer of the article
-        forbiddenIf(profileId != article.authorId)
+        forbiddenIf(profileId != authorId)
 
         // 3. get author (current user) profile
         val author = with(userIdContext(userId)) { profileService.getByUserId() }
@@ -142,10 +140,10 @@ class ArticleService(
     context (AuthenticatedUserContext)
     suspend fun deleteBySlug(slug: String) = newTransaction {
         // 1. check article exists
-        val article = repository.findBySlug(slug) ?: notFoundField(Article::slug, slug)
+        val (article, authorId) = repository.findBySlug(slug) ?: notFoundField(Article::slug, slug)
 
         // 2. check deletable - is current user writer of the article
-        forbiddenIf(profileId != article.authorId)
+        forbiddenIf(profileId != authorId)
 
         // 3. delete
         repository.deleteBySlug(slug)

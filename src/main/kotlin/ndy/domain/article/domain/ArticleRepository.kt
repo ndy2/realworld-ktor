@@ -1,10 +1,14 @@
 package ndy.domain.article.domain
 
+import ndy.domain.tag.domain.TagId
+
+typealias ArticleWithAuthorId = Pair<Article, AuthorId>
 typealias ArticleWithAuthor = Pair<Article, Author>
+typealias ArticleWithTagIds = Pair<Article, List<TagId>>
 
 interface ArticleRepository {
 
-    fun save(article: Article, authorId: AuthorId): Article
+    fun save(article: Article, authorId: AuthorId, tagIds: List<TagId>): Article
 
     fun findBySlugWithAuthor(slug: String): ArticleWithAuthor?
 
@@ -20,9 +24,9 @@ interface ArticleRepository {
         title: String?,
         description: String?,
         body: String?
-    ): Article?
+    ): ArticleWithAuthorId?
 
-    fun findBySlug(slug: String): Article?
+    fun findBySlug(slug: String): ArticleWithAuthorId?
 
-    fun deleteBySlug(slug: String)
+    fun deleteBySlug(slug: String): Int
 }

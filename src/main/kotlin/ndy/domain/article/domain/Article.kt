@@ -15,8 +15,6 @@ data class Article(
     val title: String,
     val description: String,
     val body: String,
-    val tagIds: List<TagId> = emptyList(),
-    val authorId: AuthorId,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
 )

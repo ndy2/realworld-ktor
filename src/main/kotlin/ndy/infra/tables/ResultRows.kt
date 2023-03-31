@@ -37,16 +37,18 @@ fun ResultRow.toProfile() = Profile(
     image = this[Profiles.image]?.let { Image.ofFullPath(it) },
 )
 
-fun ResultRow.toArticle(tagIds: List<TagId>) = Article(
+fun ResultRow.toArticle() = Article(
     id = ArticleId(this[Articles.id]),
     slug = this[Articles.slug],
     title = this[Articles.title],
     description = this[Articles.description],
     body = this[Articles.body],
-    tagIds = tagIds,
-    authorId = AuthorId(this[Articles.authorId]),
     createdAt = this[Articles.createdAt],
     updatedAt = this[Articles.updatedAt],
+)
+
+fun ResultRow.toAuthorId() = AuthorId(
+    value = this[Articles.authorId]
 )
 
 fun ResultRow.toTag() = Tag(

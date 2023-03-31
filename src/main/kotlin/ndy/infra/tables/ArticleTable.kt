@@ -1,14 +1,12 @@
 package ndy.infra.tables
 
-import ndy.domain.article.domain.Article
-import ndy.domain.article.domain.ArticleRepository
-import ndy.domain.article.domain.ArticleWithAuthor
-import ndy.domain.profile.domain.ProfileId
+import ndy.domain.article.domain.*
+import ndy.domain.tag.domain.TagId
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
@@ -32,7 +30,7 @@ object ArticleTable : ArticleRepository {
         val tag = reference("tag_id", Tags.id)
     }
 
-    override fun save(article: Article, authorId: ProfileId): Article {
+    override fun save(article: Article, authorId: AuthorId, tagIds: List<TagId>): Article {
         // insert article
         val articleInsertStatement = Articles.insert {
             it[slug] = article.slug
@@ -46,15 +44,22 @@ object ArticleTable : ArticleRepository {
         val articleId = articleResultRow[Articles.id]
 
         // insert article tags
-        article.tagIds.forEach { tagId -> insertArticleTags(articleId, tagId.value) }
+        tagIds.forEach { tagId ->
+            ArticleTags.insert {
+                it[this.article] = articleId
+                it[tag] = tagId.value
+            }
+        }
 
         // return
-        return articleResultRow.toArticle(article.tagIds)
+        return articleResultRow.toArticle()
     }
 
-    override fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? {
-        TODO("Not yet implemented")
-    }
+    override fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? =
+        (Articles innerJoin Profiles)
+            .select { Articles.slug eq slug }
+            .map { it.toArticle() to it.toProfile() }
+            .singleOrNull()
 
     override fun updateBySlug(
         slug: String,
@@ -62,22 +67,23 @@ object ArticleTable : ArticleRepository {
         title: String?,
         description: String?,
         body: String?
-    ): Article? {
-        TODO("Not yet implemented")
-    }
-
-    override fun findBySlug(slug: String): Article? {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteBySlug(slug: String) {
-        TODO("Not yet implemented")
-    }
-
-    private fun insertArticleTags(articleId: ULong, tagId: ULong) {
-        ArticleTags.insert {
-            it[article] = articleId
-            it[tag] = tagId
+    ): ArticleWithAuthorId? {
+        Articles.update({ Articles.slug eq slug }) {
+            it[Articles.slug] = updatedSlug
+            if (title != null) it[Articles.title] = title
+            if (description != null) it[Articles.description] = description
+            if (body != null) it[Articles.body] = body
         }
+
+        return findBySlug(slug)
     }
+
+    override fun findBySlug(slug: String) = Articles
+        .select { Articles.slug eq slug }
+        .map { it.toArticle() to it.toAuthorId() }
+        .singleOrNull()
+
+    override fun deleteBySlug(slug: String) = Articles
+        .deleteWhere { Articles.slug eq slug }
+
 }
