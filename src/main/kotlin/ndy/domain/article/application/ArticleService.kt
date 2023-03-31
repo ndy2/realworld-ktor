@@ -9,6 +9,7 @@ import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.userIdContext
 import ndy.global.util.forbiddenIf
+import ndy.global.util.newTransaction
 import ndy.global.util.notFoundField
 import ndy.global.util.now
 
@@ -19,17 +20,17 @@ class ArticleService(
     private val tagService: TagService,
 ) {
     context (AuthenticatedUserContext/* optional = true */)
-    suspend fun searchByCond(searchCond: ArticleSearchCond): List<ArticleResult> {
-        return emptyList()
+    suspend fun searchByCond(searchCond: ArticleSearchCond) = newTransaction {
+        emptyList<ArticleResult>()
     }
 
     context (AuthenticatedUserContext)
-    suspend fun getFeed(): List<ArticleResult> {
-        return emptyList()
+    suspend fun getFeed() = newTransaction {
+        emptyList<ArticleResult>()
     }
 
     context (AuthenticatedUserContext)
-    suspend fun create(title: String, description: String, body: String, tagList: List<String>): ArticleResult {
+    suspend fun create(title: String, description: String, body: String, tagList: List<String>) = newTransaction {
         // 1. handle all tags - ask to tagService and get all list of tag Ids
         val tagIds = tagService.getOrSaveList(tagList)
 
@@ -52,7 +53,7 @@ class ArticleService(
         val author = with(userIdContext(userId)) { profileService.getByUserId() }
 
         // 5. combine to result
-        return ArticleResult(
+        ArticleResult(
             slug = article.slug,
             title = article.title,
             description = article.description,
@@ -72,7 +73,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext /* optional = true */)
-    suspend fun getBySlug(slug: String): ArticleResult {
+    suspend fun getBySlug(slug: String) = newTransaction {
         // 1. find article with author
         val article = repository.findBySlugWithAuthor(slug) ?: notFoundField(Article::slug, slug)
         require(article.author != null)
@@ -82,7 +83,7 @@ class ArticleService(
         // 3. find all tags
 
         // 3. return
-        return ArticleResult(
+        ArticleResult(
             slug = article.slug,
             title = article.title,
             description = article.description,
@@ -102,7 +103,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun update(slug: String, title: String?, description: String?, body: String?): ArticleResult {
+    suspend fun update(slug: String, title: String?, description: String?, body: String?) = newTransaction {
         // 1. update article with new slug
         val updateSlug = title?.let { getSlug(it) } ?: slug
         val articleRow = repository.updateBySlug(slug, updateSlug, title, description, body)
@@ -121,7 +122,7 @@ class ArticleService(
         // 5. find all tags
 
         // 6. return
-        return ArticleResult(
+        ArticleResult(
             slug = article.slug,
             title = article.title,
             description = article.description,
@@ -141,7 +142,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun deleteBySlug(slug: String) {
+    suspend fun deleteBySlug(slug: String) = newTransaction {
         // 1. check article exists
         val articleRow = repository.findRowBySlug(slug) ?: notFoundField(Article::slug, slug)
         val article = articleRow.first
@@ -154,8 +155,8 @@ class ArticleService(
         repository.deleteBySlug(slug)
     }
 
-    suspend fun addComment(slug: String, body: String): CommentResult {
-        return CommentResult(
+    suspend fun addComment(slug: String, body: String) = newTransaction  {
+        CommentResult(
             1u,
             createdAt = now(),
             updatedAt = now(),
@@ -169,19 +170,19 @@ class ArticleService(
         )
     }
 
-    suspend fun getComments(slug: String): List<CommentResult> {
-        return emptyList()
+    suspend fun getComments(slug: String) = newTransaction {
+        emptyList<CommentResult>()
     }
 
-    suspend fun deleteComment(slug: String, commentId: ULong) {
+    suspend fun deleteComment(slug: String, commentId: ULong): Nothing = newTransaction {
         TODO("Not yet implemented")
     }
 
-    suspend fun favorite(slug: String): ArticleResult {
+    suspend fun favorite(slug: String): Nothing = newTransaction {
         TODO("Not yet implemented")
     }
 
-    suspend fun unfavorite(slug: String): ArticleResult {
+    suspend fun unfavorite(slug: String): Nothing = newTransaction {
         TODO("Not yet implemented")
     }
 }
