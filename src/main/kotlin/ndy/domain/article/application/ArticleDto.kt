@@ -25,7 +25,7 @@ data class ArticleResult(
 
 data class AuthorResult(
     val username: String,
-    val bio: String,
-    val image: String,
+    val bio: String?,
+    val image: String?,
     val following: Boolean,
 )

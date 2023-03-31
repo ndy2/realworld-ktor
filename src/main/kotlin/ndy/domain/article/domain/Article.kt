@@ -10,7 +10,7 @@ data class Article(
     val title: String,
     val description: String,
     val body: String,
-    val tagIds: List<TagId>,
+    val tagIds: List<TagId> = emptyList(),
     val author: Profile? = null,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
