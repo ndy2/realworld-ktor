@@ -46,7 +46,7 @@ I will try my best to find out my own "Best Practice" in this project.
 that I used to studied in the `Spring Framework`. Well that must be case by case. In this case I ommited lots of those values and focus on framwork/library usages
 
 ## Current Test with postman - with script provided [@here](https://github.com/gothinkster/realworld/tree/main/api)
-![image](https://user-images.githubusercontent.com/67302707/228865061-b0683c26-b883-426e-8e0f-6accafb869b8.png)
+![image](https://user-images.githubusercontent.com/67302707/229202700-d52d39ce-80ca-4d63-ac23-d1b52aeb28f0.png)
 
 ## Endpoint milestones - See Details [@here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints)
 - [x] Authentication
@@ -62,7 +62,7 @@ that I used to studied in the `Spring Framework`. Well that must be case by case
 - [x] Create Article - no test yet
 - [x] Update Article - no test yet
 - [x] Delete Article - no test yet
-- [ ] Add Comments to an Article
+- [X] Add Comments to an Article - no test yet
 - [ ] Get Comments from an Article
 - [ ] Delete Comment
 - [x] Favorite Article - no test yet
