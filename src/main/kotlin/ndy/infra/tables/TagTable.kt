@@ -13,6 +13,10 @@ object TagTable : TagRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
+    override fun findAll() : List<Tag> {
+        TODO("Not yet implemented")
+    }
+
     override fun save(tag: Tag): Tag {
         TODO("Not yet implemented")
     }

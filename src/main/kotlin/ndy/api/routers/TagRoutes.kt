@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import ndy.api.resources.Tags
+import ndy.domain.tag.application.TagResult
 import ndy.domain.tag.application.TagService
 import ndy.global.util.ok
 import org.koin.ktor.ext.inject
@@ -18,9 +19,10 @@ fun Route.tagRouting() {
      */
     get<Tags> {
         // action
-        service.getAll()
+        val resultList = service.getAll()
 
         // response
-        call.ok("tag list - TODO")
+        val responseList = resultList.map(TagResult::name)
+        call.ok(mapOf("tags" to responseList))
     }
 }
