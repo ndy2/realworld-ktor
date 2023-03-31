@@ -155,7 +155,8 @@ class ArticleService(
         repository.deleteBySlug(slug)
     }
 
-    suspend fun addComment(slug: String, body: String) = newTransaction  {
+    context (AuthenticatedUserContext)
+    suspend fun addComment(slug: String, body: String) = newTransaction {
         CommentResult(
             1u,
             createdAt = now(),
@@ -170,18 +171,22 @@ class ArticleService(
         )
     }
 
+    context (AuthenticatedUserContext /* optional = true */)
     suspend fun getComments(slug: String) = newTransaction {
         emptyList<CommentResult>()
     }
 
+    context (AuthenticatedUserContext)
     suspend fun deleteComment(slug: String, commentId: ULong): Nothing = newTransaction {
         TODO("Not yet implemented")
     }
 
+    context (AuthenticatedUserContext)
     suspend fun favorite(slug: String): Nothing = newTransaction {
         TODO("Not yet implemented")
     }
 
+    context (AuthenticatedUserContext)
     suspend fun unfavorite(slug: String): Nothing = newTransaction {
         TODO("Not yet implemented")
     }
