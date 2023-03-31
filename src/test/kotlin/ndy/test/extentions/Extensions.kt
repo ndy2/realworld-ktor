@@ -1,16 +1,15 @@
 package ndy.test.extentions
 
-import de.sharpmind.ktor.EnvConfig
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
-import io.kotest.core.listeners.BeforeSpecListener
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
-import io.ktor.server.config.*
-import ndy.infra.tables.FollowTable
-import ndy.infra.tables.ProfileTable
-import ndy.infra.tables.UserTable
+import ndy.infra.tables.ArticleTable.ArticleTags
+import ndy.infra.tables.ArticleTable.Articles
+import ndy.infra.tables.FollowTable.Follows
+import ndy.infra.tables.ProfileTable.Profiles
+import ndy.infra.tables.TagTable.Tags
+import ndy.infra.tables.UserTable.Users
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -24,14 +23,16 @@ object DB : BeforeEachListener, AfterEachListener {
     )
 
     override suspend fun beforeEach(testCase: TestCase) = transaction(database) {
-        SchemaUtils.create(UserTable.Users)
-        SchemaUtils.create(ProfileTable.Profiles)
-        SchemaUtils.create(FollowTable.Follows)
+        SchemaUtils.create(Articles)
+        SchemaUtils.create(ArticleTags)
+//        SchemaUtils.create(Comments) // FIxME
+        SchemaUtils.create(Follows)
+        SchemaUtils.create(Profiles)
+        SchemaUtils.create(Tags)
+        SchemaUtils.create(Users)
     }
 
     override suspend fun afterEach(testCase: TestCase, result: TestResult) = transaction(database) {
-        SchemaUtils.drop(ProfileTable.Profiles)
-        SchemaUtils.drop(UserTable.Users)
-        SchemaUtils.drop(FollowTable.Follows)
+        SchemaUtils.drop(Articles, ArticleTags, /*Comments,*/ Follows, Profiles, Tags, Users)
     }
 }
