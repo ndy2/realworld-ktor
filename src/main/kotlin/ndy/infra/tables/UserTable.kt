@@ -24,17 +24,17 @@ object UserTable : UserRepository {
             it[Users.password] = password.encodedPassword
         }
 
-        return insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)!!
+        return insertStatement.resultedValues?.singleOrNull()?.let(ResultRow::toUser)!!
     }
 
     override suspend fun findUserById(id: UserId) = Users
         .select { Users.id eq id.value }
-        .map(::resultRowToUser)
+        .map(ResultRow::toUser)
         .singleOrNull()
 
     override suspend fun findUserByEmail(email: Email) = Users
         .select { Users.email eq email.value }
-        .map(::resultRowToUser)
+        .map(ResultRow::toUser)
         .singleOrNull()
 
     override suspend fun updateById(id: UserId, email: Email?, password: Password?): Int {
@@ -49,13 +49,12 @@ object UserTable : UserRepository {
     override suspend fun findUserByIdWithProfile(id: UserId) =
         (Users innerJoin Profiles)
             .select { Users.id eq id.value }
-            .map(::resultRowToUserWithProfile)
+            .map(ResultRow::toUserWithProfile)
             .singleOrNull()
 
     override suspend fun findUserByEmailWithProfile(email: Email) =
         (Users innerJoin Profiles)
             .select { Users.email eq email.value }
-            .map(::resultRowToUserWithProfile)
+            .map(ResultRow::toUserWithProfile)
             .singleOrNull()
-
 }

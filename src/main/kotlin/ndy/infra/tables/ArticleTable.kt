@@ -49,7 +49,7 @@ object ArticleTable : ArticleRepository {
         article.tagIds.forEach { tagId -> insertArticleTags(articleId, tagId.value) }
 
         // return
-        return resultRowAndTagIdsToArticle(articleResultRow, article.tagIds)
+        return articleResultRow.toArticle(article.tagIds)
     }
 
     override fun findBySlugWithAuthor(slug: String): ArticleWithAuthor? {

@@ -6,7 +6,6 @@ interface ArticleRepository {
 
     fun save(article: Article, authorId: AuthorId): Article
 
-    // TODO - Article ->  Pair<Article, Author> , introduce typeAlias Profile=Author @ Article domain
     fun findBySlugWithAuthor(slug: String): ArticleWithAuthor?
 
     /**

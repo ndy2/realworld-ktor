@@ -3,10 +3,7 @@ package ndy.infra.tables
 import ndy.domain.profile.domain.*
 import ndy.domain.user.domain.UserId
 import ndy.infra.tables.UserTable.Users
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.*
 
 object ProfileTable : ProfileRepository {
 
@@ -26,17 +23,17 @@ object ProfileTable : ProfileRepository {
             it[Profiles.username] = username.value
         }
 
-        return insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToProfile)!!
+        return insertStatement.resultedValues?.singleOrNull()?.let(ResultRow::toProfile)!!
     }
 
     override suspend fun findById(id: ProfileId) = Profiles
         .select { Profiles.id eq id.value }
-        .map(::resultRowToProfile)
+        .map(ResultRow::toProfile)
         .singleOrNull()
 
     override suspend fun findByUserId(userId: UserId) = Profiles
         .select { Profiles.userId eq userId.value }
-        .map(::resultRowToProfile)
+        .map(ResultRow::toProfile)
         .singleOrNull()
 
     override suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
@@ -55,6 +52,6 @@ object ProfileTable : ProfileRepository {
 
     override suspend fun findByUsername(username: Username) = Profiles
         .select { Profiles.username eq username.value }
-        .map(::resultRowToProfile)
+        .map(ResultRow::toProfile)
         .singleOrNull()
 }
