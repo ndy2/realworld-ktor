@@ -6,9 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import ndy.infra.tables.ArticleTable.ArticleTags
 import ndy.infra.tables.ArticleTable.Articles
-import ndy.infra.tables.CommentTable
 import ndy.infra.tables.CommentTable.Comments
-import ndy.infra.tables.FavoriteTable
 import ndy.infra.tables.FavoriteTable.Favorites
 import ndy.infra.tables.FollowTable.Follows
 import ndy.infra.tables.ProfileTable.Profiles

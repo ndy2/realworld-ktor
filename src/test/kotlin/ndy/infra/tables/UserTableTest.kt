@@ -7,11 +7,11 @@ import io.kotest.property.checkAll
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
+import ndy.global.util.requiresNewTransaction
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.global.util.requiresNewTransaction
 
 class UserTableTest : BaseSpec(DB, body = {
 
@@ -88,7 +88,7 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    test("save user proc"){
+    test("save user proc") {
         requiresNewTransaction {
             val user = sut.save(Email("haha@gmail.com"), Password("1234"))
             val profile =

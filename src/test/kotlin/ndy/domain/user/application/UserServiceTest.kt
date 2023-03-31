@@ -8,9 +8,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
 import io.ktor.server.config.*
-import ndy.global.context.DefaultLoggingContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
+import ndy.global.context.DefaultLoggingContext
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable

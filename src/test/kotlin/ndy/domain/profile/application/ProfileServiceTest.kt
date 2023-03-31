@@ -5,8 +5,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.assume
 import io.kotest.property.checkAll
-import ndy.global.context.userIdContext
 import ndy.domain.profile.follow.application.FollowService
+import ndy.global.context.userIdContext
+import ndy.global.util.requiresNewTransaction
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
@@ -20,7 +21,6 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.global.util.requiresNewTransaction
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 
@@ -91,7 +91,15 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 requiresNewTransaction { with(userIdContext(userId)) { sut.register(username) } }
 
                 // action - update profile
-                requiresNewTransaction { with(userIdContext(userId)) { sut.update(updateUsername, updateBio, updateImage) } }
+                requiresNewTransaction {
+                    with(userIdContext(userId)) {
+                        sut.update(
+                            updateUsername,
+                            updateBio,
+                            updateImage
+                        )
+                    }
+                }
 
                 // assert - properly updated
                 val profileResult = requiresNewTransaction { with(userIdContext(userId)) { sut.getByUserId() } }

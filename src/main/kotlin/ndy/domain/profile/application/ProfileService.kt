@@ -8,9 +8,9 @@ import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.UserIdContext
 import ndy.global.exception.UsernameDuplicatedException
 import ndy.global.util.mandatoryTransaction
-import ndy.global.util.requiresNewTransaction
 import ndy.global.util.notFound
 import ndy.global.util.notFoundField
+import ndy.global.util.requiresNewTransaction
 
 class ProfileService(
     private val repository: ProfileRepository,

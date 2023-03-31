@@ -3,7 +3,6 @@ package ndy.domain.profile.follow.application
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.profile.follow.domain.FollowRepository
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.ProfileIdContext
 
 class FollowService(
     private val repository: FollowRepository

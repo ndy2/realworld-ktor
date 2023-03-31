@@ -1,6 +1,5 @@
 package ndy.api.dto
 
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import ndy.domain.article.application.ArticleResult
 import ndy.domain.article.application.AuthorResult

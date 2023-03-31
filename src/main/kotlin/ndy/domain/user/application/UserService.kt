@@ -5,8 +5,8 @@ import ndy.domain.user.domain.*
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.userIdContext
 import ndy.global.util.authenticationFail
-import ndy.global.util.requiresNewTransaction
 import ndy.global.util.notFound
+import ndy.global.util.requiresNewTransaction
 
 class UserService(
     private val repository: UserRepository,

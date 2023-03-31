@@ -6,13 +6,12 @@ import ndy.domain.article.comment.domain.CommentRepository
 import ndy.domain.article.comment.domain.CommentWithAuthor
 import ndy.domain.article.domain.ArticleId
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.ProfileIdContext
 import ndy.global.util.mandatoryTransaction
 
 class CommentService(
     private val repository: CommentRepository
 ) {
-    context (ProfileIdContext)
+    context (AuthenticatedUserContext)
     suspend fun add(articleId: ArticleId, body: String) = mandatoryTransaction {
         val comment = Comment.ofCreate(body)
         repository.save(

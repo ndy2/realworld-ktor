@@ -14,7 +14,7 @@ fun illegalState(): Nothing = throw IllegalStateException()
 fun validationFail(message: String? = null, e: Exception? = null): Nothing = throw ValidationException(message, e)
 
 fun forbiddenIf(condition: Boolean) {
-    if(condition){
+    if (condition) {
         throw AccessDeniedException()
     }
 }

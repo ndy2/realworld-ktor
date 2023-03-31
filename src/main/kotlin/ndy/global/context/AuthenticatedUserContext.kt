@@ -50,15 +50,3 @@ fun userIdContext(userId: UserId): UserIdContext {
         override val userId: ULong = userId.value
     }
 }
-
-interface ProfileIdContext {
-    val profileId: ProfileId
-}
-
-/* always use this method to create ProfileIdContext - except for test */
-context (AuthenticatedUserContext)
-fun profileIdContext(): ProfileIdContext {
-    return object : ProfileIdContext {
-        override val profileId = this@AuthenticatedUserContext.profileId
-    }
-}
