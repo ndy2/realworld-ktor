@@ -1,6 +1,6 @@
 package ndy.domain.article.application
 
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
 
 data class ArticleSearchCond(
     val tag: String?,

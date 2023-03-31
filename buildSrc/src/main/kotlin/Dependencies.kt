@@ -41,6 +41,7 @@ sealed class Dependencies {
         //https://github.com/JetBrains/Exposed
         const val EXPOSED_CORE = "org.jetbrains.exposed:exposed-core:${Versions.exposedVersion}"
         const val EXPOSED_JDBC = "org.jetbrains.exposed:exposed-jdbc:${Versions.exposedVersion}"
+        const val EXPOSED_KOTLIN_DATETIME = "org.jetbrains.exposed:exposed-kotlin-datetime:${Versions.exposedVersion}"
 
         //https://www.h2database.com/
         const val H2_DATABASE = "com.h2database:h2:${Versions.h2Version}"
@@ -85,7 +86,7 @@ sealed class Dependencies {
         const val KONFORM = "io.konform:konform:0.4.0" // validation
 
         //https://github.com/Kotlin/kotlinx-datetime
-        const val KOTLINX_DATETIME =  "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0" // serialize date and time
+        const val KOTLINX_DATETIME = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0" // serialize date and time
     }
 }
 

@@ -11,6 +11,4 @@ data class User(
 )
 
 @JvmInline
-value class UserId(
-    val value: ULong
-) : Principal
+value class UserId(val value: ULong) : Principal

@@ -1,6 +1,6 @@
 package ndy.domain.article.comment.application
 
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
 
 data class CommentResult(
     val id: ULong,
