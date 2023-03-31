@@ -2,6 +2,13 @@ package ndy.domain.article.domain
 
 import ndy.domain.profile.domain.ProfileId
 
+/**
+ * implies single article row with its author id
+ * first - article
+ * second - authorId
+ */
+typealias ArticleRow = Pair<Article, ProfileId>
+
 interface ArticleRepository {
 
     fun save(article: Article, authorId: ProfileId): Article
@@ -19,5 +26,9 @@ interface ArticleRepository {
         title: String?,
         description: String?,
         body: String?
-    ): Pair<Article, ProfileId>?
+    ): ArticleRow?
+
+    fun findRowBySlug(slug: String) : ArticleRow?
+
+    fun deleteBySlug(slug: String)
 }

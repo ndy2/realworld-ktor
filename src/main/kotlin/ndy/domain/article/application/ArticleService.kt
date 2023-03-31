@@ -105,10 +105,10 @@ class ArticleService(
     suspend fun update(slug: String, title: String?, description: String?, body: String?): ArticleResult {
         // 1. update article with new slug
         val updateSlug = title?.let { getSlug(it) } ?: slug
-        val result = repository.updateBySlug(slug, updateSlug, title, description, body)
+        val articleRow = repository.updateBySlug(slug, updateSlug, title, description, body)
             ?: notFoundField(Article::slug, slug)
-        val article = result.first
-        val authorId = result.second
+        val article = articleRow.first
+        val authorId = articleRow.second
 
         // 2. check updatable - is current user writer of the article
         forbiddenIf(profileId != authorId)
@@ -140,8 +140,18 @@ class ArticleService(
         )
     }
 
+    context (AuthenticatedUserContext)
     suspend fun deleteBySlug(slug: String) {
-        TODO("Not yet implemented")
+        // 1. check article exists
+        val articleRow = repository.findRowBySlug(slug) ?: notFoundField(Article::slug, slug)
+        val article = articleRow.first
+        val authorId = articleRow.second
+
+        // 2. check deletable - is current user writer of the article
+        forbiddenIf(profileId != authorId)
+
+        // 3. delete
+        repository.deleteBySlug(slug)
     }
 
     suspend fun addComment(slug: String, body: String): CommentResult {

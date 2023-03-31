@@ -2,6 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleRepository
+import ndy.domain.article.domain.ArticleRow
 import ndy.domain.profile.domain.ProfileId
 import ndy.infra.tables.TagTable.Tags
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
@@ -59,7 +60,15 @@ object ArticleTable : ArticleRepository {
         title: String?,
         description: String?,
         body: String?
-    ): Pair<Article, ProfileId>? {
+    ): ArticleRow? {
+        TODO("Not yet implemented")
+    }
+
+    override fun findRowBySlug(slug: String): ArticleRow? {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteBySlug(slug: String) {
         TODO("Not yet implemented")
     }
 
