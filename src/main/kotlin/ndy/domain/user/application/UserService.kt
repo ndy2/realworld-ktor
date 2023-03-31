@@ -1,7 +1,6 @@
 package ndy.domain.user.application
 
 import ndy.context.AuthenticatedUserContext
-import ndy.context.LoggingContext
 import ndy.context.userIdContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
@@ -9,7 +8,6 @@ import ndy.util.authenticationFail
 import ndy.util.newTransaction
 import ndy.util.notFound
 
-context (LoggingContext)
 class UserService(
     private val repository: UserRepository,
     private val profileService: ProfileService,
@@ -17,10 +15,9 @@ class UserService(
     private val passwordVerifier: PasswordVerifier,
 ) {
     suspend fun login(email: String, password: String) = newTransaction {
-        log.info("login request - email : $email")
-
         // 1. find user
-        val user = repository.findUserByEmail(Email(email)) ?: authenticationFail("login failure")
+        val user = repository.findUserByEmailWithProfile(Email(email)) ?: authenticationFail("login failure")
+        require(user.profile != null)
 
         // 2. check password
         user.password.checkPassword(password, passwordVerifier)
@@ -28,22 +25,17 @@ class UserService(
         // 3. create token
         val token = JwtTokenService.createToken(user)
 
-        // 4. get profile - TODO apply join query
-        val profileResult = with(userIdContext(user.id)) { profileService.getByUserId() }.await()
-
         // 4. return
         UserLoginResult(
             email = user.email.value,
             token = token,
-            username = profileResult.username,
-            bio = profileResult.bio,
-            image = profileResult.image,
+            username = user.profile.username.value,
+            bio = user.profile.bio?.value,
+            image = user.profile.image?.fullPath
         )
     }
 
     suspend fun register(username: String, email: String, password: String) = newTransaction {
-        log.info("register new user - username: $username, password : $password")
-
         // 1. save user
         val user = repository.save(
             Email(email),
@@ -59,20 +51,16 @@ class UserService(
 
     context (AuthenticatedUserContext)
     suspend fun getById() = newTransaction {
-        // 1. find user
-        val foundUser = repository.findUserById(userId) ?: notFound<User>(userId.value)
+        // 1. find user with profile
+        val foundUser = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
+        require(foundUser.profile != null)
 
-        // 2. get profile - TODO apply join query
-        val profileResult = with(userIdContext(userId)) {
-            profileService.getByUserId()
-        }.await()
-
-        // 3. return
+        // 2. return
         UserResult(
             email = foundUser.email.value,
-            username = profileResult.username,
-            bio = profileResult.bio,
-            image = profileResult.image
+            username = foundUser.profile.username.value,
+            bio = foundUser.profile.bio?.value,
+            image = foundUser.profile.image?.fullPath
         )
     }
 
@@ -81,28 +69,24 @@ class UserService(
         email: String?, password: String?,
         username: String?, bio: String?, image: String?
     ) = newTransaction {
-        // 1. update user
+        // 1. get origUser
+        val origUser = getById()
+
+        // 2. update user
         repository.updateById(userId, email?.let { Email(it) }, password?.let { Password(it) })
 
-        // 2. find user
-        val foundUser = repository.findUserById(userId) ?: notFound<User>(userId.value)
+        // 3. update profile
+        with(userIdContext(userId)) { profileService.update(username, bio, image) }
 
-        // 3. update profile and find it - TODO apply join query
-        val profileResult = with(userIdContext(userId)) {
-            profileService.update(username, bio, image).await()
-            profileService.getByUserId()
-        }.await()
-
-        // 4. combine result
+        // 4. return
         UserResult(
-            email = foundUser.email.value,
-            username = profileResult.username,
-            bio = profileResult.bio,
-            image = profileResult.image
+            email = email ?: origUser.email,
+            username = username ?: origUser.username,
+            bio = bio ?: origUser.bio,
+            image = image ?: origUser.image,
         )
     }
 }
-
 
 data class UserRegisterResult(
     val username: String,

@@ -40,7 +40,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 assumeNotDuplicated(usernameValue)
 
                 // action
-                val result = newTransaction { with(userIdContext(userId)) { sut.register(usernameValue).await() } }
+                val result = newTransaction { with(userIdContext(userId)) { sut.register(usernameValue) } }
 
                 // assert
                 assertSoftly(result) {
@@ -57,10 +57,10 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 // setup
                 val userId = newTransaction { userRepository.save(email, password) }.id
                 assumeNotDuplicated(userId.value, usernameValue)
-                newTransaction { with(userIdContext(userId)) { sut.register(usernameValue).await() } }
+                newTransaction { with(userIdContext(userId)) { sut.register(usernameValue) } }
 
                 // action
-                val result = newTransaction { with(userIdContext(userId)) { sut.getByUserId().await() } }
+                val result = newTransaction { with(userIdContext(userId)) { sut.getByUserId() } }
 
                 // assert
                 assertSoftly(result) {
@@ -88,13 +88,13 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 assume(username != updateUsername)
 
                 // setup - save a profile
-                newTransaction { with(userIdContext(userId)) { sut.register(username).await() } }
+                newTransaction { with(userIdContext(userId)) { sut.register(username) } }
 
                 // action - update profile
-                newTransaction { with(userIdContext(userId)) { sut.update(updateUsername, updateBio, updateImage).await() } }
+                newTransaction { with(userIdContext(userId)) { sut.update(updateUsername, updateBio, updateImage) } }
 
                 // assert - properly updated
-                val profileResult = newTransaction { with(userIdContext(userId)) { sut.getByUserId().await() } }
+                val profileResult = newTransaction { with(userIdContext(userId)) { sut.getByUserId() } }
                 assertSoftly(profileResult) {
                     this.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
                     this.bio shouldBeUpdatedToIf (updateBio isNotNullOr null)
@@ -110,7 +110,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 val userId = newTransaction { userRepository.save(email, password) }.id
                 newTransaction {
                     assumeNotDuplicated(username)
-                    with(userIdContext(userId)) { sut.register(username).await() }
+                    with(userIdContext(userId)) { sut.register(username) }
                 }
 
                 // action & assert

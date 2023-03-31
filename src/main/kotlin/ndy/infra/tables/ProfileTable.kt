@@ -3,7 +3,10 @@ package ndy.infra.tables
 import ndy.domain.profile.domain.*
 import ndy.domain.user.domain.UserId
 import ndy.infra.tables.UserTable.Users
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 object ProfileTable : ProfileRepository {
 
@@ -17,21 +20,13 @@ object ProfileTable : ProfileRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    private fun resultRowToProfile(row: ResultRow) = Profile(
-        id = ProfileId(row[Profiles.id]),
-        userId = UserId(row[Profiles.userId]),
-        username = Username(row[Profiles.username]),
-        bio = row[Profiles.bio]?.let { Bio(it) },
-        image = row[Profiles.image]?.let { Image.ofFullPath(it) },
-    )
-
     override suspend fun save(userId: UserId, username: Username): Profile {
         val insertStatement = Profiles.insert {
             it[Profiles.userId] = userId.value
             it[Profiles.username] = username.value
         }
 
-        return insertStatement.resultedValues?.singleOrNull()?.let(ProfileTable::resultRowToProfile)!!
+        return insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToProfile)!!
     }
 
     override suspend fun findById(id: ProfileId) = Profiles

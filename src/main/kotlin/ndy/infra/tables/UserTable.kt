@@ -1,6 +1,7 @@
 package ndy.infra.tables
 
 import ndy.domain.user.domain.*
+import ndy.infra.tables.ProfileTable.Profiles
 import org.jetbrains.exposed.sql.*
 
 object UserTable : UserRepository {
@@ -13,12 +14,6 @@ object UserTable : UserRepository {
 
         override val primaryKey = PrimaryKey(id)
     }
-
-    private fun resultRowToUser(row: ResultRow) = User(
-        id = UserId(row[Users.id]),
-        email = Email(row[Users.email]),
-        password = Password.withEncoded(row[Users.password]),
-    )
 
     override suspend fun save(
         email: Email,
@@ -50,4 +45,17 @@ object UserTable : UserRepository {
             }
         else 0
     }
+
+    override suspend fun findUserByIdWithProfile(id: UserId) =
+        (Users innerJoin Profiles)
+            .select { Users.id eq id.value }
+            .map(::resultRowToUserWithProfile)
+            .singleOrNull()
+
+    override suspend fun findUserByEmailWithProfile(email: Email) =
+        (Users innerJoin Profiles)
+            .select { Users.email eq email.value }
+            .map(::resultRowToUserWithProfile)
+            .singleOrNull()
+
 }

@@ -15,7 +15,7 @@ class ProfileService(
 ) {
 
     context (UserIdContext)
-    suspend fun register(username: String) = asyncTransaction {
+    suspend fun register(username: String) = mandatoryTransaction {
         // validate
         if (checkUsernameDuplicated(username)) throw UsernameDuplicatedException(username)
 
@@ -29,7 +29,7 @@ class ProfileService(
     }
 
     context (UserIdContext)
-    suspend fun getByUserId() = asyncTransaction {
+    suspend fun getByUserId() = mandatoryTransaction {
         // validate/action
         val profile = repository.findByUserId(UserId(userId)) ?: notFound<User>(userId)
 
@@ -43,7 +43,7 @@ class ProfileService(
     }
 
     context (UserIdContext)
-    suspend fun update(username: String?, bio: String?, image: String?) = asyncTransaction {
+    suspend fun update(username: String?, bio: String?, image: String?) = mandatoryTransaction {
         // validate
         username?.let { if (checkUsernameDuplicated(it)) throw UsernameDuplicatedException(it) }
 

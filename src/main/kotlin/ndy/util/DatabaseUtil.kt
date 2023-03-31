@@ -1,9 +1,8 @@
 package ndy.util
 
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 
 /**
  * a non-blocking transaction in exposed
@@ -14,6 +13,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionA
 suspend inline fun <T> newTransaction(crossinline block: suspend () -> T): T =
     newSuspendedTransaction(Dispatchers.IO) { block() }
 
-suspend inline fun <T> asyncTransaction(crossinline block: suspend () -> T): Deferred<T> {
-    return suspendedTransactionAsync(Dispatchers.IO) { block() }
+suspend inline fun <T> mandatoryTransaction(crossinline block: suspend () -> T): T {
+    TransactionManager.current()
+    return block()
 }

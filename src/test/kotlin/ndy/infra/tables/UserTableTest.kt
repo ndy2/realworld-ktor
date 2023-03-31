@@ -4,6 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
+import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.test.extentions.DB
@@ -56,9 +57,51 @@ class UserTableTest : BaseSpec(DB, body = {
             // assert - properly updated
             val foundUser = newTransaction { sut.findUserById(savedUserId) }
             assertSoftly(foundUser!!) {
-                it.email shouldBeUpdatedToIf (updateEmail isNotNullOr email)
-                it.password shouldBeUpdatedToIf (updatePassword isNotNullOr password)
+                this.email shouldBeUpdatedToIf (updateEmail isNotNullOr email)
+                this.password shouldBeUpdatedToIf (updatePassword isNotNullOr password)
             }
         }
+    }
+
+    test("findUserById with Profile") {
+        checkAll<Email, Password, Username> { email, password, username ->
+            // action
+            val savedUser = newTransaction { sut.save(email, password) }
+            val savedProfile = newTransaction { ProfileTable.save(savedUser.id, username) }
+
+            // action
+            val foundUser = newTransaction { sut.findUserByIdWithProfile(savedUser.id) }!!
+
+            // assert
+            assertSoftly(foundUser) {
+                password.encodedPassword // invoke getter
+                this.id shouldBe savedUser.id
+                this.email shouldBe email
+                this.password shouldBe password
+            }
+
+            foundUser.profile shouldNotBe null
+            assertSoftly(foundUser.profile!!) {
+                this.userId shouldBe savedUser.id
+                this.username shouldBe username
+            }
+        }
+    }
+
+    test("save user proc"){
+        newTransaction {
+            val user = sut.save(Email("haha@gmail.com"), Password("1234"))
+            val profile =
+                ProfileTable.save(user.id, Username("haha"))
+
+            val userWithProfile = sut.findUserByEmailWithProfile(Email("haha@gmail.com"))
+            userWithProfile shouldNotBe null
+            assertSoftly(userWithProfile!!) {
+                this.id shouldBe user.id
+                this.email shouldBe Email("haha@gmail.com")
+                this.password shouldBe Password("1234")
+            }
+        }
+
     }
 })

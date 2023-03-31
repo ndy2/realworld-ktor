@@ -39,7 +39,7 @@ class FollowServiceTest : BaseSpec(DB, body = {
 
     context("check follow") {
         test("save n, delete m and check exists for all saved entries") {
-            checkAll(Arb.int(3, 10), Arb.int(0, 5)) { n, m ->
+            checkAll(Arb.int(4, 10), Arb.int(0, 5)) { n, m ->
                 // setup
                 assume(n >= m)
                 val savePair = buildList(n) {
