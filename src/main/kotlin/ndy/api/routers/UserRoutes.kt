@@ -32,7 +32,7 @@ fun Route.userRouting() {
         )
 
         // return
-        val response = UserResponse.ofRegisterResult(result)
+        val response = UserResponse.ofResult(result)
         call.created(mapOf("user" to response))
     }
 
@@ -51,7 +51,7 @@ fun Route.userRouting() {
         )
 
         // return
-        val response = UserResponse.ofLoginResult(result)
+        val response = UserResponse.ofResult(result)
         call.okUser(response)
     }
 

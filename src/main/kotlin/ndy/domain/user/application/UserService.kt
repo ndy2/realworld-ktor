@@ -1,9 +1,9 @@
 package ndy.domain.user.application
 
-import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.userIdContext
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
+import ndy.global.context.AuthenticatedUserContext
+import ndy.global.context.userIdContext
 import ndy.global.util.authenticationFail
 import ndy.global.util.newTransaction
 import ndy.global.util.notFound
@@ -26,7 +26,7 @@ class UserService(
         val token = JwtTokenService.createToken(user)
 
         // 4. return
-        UserLoginResult(
+        UserResult(
             email = user.email.value,
             token = token,
             username = user.profile.username.value,
@@ -46,7 +46,13 @@ class UserService(
         with(userIdContext(user.id)) { profileService.register(username) }
 
         // 3. return
-        UserRegisterResult(username, email)
+        UserResult(
+            email = email,
+            username = username,
+            token = null,
+            bio = null,
+            image = null,
+        )
     }
 
     context (AuthenticatedUserContext)
@@ -59,6 +65,7 @@ class UserService(
         UserResult(
             email = foundUser.email.value,
             username = foundUser.profile.username.value,
+            token = null, /* would be filled @routs */
             bio = foundUser.profile.bio?.value,
             image = foundUser.profile.image?.fullPath
         )
@@ -82,6 +89,7 @@ class UserService(
         UserResult(
             email = email ?: origUser.email,
             username = username ?: origUser.username,
+            token = null, /* would be filled @routs */
             bio = bio ?: origUser.bio,
             image = image ?: origUser.image,
         )

@@ -16,7 +16,6 @@ class ProfileService(
     private val repository: ProfileRepository,
     private val followService: FollowService,
 ) {
-
     context (UserIdContext)
     suspend fun register(username: String) = mandatoryTransaction {
         // validate
@@ -26,9 +25,7 @@ class ProfileService(
         val profile = repository.save(UserId(userId), Username(username))
 
         // return
-        ProfileResult(
-            username = profile.username.value
-        )
+        ProfileResult.ofEntity(profile, false)
     }
 
     context (UserIdContext)
@@ -37,12 +34,7 @@ class ProfileService(
         val profile = repository.findByUserId(UserId(userId)) ?: notFound<User>(userId)
 
         // return
-        ProfileResult(
-            username = profile.username.value,
-            bio = profile.bio?.value,
-            image = profile.image?.fullPath,
-            following = false
-        )
+        ProfileResult.ofEntity(profile, false/* always used for current user */)
     }
 
     context (UserIdContext)
@@ -76,12 +68,7 @@ class ProfileService(
             else followService.checkFollow(profile.userId)
 
         // return
-        ProfileResult(
-            username = profile.username.value,
-            bio = profile.bio?.value,
-            image = profile.image?.fullPath,
-            following = following
-        )
+        ProfileResult.ofEntity(profile, following)
     }
 
     context (AuthenticatedUserContext)
@@ -94,12 +81,7 @@ class ProfileService(
         followService.follow(profile.userId)
 
         // return
-        ProfileResult(
-            username = profile.username.value,
-            bio = profile.bio?.value,
-            image = profile.image?.fullPath,
-            following = true
-        )
+        ProfileResult.ofEntity(profile, true)
     }
 
     context (AuthenticatedUserContext)
@@ -112,12 +94,7 @@ class ProfileService(
         followService.unfollow(profile.userId)
 
         // return
-        ProfileResult(
-            username = profile.username.value,
-            bio = profile.bio?.value,
-            image = profile.image?.fullPath,
-            following = false
-        )
+        ProfileResult.ofEntity(profile, false)
     }
 }
 
