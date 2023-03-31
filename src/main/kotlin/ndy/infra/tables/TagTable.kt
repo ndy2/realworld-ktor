@@ -1,6 +1,7 @@
 package ndy.infra.tables
 
 import ndy.domain.tag.domain.Tag
+import ndy.domain.tag.domain.TagId
 import ndy.domain.tag.domain.TagRepository
 import org.jetbrains.exposed.sql.*
 
@@ -27,5 +28,9 @@ object TagTable : TagRepository {
 
     override fun findAllWhereNameIn(names: List<String>) = Tags
         .select { Tags.name inList names }
+        .map(ResultRow::toTag)
+
+    override fun findAllWhereIdIn(tagIds: List<TagId>) = Tags
+        .select { Tags.id inList tagIds.map(TagId::value) }
         .map(ResultRow::toTag)
 }

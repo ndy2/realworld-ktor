@@ -59,13 +59,13 @@ class ProfileService(
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun getByUsername(username: String) = newTransaction {
         // validate - user exists & setup - find target userId
-        val profile = Username(username)
-            .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
+        val (profile, profileId) = Username(username)
+            .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
 
         // action - check following
         val following =
             if (userIdNullable == null) false // false if not authenticated
-            else followService.checkFollow(profile.userId)
+            else followService.checkFollow(profileId)
 
         // return
         ProfileResult.ofEntity(profile, following)
@@ -74,11 +74,11 @@ class ProfileService(
     context (AuthenticatedUserContext)
     suspend fun follow(username: String) = newTransaction {
         // validate - user exists & setup - find target userId
-        val profile = Username(username)
-            .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
+        val (profile, profileId) = Username(username)
+            .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
 
         // action
-        followService.follow(profile.userId)
+        followService.follow(profileId)
 
         // return
         ProfileResult.ofEntity(profile, true)
@@ -87,11 +87,11 @@ class ProfileService(
     context (AuthenticatedUserContext)
     suspend fun unfollow(username: String) = newTransaction {
         // validate - user exists & setup - find target userId
-        val profile = Username(username)
-            .run { repository.findByUsername(this) ?: notFoundField(Profile::username, this) }
+        val (profile, profileId) = Username(username)
+            .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
 
         // action
-        followService.unfollow(profile.userId)
+        followService.unfollow(profileId)
 
         // return
         ProfileResult.ofEntity(profile, false)

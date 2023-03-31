@@ -83,7 +83,7 @@ class UserService(
         repository.updateById(userId, email?.let { Email(it) }, password?.let { Password(it) })
 
         // 3. update profile
-        with(userIdContext(userId)) { profileService.update(username, bio, image) }
+        with(userIdContext()) { profileService.update(username, bio, image) }
 
         // 4. return
         UserResult(

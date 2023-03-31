@@ -1,10 +1,10 @@
 package ndy.domain.profile.follow.domain
 
-import ndy.domain.user.domain.UserId
+import ndy.domain.profile.domain.ProfileId
 
 interface FollowRepository {
 
-    suspend fun save(followerId: UserId, followeeId: UserId)
-    suspend fun delete(followerId: UserId, followeeId: UserId)
-    suspend fun exists(followerId: UserId, followeeId: UserId): Boolean
+    suspend fun save(followerId: ProfileId, followeeId: ProfileId)
+    suspend fun delete(followerId: ProfileId, followeeId: ProfileId)
+    suspend fun exists(followerId: ProfileId, followeeId: ProfileId): Boolean
 }

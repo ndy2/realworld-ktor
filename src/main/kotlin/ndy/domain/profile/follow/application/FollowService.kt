@@ -1,24 +1,24 @@
 package ndy.domain.profile.follow.application
 
-import ndy.global.context.AuthenticatedUserContext
+import ndy.domain.profile.domain.ProfileId
 import ndy.domain.profile.follow.domain.FollowRepository
-import ndy.domain.user.domain.UserId
+import ndy.global.context.AuthenticatedUserContext
 
 class FollowService(
     private val repository: FollowRepository
 ) {
     context (AuthenticatedUserContext)
-    suspend fun follow(targetUserId: UserId) {
-        repository.save(userId, targetUserId)
+    suspend fun follow(targetProfileId: ProfileId) {
+        repository.save(profileId, targetProfileId)
     }
 
     context (AuthenticatedUserContext)
-    suspend fun unfollow(targetUserId: UserId) {
-        repository.delete(userId, targetUserId)
+    suspend fun unfollow(targetProfileId: ProfileId) {
+        repository.delete(profileId, targetProfileId)
     }
 
     context (AuthenticatedUserContext)
-    suspend fun checkFollow(targetUserId: UserId): Boolean {
-        return repository.exists(userId, targetUserId)
+    suspend fun checkFollow(targetProfileId: ProfileId): Boolean {
+        return repository.exists(profileId, targetProfileId)
     }
 }

@@ -23,7 +23,7 @@ interface AuthenticatedUserContext {
     val profileId: ProfileId
 
     // use it in context of authenticate(optional = true)
-    val profileIdNullable: ProfileId??
+    val profileIdNullable: ProfileId?
 }
 
 fun authenticatedUserContext(call: ApplicationCall) =
@@ -33,3 +33,31 @@ fun authenticatedUserContext(call: ApplicationCall) =
         override val profileId by lazy { call.profileId()!! }
         override val profileIdNullable = call.profileId()
     }
+
+interface UserIdContext {
+    val userId: ULong
+}
+
+context (AuthenticatedUserContext)
+fun userIdContext(): UserIdContext {
+    return object : UserIdContext {
+        override val userId: ULong = this@AuthenticatedUserContext.userId.value
+    }
+}
+
+fun userIdContext(userId: UserId): UserIdContext {
+    return object : UserIdContext {
+        override val userId: ULong = userId.value
+    }
+}
+
+interface ProfileIdContext {
+    val profileId: ULong
+}
+
+context (AuthenticatedUserContext)
+fun profileIdContext(): ProfileIdContext {
+    return object : ProfileIdContext {
+        override val profileId = this@AuthenticatedUserContext.profileId.value
+    }
+}

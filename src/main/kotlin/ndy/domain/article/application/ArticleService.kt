@@ -52,10 +52,10 @@ class ArticleService(
         // 3. save it!
         repository.save(article, authorId, tagIds)
 
-        // 4. find author profile
-        val author = with(userIdContext(userId)) { profileService.getByUserId() }
+        // 4. find author (currentUser) profile
+        val author = with(userIdContext()) { profileService.getByUserId() }
 
-        // 5. combine to result
+        // 5. return
         ArticleResult(
             slug = article.slug,
             title = article.title,
@@ -117,7 +117,7 @@ class ArticleService(
         forbiddenIf(profileId != authorId)
 
         // 3. get author (current user) profile
-        val author = with(userIdContext(userId)) { profileService.getByUserId() }
+        val author = with(userIdContext()) { profileService.getByUserId() }
 
         // 4. check favorited
 
