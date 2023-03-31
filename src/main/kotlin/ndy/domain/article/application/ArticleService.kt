@@ -36,8 +36,7 @@ class ArticleService(
 
         // 2. create article
         val authorId = profileId
-        val article = Article(
-            slug = getSlug(title),
+        val article = Article.ofCreate(
             title = title,
             description = description,
             body = body,
@@ -140,7 +139,7 @@ class ArticleService(
     context (AuthenticatedUserContext)
     suspend fun deleteBySlug(slug: String) = newTransaction {
         // 1. check article exists
-        val (article, authorId) = repository.findBySlug(slug) ?: notFoundField(Article::slug, slug)
+        val (_, authorId) = repository.findBySlug(slug) ?: notFoundField(Article::slug, slug)
 
         // 2. check deletable - is current user writer of the article
         forbiddenIf(profileId != authorId)
