@@ -64,12 +64,7 @@ data class ArticleResult(
             updatedAt = article.updatedAt,
             favorited = favorited,
             favoritesCount = favoritesCount,
-            author = AuthorResult(
-                author.username,
-                author.bio,
-                author.image,
-                following
-            )
+            author = AuthorResult.from(author, following)
         )
     }
 }
@@ -85,6 +80,13 @@ data class AuthorResult(
             username = author.username.value,
             bio = author.bio?.value,
             image = author.image?.fullPath,
+            following = following
+        )
+
+        fun from(author: ProfileResult, following: Boolean) = AuthorResult(
+            username = author.username,
+            bio = author.bio,
+            image = author.image,
             following = following
         )
     }

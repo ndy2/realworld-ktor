@@ -69,7 +69,8 @@ private val appModule = module {
     singleOf(::CommentService)
 
     // favorite
-    single { FavoriteService() } // TODO - add repository
+    single<FavoriteRepository> { FavoriteTable }
+    singleOf(::FavoriteService)
 
     // tag domain
     single<TagRepository> { TagTable }
