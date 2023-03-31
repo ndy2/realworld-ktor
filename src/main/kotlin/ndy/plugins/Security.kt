@@ -6,8 +6,10 @@ import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.exception.AuthenticationException
+import ndy.global.security.Principal
 
 const val TOKEN_SCHEMA = "Token"
 
@@ -32,8 +34,13 @@ fun Application.configureSecurity() {
             )
 
             validate {
-                val claim = it.payload.getClaim("id") ?: throw AuthenticationException("login failure")
-                UserId(claim.asLong().toULong())
+                val userIdClaim = it.payload.getClaim("user_id") ?: throw AuthenticationException("login failure")
+                val profileIdClaim = it.payload.getClaim("profile_id") ?: throw AuthenticationException("login failure")
+
+                val userId = UserId(userIdClaim.asLong().toULong())
+                val profileId = ProfileId(profileIdClaim.asLong().toULong())
+
+                Principal(userId, profileId)
             }
         }
     }

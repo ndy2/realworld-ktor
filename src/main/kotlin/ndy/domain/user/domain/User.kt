@@ -1,6 +1,5 @@
 package ndy.domain.user.domain
 
-import io.ktor.server.auth.*
 import ndy.domain.profile.domain.Profile
 
 data class User(
@@ -11,4 +10,4 @@ data class User(
 )
 
 @JvmInline
-value class UserId(val value: ULong) : Principal
+value class UserId(val value: ULong)
