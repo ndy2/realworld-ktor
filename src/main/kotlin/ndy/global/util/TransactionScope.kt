@@ -11,10 +11,12 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
  * see - https://github.com/JetBrains/Exposed/wiki/Transactions#working-with-coroutines
  * see - https://ktor.io/docs/interactive-website-add-persistence.html#queries
  */
+// throw error if there is no current transaction
 // run with new transaction
-suspend inline fun <T> requiresNewTransaction(crossinline block: suspend () -> T): T =
-    newSuspendedTransaction(Dispatchers.IO) { block() }
-
+suspend inline fun <T> requiresNewTransaction(crossinline block: suspend () -> T): T {
+    TransactionManager.current()
+    return newSuspendedTransaction(Dispatchers.IO) { block() }
+}
 
 // throw error if there is no current transaction
 suspend inline fun <T> mandatoryTransaction(crossinline block: suspend () -> T): T {

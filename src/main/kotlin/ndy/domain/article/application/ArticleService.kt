@@ -7,8 +7,10 @@ import ndy.domain.article.comment.domain.CommentId
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.Article.Companion.createSlug
 import ndy.domain.article.domain.ArticleRepository
+import ndy.domain.article.domain.AuthorId
 import ndy.domain.article.favorite.application.FavoriteService
 import ndy.domain.profile.application.ProfileService
+import ndy.domain.profile.domain.Username
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
@@ -23,47 +25,39 @@ class ArticleService(
     private val commentService: CommentService,
     private val favoriteService: FavoriteService,
 ) {
-    // TODO - get feed!
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = requiresNewTransaction {
-        // check favorited
-        // if (favorited exists) -> get profileId and pass it to repo
-        // else there is no restriction by favorited
+        // 1. setup find conditions
+        val favoritedArticleIds = searchCond.favorited?.let { favoriteService.getAllFavoritedArticleIds(Username(it)) }
+        val tagId = searchCond.tag?.let { tagService.getIdByName(it) }
+        val searchAuthor = searchCond.author?.let { profileService.getByUsername(it) }
 
-        // check tag
-        // if (tag exists) -> get TagId pass it to repo
-        // else there is no restriction by tag
+        // 2. find article with author and tagIds
+        val (articles, authors, tagIds) = repository.findByCond(
+            idFilter = favoritedArticleIds,
+            tagId = tagId,
+            authorId = searchAuthor?.id?.let { AuthorId(it) },
+            offset = searchCond.offset,
+            limit = searchCond.limit,
+        ).unzip()
 
-        // check author
-        // just pass it
+        // 3. collect additional infos
+        val tags = tagIds.map { tagService.getByTagIds(it) }
+        val favoritedList = articles.map { favoriteService.isFavorite(it.id) }
+        val favoriteCountsList = articles.map { favoriteService.getCount(it.id) }
+        val followings = followService.isFollowingList(authors.map { it.id })
 
-//        val articleIds = searchCond.favorited?.let { favoriteService.getAllFavoritedArticleIds(it) }?: emptyList()
-
-//        val (article, author, tagIds) =  repository.findByCond(
-
-//        ).unzip()
-
-        // handle all tags
-
-        listOf(
-            ArticleResult(
-                slug = "how-to-train-your-dragon",
-                title = "How to train your dragon",
-                description = "Ever wonder how?",
-                body = "It takes a Jacobian",
-                tagList = listOf("dargons", "training"),
-                createdAt = now(),
-                updatedAt = now(),
-                favorited = false,
-                favoritesCount = 0,
-                author = AuthorResult(
-                    username = "jake",
-                    bio = "I work at statefarm",
-                    image = "https://i.stack.imgur.com/xHWG8.jpg",
-                    following = false
-                )
+        // 4. return
+        (articles.indices).map {
+            ArticleResult.from(
+                article = articles[it],
+                tagResults = tags[it],
+                favorited = favoritedList[it],
+                favoritesCount = favoriteCountsList[it],
+                author = authors[it],
+                following = followings[it]
             )
-        )
+        }
     }
 
     // TODO - get feed!
@@ -129,15 +123,11 @@ class ArticleService(
             ?: notFoundField(Article::slug, slug)
 
         // 2. check favorited & get favoritesCount
-        val favorited = with(userIdContext()) {
-            favoriteService.isFavorite(article.id)
-        }
+        val favorited = favoriteService.isFavorite(article.id)
         val favoritesCount = favoriteService.getCount(article.id)
 
         // 3. check following
-        val following =
-            if (author.id == profileId) false
-            else followService.isFollowing(author.id)
+        val following = followService.isFollowing(author.id)
 
         // 4. find all tags
         val tagResults = tagService.getByTagIds(tagIds)
@@ -199,7 +189,6 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext /* optional = true */)
-    @OptIn(ExperimentalStdlibApi::class)
     suspend fun getComments(slug: String) = requiresNewTransaction {
         // 1. check articles exists
         val (article, _) = repository.findBySlug(slug)
@@ -207,17 +196,16 @@ class ArticleService(
 
         // 2. get all comments with its author
         val (comments, authors) = commentService.getWithAuthorByArticleId(article.id).unzip()
-        val size = comments.size
 
         // 3. if authenticated user get list of following
         //@formatter:off
         val followings =
-            if (profileIdNullable == null) { List(size) { false } }
+            if (profileIdNullable == null) { List(comments.size) { false } }
             else followService.isFollowingList(authors.map(Author::id))
         //@formatter:on
 
         // 4. zip and return
-        (0..<size).map { CommentResult.from(comments[it], authors[it], followings[it]) }
+        (comments.indices).map { CommentResult.from(comments[it], authors[it], followings[it]) }
     }
 
     context (AuthenticatedUserContext)
@@ -242,9 +230,7 @@ class ArticleService(
         val favoritesCount = favoriteService.getCount(article.id)
 
         // 3. check following
-        val following =
-            if (author.id == profileId) false
-            else followService.isFollowing(author.id)
+        val following = followService.isFollowing(author.id)
 
         // 4. find all tags
         val tagResults = tagService.getByTagIds(tagIds)
@@ -272,9 +258,7 @@ class ArticleService(
         val favoritesCount = favoriteService.getCount(article.id)
 
         // 3. check following
-        val following =
-            if (author.id == profileId) false
-            else followService.isFollowing(author.id)
+        val following = followService.isFollowing(author.id)
 
         // 4. find all tags
         val tagResults = tagService.getByTagIds(tagIds)

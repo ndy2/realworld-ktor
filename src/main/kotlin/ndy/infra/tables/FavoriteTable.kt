@@ -3,6 +3,7 @@ package ndy.infra.tables
 import ndy.domain.article.domain.ArticleId
 import ndy.domain.article.favorite.domain.FavoriteRepository
 import ndy.domain.profile.domain.ProfileId
+import ndy.domain.profile.domain.Username
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.ProfileTable.Profiles
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -42,4 +43,11 @@ object FavoriteTable : FavoriteRepository {
     override suspend fun countByArticleId(articleId: ArticleId) = Favorites
         .select { Favorites.articleId eq articleId.value }
         .count()
+
+    override suspend fun findAllFavoritedArticleIds(username: Username): List<ArticleId> {
+        return (Favorites innerJoin Profiles)
+            .slice(Favorites.articleId)
+            .select { Profiles.username eq username.value }
+            .map { ArticleId(it[Favorites.articleId]) }
+    }
 }

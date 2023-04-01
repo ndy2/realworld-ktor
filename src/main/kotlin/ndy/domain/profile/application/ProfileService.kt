@@ -7,10 +7,7 @@ import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.UserIdContext
 import ndy.global.exception.UsernameDuplicatedException
-import ndy.global.util.mandatoryTransaction
-import ndy.global.util.notFound
-import ndy.global.util.notFoundField
-import ndy.global.util.requiresNewTransaction
+import ndy.global.util.*
 
 class ProfileService(
     private val repository: ProfileRepository,
@@ -57,7 +54,7 @@ class ProfileService(
     }
 
     context (AuthenticatedUserContext/* optional = true */)
-    suspend fun getByUsername(username: String) = requiresNewTransaction {
+    suspend fun getByUsername(username: String) = requiredTransaction {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }

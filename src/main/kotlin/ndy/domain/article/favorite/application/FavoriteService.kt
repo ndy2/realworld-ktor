@@ -2,6 +2,7 @@ package ndy.domain.article.favorite.application
 
 import ndy.domain.article.domain.ArticleId
 import ndy.domain.article.favorite.domain.FavoriteRepository
+import ndy.domain.profile.domain.Username
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.util.mandatoryTransaction
 
@@ -25,5 +26,9 @@ class FavoriteService(
 
     suspend fun getCount(id: ArticleId) = mandatoryTransaction {
         repository.countByArticleId(id).toInt()
+    }
+
+    suspend fun getAllFavoritedArticleIds(username: Username) = mandatoryTransaction{
+        repository.findAllFavoritedArticleIds(username)
     }
 }

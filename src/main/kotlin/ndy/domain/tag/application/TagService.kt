@@ -39,4 +39,8 @@ class TagService(
         // return
         tags.map(TagResult::ofEntity)
     }
+
+    fun getIdByName(tagName: String): TagId? {
+        return repository.findByName(tagName)
+    }
 }
