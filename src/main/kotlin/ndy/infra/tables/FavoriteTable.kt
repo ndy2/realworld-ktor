@@ -3,6 +3,8 @@ package ndy.infra.tables
 import ndy.domain.article.domain.ArticleId
 import ndy.domain.article.favorite.domain.FavoriteRepository
 import ndy.domain.profile.domain.ProfileId
+import ndy.infra.tables.ArticleTable.Articles
+import ndy.infra.tables.ProfileTable.Profiles
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
@@ -12,8 +14,8 @@ import org.jetbrains.exposed.sql.select
 object FavoriteTable : FavoriteRepository {
 
     object Favorites : Table() {
-        val profileId = ulong("profile_id")/*.references(Profiles.id)*/
-        val articleId = ulong("article_id")/*.references(Articles.id)*/
+        val profileId = ulong("profile_id").references(Profiles.id)
+        val articleId = ulong("article_id").references(Articles.id)
     }
 
     override suspend fun save(profileId: ProfileId, articleId: ArticleId) {

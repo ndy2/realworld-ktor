@@ -26,6 +26,25 @@ class ArticleService(
     // TODO - get feed!
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = requiresNewTransaction {
+        // check favorited
+        // if (favorited exists) -> get profileId and pass it to repo
+        // else there is no restriction by favorited
+
+        // check tag
+        // if (tag exists) -> get TagId pass it to repo
+        // else there is no restriction by tag
+
+        // check author
+        // just pass it
+
+//        val articleIds = searchCond.favorited?.let { favoriteService.getAllFavoritedArticleIds(it) }?: emptyList()
+
+//        val (article, author, tagIds) =  repository.findByCond(
+
+//        ).unzip()
+
+        // handle all tags
+
         listOf(
             ArticleResult(
                 slug = "how-to-train-your-dragon",
