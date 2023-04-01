@@ -6,4 +6,6 @@ data class UserResult(
     val username: String,
     val bio: String?,
     val image: String?,
-)
+) {
+    // TODO add companion object -> factory method - from
+}
