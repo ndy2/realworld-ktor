@@ -10,6 +10,7 @@ import ndy.global.util.userId
  * context of authenticated user
  * *
  * see RouteUtils.authenticatedXXX for details
+ * reference - https://youtu.be/NxDIq-rFXUM
  */
 interface AuthenticatedUserContext {
 
@@ -27,13 +28,22 @@ interface AuthenticatedUserContext {
 }
 
 fun authenticatedUserContext(call: ApplicationCall) =
-    object : AuthenticatedUserContext {
-        override val userId by lazy { call.userId()!! }
-        override val userIdNullable = call.userId()
-        override val profileId by lazy { call.profileId()!! }
-        override val profileIdNullable = call.profileId()
-    }
+        object : AuthenticatedUserContext {
+            override val userId by lazy { call.userId()!! }
+            override val userIdNullable = call.userId()
+            override val profileId by lazy { call.profileId()!! }
+            override val profileIdNullable = call.profileId()
+        }
 
+/**
+ * context of userId
+ * *
+ * used in case of calling other domain's service @ service level
+ * e.g. userService.register -> profileService.register
+ * *
+ * this might be bad decision for the complexity or dependency point of view.
+ * but I introduced it for just fun! - apply context receiver
+ */
 interface UserIdContext {
     val userId: ULong
 }
