@@ -16,22 +16,21 @@ class UserService(
 ) {
     suspend fun login(email: String, password: String) = requiresNewTransaction {
         // 1. find user
-        val user = repository.findUserByEmailWithProfile(Email(email)) ?: authenticationFail("login failure")
-        require(user.profile != null)
+        val (user, profile) = repository.findUserByEmailWithProfile(Email(email)) ?: authenticationFail("login failure")
 
         // 2. check password
         user.password.checkPassword(password, passwordVerifier)
 
         // 3. create token
-        val token = JwtTokenService.createToken(user)
+        val token = JwtTokenService.createToken(user, profile)
 
         // 4. return
         UserResult(
             email = user.email.value,
             token = token,
-            username = user.profile.username.value,
-            bio = user.profile.bio?.value,
-            image = user.profile.image?.fullPath
+            username = profile.username.value,
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath
         )
     }
 
@@ -58,16 +57,15 @@ class UserService(
     context (AuthenticatedUserContext)
     suspend fun getById() = requiresNewTransaction {
         // 1. find user with profile
-        val foundUser = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
-        require(foundUser.profile != null)
+        val (user, profile) = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
 
         // 2. return
         UserResult(
-            email = foundUser.email.value,
-            username = foundUser.profile.username.value,
+            email = user.email.value,
+            username = profile.username.value,
             token = null, /* would be filled @routs */
-            bio = foundUser.profile.bio?.value,
-            image = foundUser.profile.image?.fullPath
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath
         )
     }
 

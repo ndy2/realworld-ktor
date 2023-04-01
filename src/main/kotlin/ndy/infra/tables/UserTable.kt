@@ -49,12 +49,12 @@ object UserTable : UserRepository {
     override suspend fun findUserByIdWithProfile(id: UserId) =
         (Users innerJoin Profiles)
             .select { Users.id eq id.value }
-            .map(ResultRow::toUserWithProfile)
+            .map { it.toUser() to it.toProfile() }
             .singleOrNull()
 
     override suspend fun findUserByEmailWithProfile(email: Email) =
         (Users innerJoin Profiles)
             .select { Users.email eq email.value }
-            .map(ResultRow::toUserWithProfile)
+            .map { it.toUser() to it.toProfile() }
             .singleOrNull()
 }
