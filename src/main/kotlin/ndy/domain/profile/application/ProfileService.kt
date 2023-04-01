@@ -20,7 +20,7 @@ class ProfileService(
         val profile = repository.save(userId, Username(username))
 
         // return
-        ProfileResult.ofEntity(profile, false)
+        ProfileResult.from(profile, false)
     }
 
     suspend fun getByUserId(userId: UserId) = mandatoryTransaction {
@@ -28,7 +28,7 @@ class ProfileService(
         val profile = repository.findByUserId(userId) ?: notFound<User>(userId.value)
 
         // return
-        ProfileResult.ofEntity(profile, false/* always used for current user */)
+        ProfileResult.from(profile, false/* always used for current user */)
     }
 
     suspend fun update(userId: UserId, username: String?, bio: String?, image: String?) = mandatoryTransaction {
@@ -61,7 +61,7 @@ class ProfileService(
             else false
 
         // return
-        ProfileResult.ofEntity(profile, following)
+        ProfileResult.from(profile, following)
     }
 
     context (AuthenticatedUserContext)
@@ -74,7 +74,7 @@ class ProfileService(
         followService.follow(targetProfileId = profile.id)
 
         // return
-        ProfileResult.ofEntity(profile, true)
+        ProfileResult.from(profile, true)
     }
 
     context (AuthenticatedUserContext)
@@ -87,7 +87,7 @@ class ProfileService(
         followService.unfollow(targetProfileId = profile.id)
 
         // return
-        ProfileResult.ofEntity(profile, false)
+        ProfileResult.from(profile, false)
     }
 }
 

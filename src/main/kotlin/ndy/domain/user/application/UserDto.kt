@@ -1,5 +1,8 @@
 package ndy.domain.user.application
 
+import ndy.domain.profile.domain.Profile
+import ndy.domain.user.domain.User
+
 data class UserResult(
     val email: String,
     val token: String?,
@@ -7,5 +10,13 @@ data class UserResult(
     val bio: String?,
     val image: String?,
 ) {
-    // TODO add companion object -> factory method - from
+    companion object {
+        fun from(user: User, profile: Profile, token: String?) = UserResult(
+            email = user.email.value,
+            token = token,
+            username = profile.username.value,
+            bio = profile.bio?.value,
+            image = profile.image?.fullPath,
+        )
+    }
 }

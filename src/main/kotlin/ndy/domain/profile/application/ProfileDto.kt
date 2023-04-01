@@ -10,7 +10,7 @@ data class ProfileResult(
     val following: Boolean,
 ) {
     companion object {
-        fun ofEntity(entity: Profile, following: Boolean) = ProfileResult(
+        fun from(entity: Profile, following: Boolean) = ProfileResult(
             id = entity.id.value,
             username = entity.username.value,
             bio = entity.bio?.value,

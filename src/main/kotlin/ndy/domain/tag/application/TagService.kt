@@ -15,7 +15,7 @@ class TagService(
         val tags = repository.findAll()
 
         // return
-        tags.map(TagResult::ofEntity)
+        tags.map(TagResult::from)
     }
 
     context (AuthenticatedUserContext)
@@ -37,13 +37,13 @@ class TagService(
         val tags = repository.findAllWhereIdIn(tagIds)
 
         // return
-        if (firstTagId == null) tags.map(TagResult::ofEntity)
+        if (firstTagId == null) tags.map(TagResult::from)
         else {
             val firstTag = tags.first { it.id == firstTagId }
             val result = tags.toMutableList()
             result.remove(firstTag)
             result.add(0, firstTag)
-            result.toList().map(TagResult::ofEntity)
+            result.toList().map(TagResult::from)
         }
     }
 

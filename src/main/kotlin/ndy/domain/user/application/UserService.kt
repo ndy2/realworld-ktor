@@ -24,13 +24,7 @@ class UserService(
         val token = JwtTokenService.createToken(user, profile)
 
         // 4. return
-        UserResult(
-            email = user.email.value,
-            token = token,
-            username = profile.username.value,
-            bio = profile.bio?.value,
-            image = profile.image?.fullPath
-        )
+        UserResult.from(user, profile, token)
     }
 
     suspend fun register(username: String, email: String, password: String) = requiresNewTransaction {
@@ -46,8 +40,8 @@ class UserService(
         // 3. return
         UserResult(
             email = email,
-            username = username,
             token = null,
+            username = username,
             bio = null,
             image = null,
         )
@@ -59,13 +53,7 @@ class UserService(
         val (user, profile) = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
 
         // 2. return
-        UserResult(
-            email = user.email.value,
-            username = profile.username.value,
-            token = null, /* would be filled @routs */
-            bio = profile.bio?.value,
-            image = profile.image?.fullPath
-        )
+        UserResult.from(user, profile, null)
     }
 
     context (AuthenticatedUserContext)
