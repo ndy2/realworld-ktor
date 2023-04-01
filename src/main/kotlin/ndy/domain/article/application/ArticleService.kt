@@ -275,5 +275,6 @@ class ArticleService(
         )
     }
 
+    // dummy false list for build List of not authenticated user's following/favorited
     private fun falseList(size: Int) = List(size) { false }
 }

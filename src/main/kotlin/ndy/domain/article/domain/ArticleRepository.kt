@@ -28,6 +28,7 @@ interface ArticleRepository {
     fun findBySlug(slug: String): ArticleWithAuthorId?
 
     fun deleteBySlug(slug: String): Int
+
     fun findByCond(
         idFilter: List<ArticleId>?,
         tagId: TagId?,
