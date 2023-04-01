@@ -36,6 +36,6 @@ object DB : BeforeEachListener, AfterEachListener {
     }
 
     override suspend fun afterEach(testCase: TestCase, result: TestResult) = transaction(database) {
-        SchemaUtils.drop(Articles, ArticleTags, /*Comments,*/ Follows, Profiles, Tags, Users)
+        SchemaUtils.drop(Articles, ArticleTags, Comments, Follows, Profiles, Tags, Users)
     }
 }
