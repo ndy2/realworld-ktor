@@ -18,7 +18,6 @@ import ndy.domain.user.application.UserService
 import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
-import ndy.global.context.DefaultLoggingContext
 import ndy.global.context.LoggingContext
 import ndy.infra.tables.*
 import org.koin.core.module.dsl.singleOf
@@ -39,40 +38,44 @@ fun Application.configureDi() {
 
     install(Koin) {
         slf4jLogger()
-        modules(appModule)
+        modules(module {
+            // logging context - used by koin
+            single<LoggingContext> { getLogger() }
+
+            // user domain
+            single<UserRepository> { UserTable }
+            single<PasswordEncoder> { BcryptPasswordService }
+            single<PasswordVerifier> { BcryptPasswordService }
+            singleOf(::UserService)
+
+            // profile domain
+            single<ProfileRepository> { ProfileTable }
+            singleOf(::ProfileService)
+
+            // follow
+            single<FollowRepository> { FollowTable }
+            singleOf(::FollowService)
+
+            // article domain
+            single<ArticleRepository> { ArticleTable }
+            singleOf(::ArticleService)
+
+            // comment
+            single<CommentRepository> { CommentTable }
+            singleOf(::CommentService)
+
+            // favorite
+            single<FavoriteRepository> { FavoriteTable }
+            singleOf(::FavoriteService)
+
+            // tag domain
+            single<TagRepository> { TagTable }
+            singleOf(::TagService)
+        })
     }
 }
 
-private val appModule = module {
-    single<LoggingContext> { DefaultLoggingContext } // should be added for context(LoggingContext)
-
-    // user domain
-    single<UserRepository> { UserTable }
-    single<PasswordEncoder> { BcryptPasswordService }
-    single<PasswordVerifier> { BcryptPasswordService }
-    singleOf(::UserService)
-
-    // profile domain
-    single<ProfileRepository> { ProfileTable }
-    singleOf(::ProfileService)
-
-    // follow
-    single<FollowRepository> { FollowTable }
-    singleOf(::FollowService)
-
-    // article domain
-    single<ArticleRepository> { ArticleTable }
-    singleOf(::ArticleService)
-
-    // comment
-    single<CommentRepository> { CommentTable }
-    singleOf(::CommentService)
-
-    // favorite
-    single<FavoriteRepository> { FavoriteTable }
-    singleOf(::FavoriteService)
-
-    // tag domain
-    single<TagRepository> { TagTable }
-    singleOf(::TagService)
+private fun Application.getLogger() = object : LoggingContext {
+    override val log = this@getLogger.log
 }
+

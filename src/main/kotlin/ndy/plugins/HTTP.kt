@@ -6,6 +6,7 @@ import io.ktor.server.plugins.cors.routing.*
 
 /**
  * Configure CORS - allow all!
+ * *
  * see - https://ktor.io/docs/cors.html#methods
  */
 fun Application.configureHTTP() {
@@ -15,6 +16,6 @@ fun Application.configureHTTP() {
         allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Patch)
         allowHeader(HttpHeaders.Authorization)
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        anyHost()
     }
 }
