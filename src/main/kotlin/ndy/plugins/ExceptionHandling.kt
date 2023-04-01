@@ -14,6 +14,11 @@ import ndy.global.exception.AuthenticationException
 import ndy.global.exception.EntityNotFoundException
 import ndy.global.exception.ValidationException
 
+/**
+ * Configure Exception Handling with Ktor - StatusPages plugin!
+ * *
+ * see https://ktor.io/docs/status-pages.html
+ */
 fun Application.configureExceptionHandling() {
 
     install(StatusPages) {

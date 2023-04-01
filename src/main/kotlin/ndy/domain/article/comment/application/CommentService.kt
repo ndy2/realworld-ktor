@@ -27,7 +27,7 @@ class CommentService(
 
     context (AuthenticatedUserContext)
     suspend fun delete(commentId: CommentId, articleId: ArticleId) = mandatoryTransaction {
-        // 1. check comment exists & deletable
+        // 1. check comment exists & deletable // TODO
 
         // 2. delete it!
         repository.deleteByCommentId(commentId)

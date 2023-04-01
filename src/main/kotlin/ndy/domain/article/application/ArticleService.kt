@@ -23,6 +23,7 @@ class ArticleService(
     private val commentService: CommentService,
     private val favoriteService: FavoriteService,
 ) {
+    // TODO - get feed!
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = requiresNewTransaction {
         listOf(
@@ -46,6 +47,7 @@ class ArticleService(
         )
     }
 
+    // TODO - get feed!
     context (AuthenticatedUserContext)
     suspend fun getFeed() = requiresNewTransaction {
         listOf(

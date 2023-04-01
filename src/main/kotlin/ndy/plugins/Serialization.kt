@@ -14,10 +14,10 @@ import kotlinx.serialization.json.Json
 
 /**
  * configure ContentNegotiation with json-kotlinx
- *
+ * *
  * see https://ktor.io/docs/serialization.html
  */
-@OptIn(ExperimentalSerializationApi::class)
+@OptIn(ExperimentalSerializationApi::class) /* for the usage of explicitNull flag */
 fun Application.configureSerialization() {
     install(ContentNegotiation) {
         val serializer = KotlinxSerializationConverter(Json { explicitNulls = true })

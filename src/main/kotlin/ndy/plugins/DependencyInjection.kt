@@ -18,7 +18,7 @@ import ndy.domain.user.application.UserService
 import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
-import ndy.global.context.LoggingContext
+import ndy.global.context.applicationLoggingContext
 import ndy.infra.tables.*
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -28,10 +28,10 @@ import org.koin.logger.slf4jLogger
 /**
  * Configure DI with Koin!
  * there is no DI feature in Ktor, Let's use Koin!
- *
+ * *
  * Koin has no auto-configuration feature as in Spring Boot
  * register module in below code
- *
+ * *
  * see https://insert-koin.io/docs/reference/koin-ktor/ktor/
  */
 fun Application.configureDi() {
@@ -40,7 +40,7 @@ fun Application.configureDi() {
         slf4jLogger()
         modules(module {
             // logging context - used by koin
-            single<LoggingContext> { getLogger() }
+            singleOf(::applicationLoggingContext)
 
             // user domain
             single<UserRepository> { UserTable }
@@ -74,8 +74,3 @@ fun Application.configureDi() {
         })
     }
 }
-
-private fun Application.getLogger() = object : LoggingContext {
-    override val log = this@getLogger.log
-}
-
