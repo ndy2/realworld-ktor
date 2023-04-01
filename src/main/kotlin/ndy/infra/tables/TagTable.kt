@@ -34,7 +34,9 @@ object TagTable : TagRepository {
         .select { Tags.id inList tagIds.map(TagId::value) }
         .map(ResultRow::toTag)
 
-    override fun findByName(tagName: String): TagId? {
-        TODO("Not yet implemented")
-    }
+    override fun findIdByName(tagName: String) = Tags
+        .slice(Tags.id)
+        .select { Tags.name eq tagName }
+        .map { TagId(it[Tags.id]) }
+        .singleOrNull()
 }

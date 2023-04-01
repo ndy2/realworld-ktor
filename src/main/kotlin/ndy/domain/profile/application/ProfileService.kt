@@ -53,7 +53,7 @@ class ProfileService(
     suspend fun getByUsername(username: String) = requiredTransaction {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
-            .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
+            .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
         // action - check following
         val following =
@@ -68,7 +68,7 @@ class ProfileService(
     suspend fun follow(username: String) = requiresNewTransaction {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
-            .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
+            .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
         // action
         followService.follow(targetProfileId = profile.id)
@@ -81,7 +81,7 @@ class ProfileService(
     suspend fun unfollow(username: String) = requiresNewTransaction {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
-            .run { repository.findProfileByUsername(this) ?: notFoundField(Profile::username, this) }
+            .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
         // action
         followService.unfollow(targetProfileId = profile.id)

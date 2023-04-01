@@ -48,7 +48,7 @@ inline fun <reified T : Any> Route.authenticatedGet(
     crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     get<T> {
-        this.run(build, call, it, optional)
+        this.run(build, call, it)
     }
 }
 
@@ -59,7 +59,7 @@ inline fun <reified T : Any> Route.authenticatedPost(
     crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     post<T> {
-        this.run(build, call, it, optional)
+        this.run(build, call, it)
     }
 }
 
@@ -70,7 +70,7 @@ inline fun <reified T : Any> Route.authenticatedPut(
     crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     put<T> {
-        this.run(build, call, it, optional)
+        this.run(build, call, it)
     }
 }
 
@@ -81,13 +81,12 @@ inline fun <reified T : Any> Route.authenticatedDelete(
     crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     delete<T> {
-        this.run(build, call, it, optional)
+        this.run(build, call, it)
     }
 }
 
 suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.run(
     crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit,
     call: ApplicationCall,
-    it: T,
-    optional: Boolean
-) = build(authenticatedUserContext(call, optional), applicationCallContext(call), it)
+    it: T
+) = build(authenticatedUserContext(call.authentication), applicationCallContext(call), it)

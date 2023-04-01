@@ -1,6 +1,5 @@
 package ndy.global.context
 
-import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
@@ -16,20 +15,24 @@ interface AuthenticatedUserContext {
 
     val authenticated: Boolean
 
-    // use it in context of authenticate(optional = false)
     val userId: UserId
 
-    // use it in context of authenticate(optional = false)
     val profileId: ProfileId
 }
 
-fun authenticatedUserContext(call: ApplicationCall, optional: Boolean) =
+fun authenticatedUserContext(authentication: AuthenticationContext) =
     object : AuthenticatedUserContext {
-        override val authenticated = optional
+        override val authenticated = (authentication.principal() as? Principal) != null
 
         // refer userId with no principal is not allowed
-        override val userId by lazy { (call.authentication.principal() as? Principal)?.userId!! }
+        override val userId by lazy {
+            (authentication.principal() as? Principal)?.userId
+                ?: error("illegal userId access")
+        }
 
         // refer profileId with no principal is not allowed
-        override val profileId by lazy { (call.authentication.principal() as? Principal)?.profileId!! }
+        override val profileId by lazy {
+            (authentication.principal() as? Principal)?.profileId
+                ?: error("illegal profileId access")
+        }
     }

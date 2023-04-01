@@ -32,15 +32,22 @@ class TagService(
         }
     }
 
-    suspend fun getByTagIds(tagIds: List<TagId>) = requiresNewTransaction {
+    suspend fun getByTagIds(tagIds: List<TagId>, firstTagId: TagId? = null) = mandatoryTransaction {
         // find all tags
         val tags = repository.findAllWhereIdIn(tagIds)
 
         // return
-        tags.map(TagResult::ofEntity)
+        if (firstTagId == null) tags.map(TagResult::ofEntity)
+        else {
+            val firstTag = tags.first { it.id == firstTagId }
+            val result = tags.toMutableList()
+            result.remove(firstTag)
+            result.add(0, firstTag)
+            result.toList().map(TagResult::ofEntity)
+        }
     }
 
     fun getIdByName(tagName: String): TagId? {
-        return repository.findByName(tagName)
+        return repository.findIdByName(tagName)
     }
 }

@@ -14,6 +14,7 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
+import ndy.global.exception.FieldNotFoundException
 import ndy.global.util.*
 
 class ArticleService(
@@ -29,10 +30,11 @@ class ArticleService(
         // 1. setup find conditions
         val favoritedArticleIds = searchCond.favorited?.let { favoriteService.getAllFavoritedArticleIds(Username(it)) }
         val tagId = searchCond.tag?.let { tagService.getIdByName(it) }
-        val searchAuthor = searchCond.author?.let { profileService.getByUsername(it) }
+        val searchAuthor = searchCond.author?.let { authorResultOrNull(it) }
+        if (searchCond.author != null && searchAuthor == null) return@requiresNewTransaction emptyList() // by postman api spec
 
         // 2. find article with author and tagIds
-        val (articles, authors, tagIds) = repository.findByCond(
+        val (articles, authors, tagIdsList) = repository.findByCond(
             idFilter = favoritedArticleIds,
             tagId = tagId,
             authorId = searchAuthor?.id?.let { AuthorId(it) },
@@ -41,7 +43,7 @@ class ArticleService(
         ).unzip()
 
         // 3. collect additional infos
-        val tags = tagIds.map { tagService.getByTagIds(it) }
+        val tagsList = tagIdsList.map { tagService.getByTagIds(it, firstTagId = tagId) }
         val favoritedList =
             if (authenticated) articles.map { favoriteService.isFavorite(it.id) }
             else falseList(articles.size)
@@ -54,7 +56,7 @@ class ArticleService(
         (articles.indices).map {
             ArticleResult.from(
                 article = articles[it],
-                tagResults = tags[it],
+                tagResults = tagsList[it],
                 favorited = favoritedList[it],
                 favoritesCount = favoriteCountsList[it],
                 author = authors[it],
@@ -62,6 +64,7 @@ class ArticleService(
             )
         }
     }
+
 
     // TODO - get feed!
     context (AuthenticatedUserContext)
@@ -123,7 +126,7 @@ class ArticleService(
         // 1. find article with author and tagIds
         val (article, author, tagIds) = repository
             .findWithAuthorAndTagIdsBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. check favorited & get favoritesCount
         val favorited = favoriteService.isFavorite(article.id)
@@ -152,7 +155,7 @@ class ArticleService(
         val updateSlug = title?.let { createSlug(it) } ?: slug
         val (_, authorId) = repository
             .updateBySlug(slug, updateSlug, title, description, body)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. check updatable - is current user writer of the article
         forbiddenIf(profileId != authorId)
@@ -166,7 +169,7 @@ class ArticleService(
         // 1. check article exists
         val (_, authorId) = repository
             .findBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. check deletable - is current user writer of the article
         forbiddenIf(profileId != authorId)
@@ -179,7 +182,7 @@ class ArticleService(
     suspend fun addComment(slug: String, body: String) = requiresNewTransaction {
         // 1. check article exists
         val (article, _) = repository.findBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. get author (current user)
         val author = profileService.getByUserId(userId)
@@ -195,7 +198,7 @@ class ArticleService(
     suspend fun getComments(slug: String) = requiresNewTransaction {
         // 1. setup -  check articles exists
         val (article, _) = repository.findBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. get all comments with its author
         val (comments, authors) = commentService.getWithAuthorByArticleId(article.id).unzip()
@@ -213,7 +216,7 @@ class ArticleService(
     suspend fun deleteComment(slug: String, commentId: ULong) = requiresNewTransaction {
         // 1. check articles exists
         val (article, _) = repository.findBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. delete it
         commentService.delete(CommentId(commentId), article.id)
@@ -224,7 +227,7 @@ class ArticleService(
         // 1. get article with author and tagIds
         val (article, author, tagIds) = repository
             .findWithAuthorAndTagIdsBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. do favorite and get count
         favoriteService.favorite(article.id)
@@ -252,7 +255,7 @@ class ArticleService(
         // 1. get article with author and tagIds
         val (article, author, tagIds) = repository
             .findWithAuthorAndTagIdsBySlug(slug)
-            ?: notFoundField(Article::slug, slug)
+            ?: notFound(Article::slug, slug)
 
         // 2. do unfavorite and get count
         favoriteService.unfavorite(article.id)
@@ -273,6 +276,13 @@ class ArticleService(
             author = author,
             following = following
         )
+    }
+
+    context (AuthenticatedUserContext)
+    private suspend fun authorResultOrNull(authorName: String) = try {
+        profileService.getByUsername(authorName)
+    } catch (e: FieldNotFoundException) {
+        null
     }
 
     // dummy false list for build List of not authenticated user's following/favorited
