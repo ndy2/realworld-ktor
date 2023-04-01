@@ -2,16 +2,21 @@ package ndy.infra.tables
 
 import ndy.domain.article.comment.domain.*
 import ndy.domain.article.domain.ArticleId
+import ndy.infra.tables.ArticleTable.Articles
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import org.jetbrains.exposed.sql.select
 
 object CommentTable : CommentRepository {
 
     object Comments : Table() {
         val id = ulong("id").autoIncrement()
         val authorId = ulong("author_id")/*.references(Profiles.id)*/
+        val articleId = ulong("article_id")/*.references(Articles.id)*/
         val body = varchar("body", 256)
         val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
         val updatedAt = datetime("updated_at")
@@ -22,6 +27,7 @@ object CommentTable : CommentRepository {
     override fun save(comment: Comment, authorId: AuthorId, articleId: ArticleId): Comment {
         val insertStatement = Comments.insert {
             it[Comments.authorId] = authorId.value
+            it[Comments.articleId] = articleId.value
             it[body] = comment.body
             it[createdAt] = comment.createdAt
             it[updatedAt] = comment.updatedAt
@@ -31,10 +37,12 @@ object CommentTable : CommentRepository {
     }
 
     override fun findWithAuthorByArticleId(articleId: ArticleId): List<CommentWithAuthor> {
-        TODO("Not yet implemented")
+        return (Comments innerJoin Articles).select {
+            Comments.articleId eq articleId.value
+        }.map { it.toComment() to it.toProfile() }
     }
 
     override fun deleteByCommentId(commentId: CommentId) {
-        TODO("Not yet implemented")
+        Comments.deleteWhere { id eq commentId.value }
     }
 }
