@@ -38,13 +38,18 @@ class TagService(
 
         // return
         if (firstTagId == null) tags.map(TagResult::from)
-        else {
-            val firstTag = tags.first { it.id == firstTagId }
-            val result = tags.toMutableList()
-            result.remove(firstTag)
-            result.add(0, firstTag)
-            result.toList().map(TagResult::from)
-        }
+        else moveFirstTag(tags, firstTagId)
+    }
+
+    private fun moveFirstTag(
+        tags: List<Tag>,
+        firstTagId: TagId?
+    ): List<TagResult> {
+        val firstTag = tags.first { it.id == firstTagId }
+        val result = tags.toMutableList()
+        result.remove(firstTag)
+        result.add(0, firstTag)
+        return result.toList().map(TagResult::from)
     }
 
     fun getIdByName(tagName: String): TagId? {
