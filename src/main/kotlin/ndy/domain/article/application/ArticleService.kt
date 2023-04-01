@@ -14,7 +14,6 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.tag.application.TagService
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.userIdContext
 import ndy.global.util.*
 
 class ArticleService(
@@ -106,7 +105,7 @@ class ArticleService(
             repository.save(article, authorId, tagIds)
 
             // 4. find author (currentUser) profile
-            val author = with(userIdContext()) { profileService.getByUserId() }
+            val author = profileService.getByUserId(userId)
 
             // 5. return
             ArticleResult.from(
@@ -183,7 +182,7 @@ class ArticleService(
             ?: notFoundField(Article::slug, slug)
 
         // 2. get author (current user)
-        val author = with(userIdContext()) { profileService.getByUserId() }
+        val author = profileService.getByUserId(userId)
 
         // 3. add comment
         val comment = commentService.add(article.id, body)

@@ -33,29 +33,3 @@ fun authenticatedUserContext(call: ApplicationCall, optional: Boolean) =
         // refer profileId with no principal is not allowed
         override val profileId by lazy { (call.authentication.principal() as? Principal)?.profileId!! }
     }
-
-/**
- * context of userId
- * *
- * used in case of calling other domain's service @ service level
- * e.g. userService.register -> profileService.register
- * *
- * this might be bad decision for the complexity or dependency point of view.
- * but I introduced it for just fun! - apply context receiver
- */
-interface UserIdContext {
-    val userId: ULong
-}
-
-context (AuthenticatedUserContext)
-fun userIdContext(): UserIdContext {
-    return object : UserIdContext {
-        override val userId: ULong = this@AuthenticatedUserContext.userId.value
-    }
-}
-
-fun userIdContext(userId: UserId): UserIdContext {
-    return object : UserIdContext {
-        override val userId: ULong = userId.value
-    }
-}

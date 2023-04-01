@@ -3,7 +3,6 @@ package ndy.domain.user.application
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.userIdContext
 import ndy.global.util.authenticationFail
 import ndy.global.util.notFound
 import ndy.global.util.requiresNewTransaction
@@ -42,7 +41,7 @@ class UserService(
         )
 
         // 2. save profile
-        with(userIdContext(user.id)) { profileService.register(username) }
+        profileService.register(user.id, username)
 
         // 3. return
         UserResult(
@@ -81,7 +80,7 @@ class UserService(
         repository.updateById(userId, email?.let { Email(it) }, password?.let { Password(it) })
 
         // 3. update profile
-        with(userIdContext()) { profileService.update(username, bio, image) }
+        profileService.update(userId, username, bio, image)
 
         // 4. return
         UserResult(
