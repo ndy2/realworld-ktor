@@ -14,4 +14,5 @@ interface CommentRepository {
     fun save(comment: Comment, authorId: AuthorId, articleId: ArticleId): Comment
     fun findWithAuthorByArticleId(articleId: ArticleId): List<CommentWithAuthor>
     fun deleteByCommentId(commentId: CommentId)
+    fun existsByIds(commentId: CommentId, authorId: AuthorId, articleId: ArticleId): Boolean
 }

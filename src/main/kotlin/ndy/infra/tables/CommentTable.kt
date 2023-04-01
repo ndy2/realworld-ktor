@@ -46,4 +46,12 @@ object CommentTable : CommentRepository {
     override fun deleteByCommentId(commentId: CommentId) {
         Comments.deleteWhere { id eq commentId.value }
     }
+
+    override fun existsByIds(commentId: CommentId, authorId: AuthorId, articleId: ArticleId) = Comments
+        .select {
+            Comments.id eq commentId.value
+            Comments.authorId eq commentId.value
+            Comments.articleId eq articleId.value
+        }
+        .empty().not()
 }

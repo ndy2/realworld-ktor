@@ -6,6 +6,7 @@ import ndy.domain.article.comment.domain.CommentRepository
 import ndy.domain.article.comment.domain.CommentWithAuthor
 import ndy.domain.article.domain.ArticleId
 import ndy.global.context.AuthenticatedUserContext
+import ndy.global.util.forbiddenIf
 import ndy.global.util.mandatoryTransaction
 
 class CommentService(
@@ -27,7 +28,8 @@ class CommentService(
 
     context (AuthenticatedUserContext)
     suspend fun delete(commentId: CommentId, articleId: ArticleId) = mandatoryTransaction {
-        // 1. check comment exists & deletable // TODO
+        // 1. check comment exists & deletable
+        forbiddenIf(!repository.existsByIds(commentId, profileId, articleId))
 
         // 2. delete it!
         repository.deleteByCommentId(commentId)
