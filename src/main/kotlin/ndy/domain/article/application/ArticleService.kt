@@ -43,9 +43,13 @@ class ArticleService(
 
         // 3. collect additional infos
         val tags = tagIds.map { tagService.getByTagIds(it) }
-        val favoritedList = articles.map { favoriteService.isFavorite(it.id) }
+        val favoritedList =
+            if (authenticated) articles.map { favoriteService.isFavorite(it.id) }
+            else falseList(articles.size)
         val favoriteCountsList = articles.map { favoriteService.getCount(it.id) }
-        val followings = followService.isFollowingList(authors.map { it.id })
+        val followings =
+            if (authenticated) followService.isFollowingList(authors.map { it.id })
+            else falseList(articles.size)
 
         // 4. return
         (articles.indices).map {
@@ -190,21 +194,19 @@ class ArticleService(
 
     context (AuthenticatedUserContext /* optional = true */)
     suspend fun getComments(slug: String) = requiresNewTransaction {
-        // 1. check articles exists
+        // 1. setup -  check articles exists
         val (article, _) = repository.findBySlug(slug)
             ?: notFoundField(Article::slug, slug)
 
         // 2. get all comments with its author
         val (comments, authors) = commentService.getWithAuthorByArticleId(article.id).unzip()
 
-        // 3. if authenticated user get list of following
-        //@formatter:off
+        // 3. get additional infos
         val followings =
-            if (profileIdNullable == null) { List(comments.size) { false } }
-            else followService.isFollowingList(authors.map(Author::id))
-        //@formatter:on
+            if (authenticated) followService.isFollowingList(authors.map(Author::id))
+            else falseList(comments.size)
 
-        // 4. zip and return
+        // 4. return
         (comments.indices).map { CommentResult.from(comments[it], authors[it], followings[it]) }
     }
 
@@ -273,4 +275,6 @@ class ArticleService(
             following = following
         )
     }
+
+    private fun falseList(size: Int) = List(size) { false }
 }

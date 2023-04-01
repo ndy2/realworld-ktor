@@ -14,29 +14,25 @@ import ndy.global.security.Principal
  */
 interface AuthenticatedUserContext {
 
+    val authenticated: Boolean
+
     // use it in context of authenticate(optional = false)
     val userId: UserId
 
-    // use it in context of authenticate(optional = true)
-    val userIdNullable: UserId?
-
     // use it in context of authenticate(optional = false)
     val profileId: ProfileId
-
-    // use it in context of authenticate(optional = true)
-    val profileIdNullable: ProfileId?
 }
 
-fun authenticatedUserContext(call: ApplicationCall) =
-        object : AuthenticatedUserContext {
-            // refer userId with no principal is not allowed
-            override val userId by lazy { (call.authentication.principal() as? Principal)?.userId!! }
-            override val userIdNullable = (call.authentication.principal() as? Principal)?.userId
+fun authenticatedUserContext(call: ApplicationCall, optional: Boolean) =
+    object : AuthenticatedUserContext {
+        override val authenticated = optional
 
-            // refer profileId with no principal is not allowed
-            override val profileId by lazy { (call.authentication.principal() as? Principal)?.profileId!! }
-            override val profileIdNullable = (call.authentication.principal() as? Principal)?.profileId
-        }
+        // refer userId with no principal is not allowed
+        override val userId by lazy { (call.authentication.principal() as? Principal)?.userId!! }
+
+        // refer profileId with no principal is not allowed
+        override val profileId by lazy { (call.authentication.principal() as? Principal)?.profileId!! }
+    }
 
 /**
  * context of userId

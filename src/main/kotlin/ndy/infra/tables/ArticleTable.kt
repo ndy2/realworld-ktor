@@ -82,7 +82,7 @@ object ArticleTable : ArticleRepository {
             if (title != null) it[Articles.title] = title
             if (description != null) it[Articles.description] = description
             if (body != null) it[Articles.body] = body
-            it[Articles.updatedAt] = now()
+            it[updatedAt] = now()
         }
 
         return findBySlug(slug)
@@ -95,5 +95,15 @@ object ArticleTable : ArticleRepository {
 
     override fun deleteBySlug(slug: String) = Articles
         .deleteWhere { Articles.slug eq slug }
+
+    override fun findByCond(
+        idFilter: List<ArticleId>?,
+        tagId: TagId?,
+        authorId: AuthorId?,
+        offset: Int,
+        limit: Int
+    ): List<ArticleWithAuthorAndTagIds> {
+        TODO("Not yet implemented")
+    }
 
 }
