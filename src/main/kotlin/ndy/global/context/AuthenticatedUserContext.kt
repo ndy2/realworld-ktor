@@ -1,10 +1,10 @@
 package ndy.global.context
 
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
-import ndy.global.util.profileId
-import ndy.global.util.userId
+import ndy.global.security.Principal
 
 /**
  * context of authenticated user
@@ -29,10 +29,13 @@ interface AuthenticatedUserContext {
 
 fun authenticatedUserContext(call: ApplicationCall) =
         object : AuthenticatedUserContext {
-            override val userId by lazy { call.userId()!! }
-            override val userIdNullable = call.userId()
-            override val profileId by lazy { call.profileId()!! }
-            override val profileIdNullable = call.profileId()
+            // refer userId with no principal is not allowed
+            override val userId by lazy { (call.authentication.principal() as? Principal)?.userId!! }
+            override val userIdNullable = (call.authentication.principal() as? Principal)?.userId
+
+            // refer profileId with no principal is not allowed
+            override val profileId by lazy { (call.authentication.principal() as? Principal)?.profileId!! }
+            override val profileIdNullable = (call.authentication.principal() as? Principal)?.profileId
         }
 
 /**

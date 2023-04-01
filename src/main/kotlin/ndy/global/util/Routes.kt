@@ -10,13 +10,10 @@ import io.ktor.server.resources.put
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
-import ndy.domain.profile.domain.ProfileId
-import ndy.domain.user.domain.UserId
 import ndy.global.context.ApplicationCallContext
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.context.applicationCallContext
 import ndy.global.context.authenticatedUserContext
-import ndy.global.security.Principal
 import ndy.plugins.TOKEN_SCHEMA
 
 suspend inline fun <reified T : Any> ApplicationCall.created(message: T) {
@@ -32,15 +29,6 @@ suspend inline fun <reified T : Any> ApplicationCall.ok(message: T) {
 suspend inline fun ApplicationCall.noContent() {
     response.status(HttpStatusCode.NoContent)
     respond(Unit)
-}
-
-// principal is created @configureSecurity -> jwt.validate
-fun ApplicationCall.userId(): UserId? {
-    return (this.authentication.principal() as? Principal)?.userId
-}
-
-fun ApplicationCall.profileId(): ProfileId? {
-    return (this.authentication.principal() as? Principal)?.profileId
 }
 
 context (AuthenticatedUserContext)
