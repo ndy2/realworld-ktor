@@ -63,8 +63,8 @@ that I used to studied in the `Spring Framework`. Well that must be case by case
 - [x] Update Article - no test yet
 - [x] Delete Article - no test yet
 - [X] Add Comments to an Article - no test yet
-- [ ] Get Comments from an Article
-- [ ] Delete Comment
+- [x] Get Comments from an Article - no test yet
+- [x] Delete Comment - no test yet
 - [x] Favorite Article - no test yet
 - [x] Unfavorite Article - no test yet
 - [x] Get Tags - no test yet

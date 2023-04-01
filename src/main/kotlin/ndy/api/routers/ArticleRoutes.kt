@@ -218,6 +218,6 @@ private suspend inline fun ApplicationCall.okComment(response: CommentResponse) 
 }
 
 private suspend inline fun ApplicationCall.okCommentList(responseList: List<CommentResponse>) {
-    ok(mapOf("comment" to responseList))
+    ok(mapOf("comments" to responseList))
 }
 

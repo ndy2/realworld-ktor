@@ -23,7 +23,7 @@ class FollowService(
     }
 
     context (AuthenticatedUserContext)
-    fun isFollowingList(map: List<ProfileId>): List<Boolean> {
-        return emptyList()
+    suspend fun isFollowingList(targetProfileIds: List<ProfileId>): List<Boolean> {
+        return repository.existsList(profileId, targetProfileIds)
     }
 }
