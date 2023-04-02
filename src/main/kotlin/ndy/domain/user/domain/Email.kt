@@ -9,17 +9,22 @@ import ndy.global.util.checkAndThrow
 data class Email(
     val value: String
 ) {
+    companion object {
+        const val MAX_LENGTH = 128
+
+        private object Validate : Validation<Email> {
+            override fun validate(value: Email) = Validation {
+                Email::value{
+                    minLength(8)
+                    maxLength(MAX_LENGTH)
+                    pattern("^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$")
+                }
+            }.invoke(value)
+        }
+    }
+
     init {
-        validateEmail(this).checkAndThrow()
+        Validate.validate(this)
     }
 }
 
-const val MAX_USER_EMAIL_LENGTH = 128
-val validateEmail = Validation {
-
-    Email::value{
-        minLength(8)
-        maxLength(MAX_USER_EMAIL_LENGTH)
-        pattern("^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$")
-    }
-}

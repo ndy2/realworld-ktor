@@ -37,6 +37,3 @@ data class Article(
         fun createSlug(title: String) = title.lowercase().replace(" ", "-")
     }
 }
-
-@JvmInline
-value class ArticleId(val value: ULong)
