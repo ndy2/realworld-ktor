@@ -7,27 +7,33 @@ import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.*
 
-@Suppress("unused") // since they are registered automatically @BaseSpec#registerCustomArbs
+@Suppress("unused") // non-primitive arbs are registered automatically @BaseSpec#registerCustomArbs
 object ProfileArbs {
+
     val userIdArb = Arb.uLong(1u, ULong.MAX_VALUE / 2u).map(::UserId)
 
-    val usernameValueArb = Arb.string(4..64, Codepoint.alphanumeric())
+    /* Username Arbs */
+    val usernameValueArb = Arb.string(
+        Username.MIN_LENGTH..Username.MAX_LENGTH,
+        Arb.of((('a'..'z') + ('A'..'Z') + ('0'..'9') + ('_') + ('-')).map { Codepoint(it.code) })
+        // Codepoint of alphanumeric with `_` and `-`
+    )
     val usernameArb = usernameValueArb.map { Username(it) }
 
+    /* Image Arbs */
     val imageStorePathArb = arbitrary { "path/to/store" }
-    val imageFilNameArb = Arb.string(5..10, Codepoint.alphanumeric())
-    val imageExtensionArb = Arb.choice(arbitrary { "jpeg" }, arbitrary { "jpg" }, arbitrary { "png" })
+    val imageFileNameArb = Arb.string(Image.FILE_NAME_MIN_LENGTH..Image.FILE_NAME_MAX_LENGTH, Codepoint.alphanumeric())
+    val imageExtensionArb = Arb.choice(Image.ALLOWED_EXTENSIONS.map { ext -> arbitrary { ext } })
     val imageFullPathArb = imageStorePathArb.flatMap { storePath ->
-        imageFilNameArb.flatMap { fileName ->
+        imageFileNameArb.flatMap { fileName ->
             imageExtensionArb.map { extension ->
                 "$storePath/$fileName.$extension"
             }
         }
     }
-    val imageArb = Arb.bind(imageStorePathArb, imageFilNameArb, imageExtensionArb) { store, filename, extension ->
-        Image(store, filename, extension)
-    }
+    val imageArb = imageFullPathArb.map { Image.ofFullPath(it) }
 
+    /* Bio Arbs */
     val bioValueArb = Arb.string(0..512, Codepoint.ascii())
     val bioArb = bioValueArb.map { Bio(it) }
 }

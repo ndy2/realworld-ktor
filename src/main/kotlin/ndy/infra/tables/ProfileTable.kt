@@ -10,9 +10,9 @@ object ProfileTable : ProfileRepository {
     object Profiles : Table() {
         val id = ulong("id").autoIncrement()
         val userId = ulong("userid").references(Users.id)
-        val username = varchar("username", 64).uniqueIndex()
-        val bio = varchar("bio", 512).nullable()
-        val image = varchar("image", 256).nullable()
+        val username = varchar("username", Username.MAX_LENGTH).uniqueIndex()
+        val bio = varchar("bio", Bio.MAX_LENGTH).nullable()
+        val image = varchar("image", Image.MAX_LENGTH).nullable()
 
         override val primaryKey = PrimaryKey(id)
     }
