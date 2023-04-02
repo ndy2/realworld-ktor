@@ -11,20 +11,17 @@ data class Email(
 ) {
     companion object {
         const val MAX_LENGTH = 128
-
-        private object Validate : Validation<Email> {
-            override fun validate(value: Email) = Validation {
-                Email::value{
-                    minLength(8)
-                    maxLength(MAX_LENGTH)
-                    pattern("^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$")
-                }
-            }.invoke(value)
-        }
     }
 
     init {
-        Validate.validate(this)
+        validateEmail(this).checkAndThrow()
     }
 }
 
+private val validateEmail = Validation {
+    Email::value{
+        minLength(8)
+        maxLength(Email.MAX_LENGTH)
+        pattern("^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$")
+    }
+}
