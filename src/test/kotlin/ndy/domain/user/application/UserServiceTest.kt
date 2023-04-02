@@ -20,7 +20,6 @@ import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.loggingContext
-import ndy.test.util.transactionalTest
 
 class UserServiceTest : BaseSpec(DB, JWT, body = {
 

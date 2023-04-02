@@ -13,7 +13,6 @@ import ndy.test.generator.ProfileArbs.usernameArb
 import ndy.test.generator.UserArbs.userArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
-import ndy.test.util.transactionalTest
 import kotlin.random.Random
 import kotlin.random.nextULong
 

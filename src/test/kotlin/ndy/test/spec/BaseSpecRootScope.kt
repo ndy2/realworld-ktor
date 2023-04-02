@@ -1,60 +1,60 @@
 package ndy.test.spec
 
-import io.kotest.core.spec.style.scopes.FunSpecRootScope
-import io.ktor.client.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.resources.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.testing.*
-import kotlinx.serialization.json.Json
-import org.koin.core.context.stopKoin
+import io.kotest.core.names.TestName
+import io.kotest.core.spec.RootTest
+import io.kotest.core.spec.style.scopes.RootScope
+import io.kotest.core.spec.style.scopes.addContainer
+import io.kotest.core.spec.style.scopes.addTest
+import io.kotest.core.test.TestScope
 
 
 /**
- * Extends FunSpec with dsl-methods for the 'BaseSpec spec' style.
- * *
- * - 1. add integrationTest feature
- * - 2. add transactionalTest feature
+ * supports dsl-methods for the 'BaseSpec' style.
+ * -  add integrationTest feature
+ * -  add transactionalTest feature
+ * -  use `describe` as container name to avoid overloading issue
  */
-interface BaseSpecRootScope : FunSpecRootScope {
+interface BaseSpecRootScope : RootScope {
+
+    /**
+     * Adds a container [RootTest] that uses a [BaseSpecContainerScope] as the test container.
+     */
+    fun describe(name: String, test: suspend BaseSpecContainerScope.() -> Unit) {
+        addContainer(TestName("describe ", name, false), false, null) { BaseSpecContainerScope(this).test() }
+    }
+
+    /**
+     * Adds a disabled container [RootTest] that uses a [BaseSpecContainerScope] as the test container.
+     */
+    fun xdescribe(name: String, test: suspend BaseSpecContainerScope.() -> Unit) =
+        addContainer(TestName("describe ", name, false), true, null) { BaseSpecContainerScope(this).test() }
+
 
     /**
      * Adds a Root IntegrationTest, with the given name and default config.
      */
-    fun integrationTest(name: String, block: suspend context(HttpClientContext) () -> Unit) =
-        test(name) {
-            stopKoin()
-            testApplication {
-                val client = createClient {
-                    install(DefaultRequest) {
-                        url {
-                            path("api/")
-                        }
-                        contentType(ContentType.Application.Json)
-                    }
-
-                    install(ContentNegotiation) {
-                        json(Json {
-                            explicitNulls = false
-                        })
-                    }
-                    install(Resources)
-                }
-
-                val clientContext = object : HttpClientContext {
-                    override val client: HttpClient = client
-                }
-
-                block(clientContext)
-            }
-        }
+    fun integrationTest(name: String, block: suspend context(HttpClientContext) () -> Unit) {
+        addTest(TestName(name), false, null, integrationTest(block))
+    }
 
     /**
-     * Adds a Disabled Root IntegrationTest, with the given name and default config.
+     * Adds a Root IntegrationTest, with the given name and default config.
      */
-    fun xintegrationTest(name: String, block: suspend context(HttpClientContext) () -> Unit) = xtest(name) {}
+    fun xintegrationTest(name: String, block: suspend context(HttpClientContext) () -> Unit) {
+        addTest(TestName(name), true, null, integrationTest(block))
+    }
 
+    /**
+     * Adds a Root transactionalTest, with the given name and default config.
+     */
+    fun transactionalTest(name: String, block: suspend TestScope.() -> Unit) {
+        addTest(TestName(name), false, null, transactionalTest(block))
+    }
 
+    /**
+     * Adds a Root transactionalTest, with the given name and default config.
+     */
+    suspend fun xtransactionalTest(name: String, block: suspend TestScope.() -> Unit) {
+        addTest(TestName(name), true, null, transactionalTest(block))
+    }
 }

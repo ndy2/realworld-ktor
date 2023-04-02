@@ -4,7 +4,7 @@ import ndy.test.spec.BaseSpec
 
 class ProfileRoutesKtTest : BaseSpec(body = {
 
-   /* xintegrationTest("get self profile") {
+    xintegrationTest("get self profile") {
     }
 
     xintegrationTest("follow/unfollow other user") {
@@ -13,5 +13,6 @@ class ProfileRoutesKtTest : BaseSpec(body = {
     xintegrationTest("username duplicated check") {
     }
 
-    test()*/
+    xtest("hello ") {
+    }
 })

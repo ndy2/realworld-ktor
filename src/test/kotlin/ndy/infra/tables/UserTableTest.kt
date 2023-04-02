@@ -12,7 +12,6 @@ import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.test.util.transactionalTest
 
 class UserTableTest : BaseSpec(DB, body = {
 

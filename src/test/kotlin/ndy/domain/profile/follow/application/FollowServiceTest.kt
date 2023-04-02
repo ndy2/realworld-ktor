@@ -11,7 +11,6 @@ import ndy.global.context.AuthenticatedUserContext
 import ndy.infra.tables.FollowTable
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
-import ndy.test.util.transactionalTest
 import kotlin.random.Random
 import kotlin.random.nextULong
 

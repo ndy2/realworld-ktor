@@ -1,10 +1,23 @@
 package ndy.api.routers
 
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.orNull
+import io.kotest.property.checkAll
+import io.ktor.client.plugins.resources.*
+import io.ktor.client.request.*
+import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.HttpStatusCode.Companion.OK
+import ndy.api.dto.LoginRequest
 import ndy.api.dto.RegistrationRequest
+import ndy.api.dto.UserResponse
 import ndy.api.dto.UserUpdateRequest
+import ndy.api.resources.User
+import ndy.api.resources.Users
 import ndy.test.generator.ProfileArbs.bioValueArb
 import ndy.test.generator.ProfileArbs.imageFullPathArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
@@ -12,10 +25,11 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
+import ndy.test.util.*
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
 
-    /*integrationTest("signup") {
+    integrationTest("signup") {
         checkAll<RegistrationRequest> { request ->
             // request
             val response = client.post(Users()) {
@@ -103,7 +117,7 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
                 it.image shouldBe updateRequest.image
             }
         }
-    }*/
+    }
 })
 
 object RequestArb : BeforeSpecListener {

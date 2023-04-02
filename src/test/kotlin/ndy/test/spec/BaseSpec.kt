@@ -14,18 +14,19 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.withNullability
 
 /**
- * Custom Spec with FunSpec
+ * Custom Spec that extends FunSpec
  * - can configure extension easily
  * - configuration for property testing
+ * - also supports integration-test, transactional-test scopes
  */
+@Suppress("UNCHECKED_CAST")
 abstract class BaseSpec(
     vararg extensions: Extension = emptyArray(),
-    body: FunSpec.() -> Unit = {}
-) : FunSpec(body) {
+    body: BaseSpec.() -> Unit = {}
+) : FunSpec(body as FunSpec.() -> Unit), BaseSpecRootScope {
 
     private val extensions: List<Extension> = extensions.toList()
 
-    // see https://kotest.io/docs/extensions/koin.html for detail
     override fun extensions() = extensions
 
     // common hooks - configure property testing
