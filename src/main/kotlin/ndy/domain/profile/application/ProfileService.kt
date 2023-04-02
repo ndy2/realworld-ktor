@@ -6,7 +6,10 @@ import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.exception.UsernameDuplicatedException
-import ndy.global.util.*
+import ndy.global.util.mandatoryTransaction
+import ndy.global.util.notFound
+import ndy.global.util.requiredTransaction
+import ndy.global.util.requiresNewTransaction
 
 class ProfileService(
     private val repository: ProfileRepository,
@@ -44,7 +47,7 @@ class ProfileService(
         )
     }
 
-    suspend fun checkUsernameDuplicated(username: String) = requiresNewTransaction {
+    suspend fun checkUsernameDuplicated(username: String) = requiredTransaction {
         // action/return
         repository.existByUsername(Username(username))
     }

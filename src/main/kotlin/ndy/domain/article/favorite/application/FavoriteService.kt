@@ -28,7 +28,7 @@ class FavoriteService(
         repository.countByArticleId(id).toInt()
     }
 
-    suspend fun getAllFavoritedArticleIds(username: Username) = mandatoryTransaction{
+    suspend fun getAllFavoritedArticleIds(username: Username) = mandatoryTransaction {
         repository.findAllFavoritedArticleIds(username)
     }
 }

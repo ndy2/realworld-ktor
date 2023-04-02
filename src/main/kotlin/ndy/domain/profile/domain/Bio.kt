@@ -7,8 +7,8 @@ import ndy.global.util.checkAndThrow
 
 data class Bio(
     val value: String
-){
-    companion object{
+) {
+    companion object {
         const val MAX_LENGTH = 512
     }
 

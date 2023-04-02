@@ -15,8 +15,10 @@ import ndy.test.generator.ProfileArbs.imageFullPathArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.userArb
 import ndy.test.spec.BaseSpec
-import ndy.test.util.*
-import org.jetbrains.exposed.sql.transactions.TransactionManager
+import ndy.test.util.assumeNotDuplicated
+import ndy.test.util.isNotNullOr
+import ndy.test.util.shouldBeUpdatedToIf
+import ndy.test.util.transactionTest
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 

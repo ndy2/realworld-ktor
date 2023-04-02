@@ -1,10 +1,5 @@
 package ndy.domain.user.domain
 
-import io.konform.validation.Validation
-import io.konform.validation.jsonschema.maxLength
-import io.konform.validation.jsonschema.minLength
-import io.konform.validation.jsonschema.pattern
-import io.kotest.assertions.konform.shouldBeValid
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.property.checkAll

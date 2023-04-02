@@ -2,7 +2,6 @@ package ndy.infra.tables
 
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.profile.follow.domain.FollowRepository
-import ndy.infra.tables.ProfileTable.Profiles
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
