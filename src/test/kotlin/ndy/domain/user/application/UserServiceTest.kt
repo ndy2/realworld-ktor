@@ -20,6 +20,7 @@ import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.loggingContext
+import ndy.test.util.transactionTest
 
 class UserServiceTest : BaseSpec(DB, JWT, body = {
 
@@ -36,7 +37,7 @@ class UserServiceTest : BaseSpec(DB, JWT, body = {
     }
     with(ProfileTable) {
 
-        test("register with arb fields") {
+        transactionTest("register with arb fields") {
             checkAll(usernameValueArb, emailValueArb, passwordValueArb) { username, email, password ->
                 // setup
                 assumeNotDuplicated(username)
@@ -52,7 +53,7 @@ class UserServiceTest : BaseSpec(DB, JWT, body = {
             }
         }
 
-        test("register a user and login with it") {
+        transactionTest("register a user and login with it") {
             checkAll(usernameValueArb, emailValueArb, passwordValueArb) { username, email, password ->
                 // setup
                 assumeNotDuplicated(username)

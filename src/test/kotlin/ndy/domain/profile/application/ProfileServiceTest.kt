@@ -6,7 +6,6 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.assume
 import io.kotest.property.checkAll
 import ndy.domain.profile.follow.application.FollowService
-import ndy.global.util.requiresNewTransaction
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
@@ -16,9 +15,8 @@ import ndy.test.generator.ProfileArbs.imageFullPathArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.userArb
 import ndy.test.spec.BaseSpec
-import ndy.test.util.assumeNotDuplicated
-import ndy.test.util.isNotNullOr
-import ndy.test.util.shouldBeUpdatedToIf
+import ndy.test.util.*
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 
@@ -31,14 +29,14 @@ class ProfileServiceTest : BaseSpec(DB, body = {
     val userRepository = UserTable
     with(ProfileTable) {
 
-        test("register a profile and get it's result") {
+        transactionTest("register a profile and get it's result") {
             checkAll(userArb, usernameValueArb) { user, usernameValue ->
                 // setup
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
+                val userId = userRepository.save(user).id
                 assumeNotDuplicated(usernameValue)
 
                 // action
-                val result = requiresNewTransaction { sut.register(userId, usernameValue) }
+                val result = sut.register(userId, usernameValue)
 
                 // assert
                 assertSoftly(result) {
@@ -50,15 +48,15 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             }
         }
 
-        test("register a profile and find it with userId") {
+        transactionTest("register a profile and find it with userId") {
             checkAll(userArb, usernameValueArb) { user, usernameValue ->
                 // setup
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
+                val userId = userRepository.save(user).id
                 assumeNotDuplicated(userId.value, usernameValue)
-                requiresNewTransaction { sut.register(userId, usernameValue) }
+                sut.register(userId, usernameValue)
 
                 // action
-                val result = requiresNewTransaction { sut.getByUserId(userId) }
+                val result = sut.getByUserId(userId)
 
                 // assert
                 assertSoftly(result) {
@@ -70,7 +68,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             }
         }
 
-        test("update profile") {
+        transactionTest("update profile") {
             checkAll(
                 /* registered user/profile arbs */
                 userArb,
@@ -83,19 +81,19 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             ) { user, username,
                 updateBio, updateImage, updateUsername ->
                 // setup
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
+                val userId = userRepository.save(user).id
                 assumeNotDuplicated(userId.value, username)
                 updateUsername?.let { assumeNotDuplicated(it) }
                 assume(username != updateUsername)
 
                 // setup - save a profile
-                requiresNewTransaction { sut.register(userId, username) }
+                sut.register(userId, username)
 
                 // action - update profile
-                requiresNewTransaction { sut.update(userId, updateUsername, updateBio, updateImage) }
+                sut.update(userId, updateUsername, updateBio, updateImage)
 
                 // assert - properly updated
-                val profileResult = requiresNewTransaction { sut.getByUserId(userId) }
+                val profileResult = sut.getByUserId(userId)
                 assertSoftly(profileResult) {
                     this.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
                     this.bio shouldBeUpdatedToIf (updateBio isNotNullOr null)
@@ -105,24 +103,20 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             }
         }
 
-        test("exist by username") {
+        transactionTest("exist by username") {
             checkAll(
                 userArb,
                 usernameValueArb,
                 usernameValueArb
             ) { user, username, notSavedUsername ->
                 // setup - save a profile
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
+                val userId = userRepository.save(user).id
                 assumeNotDuplicated(username)
-                requiresNewTransaction {
-                    sut.register(userId, username)
-                }
+                sut.register(userId, username)
 
                 // action & assert
-                requiresNewTransaction {
-                    sut.checkUsernameDuplicated(username) shouldBe true
-                    sut.checkUsernameDuplicated(notSavedUsername) shouldBe false
-                }
+                sut.checkUsernameDuplicated(username) shouldBe true
+                sut.checkUsernameDuplicated(notSavedUsername) shouldBe false
             }
         }
 

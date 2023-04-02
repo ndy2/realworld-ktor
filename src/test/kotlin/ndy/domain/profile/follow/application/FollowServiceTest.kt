@@ -8,10 +8,10 @@ import io.kotest.property.checkAll
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.util.requiresNewTransaction
 import ndy.infra.tables.FollowTable
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
+import ndy.test.util.transactionTest
 import kotlin.random.Random
 import kotlin.random.nextULong
 
@@ -38,34 +38,28 @@ class FollowServiceTest : BaseSpec(DB, body = {
         }
     }
 
-    context("check follow") {
-        test("save n, delete m and check exists for all saved entries") {
-            checkAll(Arb.int(4, 10), Arb.int(0, 5)) { n, m ->
-                // setup
-                assume(n >= m)
-                val savePair = buildList(n) {
-                    repeat(n) {
-                        val followerId = ProfileId(Random.nextULong())
-                        val followeeId = ProfileId(Random.nextULong())
-                        add(followerId to followeeId)
-                    }
+    transactionTest("save n, delete m and check exists for all saved entries") {
+        checkAll(Arb.int(4, 10), Arb.int(0, 5)) { n, m ->
+            // setup
+            assume(n >= m)
+            val savePair = buildList(n) {
+                repeat(n) {
+                    val followerId = ProfileId(Random.nextULong())
+                    val followeeId = ProfileId(Random.nextULong())
+                    add(followerId to followeeId)
                 }
-                val deleteList = savePair.slice(0..<m)
+            }
+            val deleteList = savePair.slice(0..<m)
 
-                // action
-                requiresNewTransaction {
-                    savePair.forEach { with(userContext(it.first)) { sut.follow(it.second) } }
-                    deleteList.forEach { with(userContext(it.first)) { sut.unfollow(it.second) } }
-                }
+            // action
+            savePair.forEach { with(userContext(it.first)) { sut.follow(it.second) } }
+            deleteList.forEach { with(userContext(it.first)) { sut.unfollow(it.second) } }
 
-                // assert
-                // @formatter:off
-            requiresNewTransaction {
+            // assert
+            // @formatter:off
                 (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe false }}
                 (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe true }}
-            }
-            // @formatter:on
-            }
+                 // @formatter:on
         }
     }
 })
