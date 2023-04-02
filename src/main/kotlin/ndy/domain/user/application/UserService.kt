@@ -34,13 +34,13 @@ class UserService(
             password = Password(password, passwordEncoder)
         )
 
-        // 1. save user
+        // 2. save user
         val savedUser = repository.save(user)
 
-        // 2. save profile
+        // 3. save profile
         profileService.register(savedUser.id, username)
 
-        // 3. return
+        // 4. return
         UserResult(
             email = email,
             token = null,

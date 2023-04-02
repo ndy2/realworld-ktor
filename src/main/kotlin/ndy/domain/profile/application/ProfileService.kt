@@ -15,29 +15,29 @@ class ProfileService(
     private val followService: FollowService,
 ) {
     suspend fun register(userId: UserId, username: String) = transactional(MANDATORY) {
-        // validate
+        // 1. validate
         if (checkUsernameDuplicated(username)) throw UsernameDuplicatedException(username)
 
-        // action
+        // 2. action
         val profile = repository.save(userId, Username(username))
 
-        // return
+        // 3. return
         ProfileResult.from(profile, false)
     }
 
     suspend fun getByUserId(userId: UserId) = transactional(MANDATORY) {
-        // validate/action
+        // 1. validate/action
         val profile = repository.findByUserId(userId) ?: notFound<User>(userId.value)
 
-        // return
+        // 2. return
         ProfileResult.from(profile, false/* always used for current user */)
     }
 
     suspend fun update(userId: UserId, username: String?, bio: String?, image: String?) = transactional(MANDATORY) {
-        // validate
+        // 1. validate
         username?.let { if (checkUsernameDuplicated(it)) throw UsernameDuplicatedException(it) }
 
-        // action/return
+        // 2. action/return
         repository.updateByUserId(
             userId,
             username?.let { Username(it) },
@@ -47,49 +47,48 @@ class ProfileService(
     }
 
     suspend fun checkUsernameDuplicated(username: String) = transactional {
-        // action/return
+        // 1. action/return
         repository.existByUsername(Username(username))
     }
 
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun getByUsername(username: String) = transactional {
-        // validate - user exists & setup - find target userId
+        // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
-        // action - check following
+        // 2. action - check following
         val following =
             if (authenticated) followService.isFollowing(targetProfileId = profile.id)
             else false
 
-        // return
+        // 3. return
         ProfileResult.from(profile, following)
     }
 
     context (AuthenticatedUserContext)
     suspend fun follow(username: String) = transactional {
-        // validate - user exists & setup - find target userId
+        // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
-        // action
+        // 2. action
         followService.follow(targetProfileId = profile.id)
 
-        // return
+        // 3. return
         ProfileResult.from(profile, true)
     }
 
     context (AuthenticatedUserContext)
     suspend fun unfollow(username: String) = transactional {
-        // validate - user exists & setup - find target userId
+        // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
-        // action
+        // 2. action
         followService.unfollow(targetProfileId = profile.id)
 
-        // return
+        // 3. return
         ProfileResult.from(profile, false)
     }
 }
-
