@@ -28,14 +28,17 @@ class UserService(
     }
 
     suspend fun register(username: String, email: String, password: String) = requiresNewTransaction {
-        // 1. save user
-        val user = repository.save(
-            Email(email),
-            Password(password, passwordEncoder)
+        // 1. create User
+        val user = User(
+            email = Email(email),
+            password = Password(password, passwordEncoder)
         )
 
+        // 1. save user
+        val savedUser = repository.save(user)
+
         // 2. save profile
-        profileService.register(user.id, username)
+        profileService.register(savedUser.id, username)
 
         // 3. return
         UserResult(

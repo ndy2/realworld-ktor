@@ -15,10 +15,8 @@ object UserTable : UserRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    override suspend fun save(
-        email: Email,
-        password: Password
-    ): User {
+    override suspend fun save(user: User): User {
+        val (_, email, password) = user
         val insertStatement = Users.insert {
             it[Users.email] = email.value
             it[Users.password] = password.encodedPassword

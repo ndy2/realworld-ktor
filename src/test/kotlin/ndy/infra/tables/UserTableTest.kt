@@ -7,6 +7,7 @@ import io.kotest.property.checkAll
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
+import ndy.domain.user.domain.User
 import ndy.global.util.requiresNewTransaction
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
@@ -18,11 +19,12 @@ class UserTableTest : BaseSpec(DB, body = {
     val sut = UserTable
 
     test("returns saved user and find it by id") {
-        checkAll<Email, Password> { email, password ->
+        checkAll<User> { user ->
             // action
-            val savedUser = requiresNewTransaction { sut.save(email, password) }
+            val savedUser = requiresNewTransaction { sut.save(user) }
 
             // assert
+            val (_, email, password) = user
             assertSoftly(savedUser) {
                 this.id shouldNotBe null
                 this.email shouldBe email
