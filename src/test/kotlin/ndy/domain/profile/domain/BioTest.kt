@@ -18,9 +18,11 @@ class BioTest : BaseSpec(body = {
     }
 
     test("bio validation work properly") {
+        // success
         checkAll(bioValueArb) { shouldNotThrow<RealworldRuntimeException> { Bio(it) } }
 
-        val tooLongBioArb = Arb.string(minSize = Bio.MAX_LENGTH + 1, maxSize = 1000)
-        checkAll(tooLongBioArb) { shouldThrow<RealworldRuntimeException> { Bio(it) } }
+        // fail if too long
+        checkAll(Arb.string(Bio.MAX_LENGTH + 1, 1000))
+        { shouldThrow<RealworldRuntimeException> { Bio(it) } }
     }
 })

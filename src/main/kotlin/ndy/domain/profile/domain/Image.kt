@@ -42,9 +42,13 @@ class Image private constructor(
         validateImage(this).checkAndThrow()
     }
 
-    override fun toString(): String {
-        return "Image(fullPath='$fullPath')"
-    }
+    override fun equals(other: Any?) =
+        if (this === other) true
+        else if (javaClass != other?.javaClass) false
+        else fullPath == (other as Image).fullPath
+
+    override fun hashCode() = fullPath.hashCode()
+    override fun toString() = "Image(fullPath='$fullPath')"
 }
 
 val validateImage = Validation {

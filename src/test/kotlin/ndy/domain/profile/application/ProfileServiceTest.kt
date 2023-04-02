@@ -111,7 +111,12 @@ class ProfileServiceTest : BaseSpec(DB, body = {
         }
 
         test("exist by username") {
-            checkAll(emailArb, passwordArb, usernameValueArb) { email, password, username ->
+            checkAll(
+                emailArb,
+                passwordArb,
+                usernameValueArb,
+                usernameValueArb
+            ) { email, password, username, notSavedUsername ->
                 // setup - save a profile
                 val userId = requiresNewTransaction { userRepository.save(email, password) }.id
                 requiresNewTransaction {
@@ -122,7 +127,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 // action & assert
                 requiresNewTransaction {
                     sut.checkUsernameDuplicated(username) shouldBe true
-                    sut.checkUsernameDuplicated("nonExist${username}") shouldBe false
+                    sut.checkUsernameDuplicated(notSavedUsername) shouldBe false
                 }
             }
         }

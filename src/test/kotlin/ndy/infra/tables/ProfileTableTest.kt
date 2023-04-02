@@ -82,7 +82,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
         }
 
         test("exist by username") {
-            checkAll<Email, Password, Username> { email, password, username ->
+            checkAll<Email, Password, Username, Username> { email, password, username, notSavedUsername ->
                 // setup - save a profile
                 val userId = requiresNewTransaction { userRepository.save(email, password) }.id
                 requiresNewTransaction {
@@ -93,7 +93,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 // action & assert
                 requiresNewTransaction {
                     sut.existByUsername(username) shouldBe true
-                    sut.existByUsername(Username("nonExist${username.value}")) shouldBe false
+                    sut.existByUsername(notSavedUsername) shouldBe false
                 }
             }
         }

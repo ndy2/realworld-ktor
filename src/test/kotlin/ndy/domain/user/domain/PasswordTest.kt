@@ -7,17 +7,19 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.kotest.property.azstring
 import io.kotest.property.checkAll
+import ndy.domain.user.application.BcryptPasswordService
 import ndy.global.exception.RealworldRuntimeException
-import ndy.test.generator.UserArbs.passwordEncoderArb
 import ndy.test.generator.UserArbs.passwordValueArb
-import ndy.test.generator.UserArbs.passwordVerifierArb
 import ndy.test.spec.BaseSpec
 import kotlin.random.Random
 
 class PasswordTest : BaseSpec(body = {
 
-    test("password 생성 후 검증 성공") {
-        checkAll(passwordValueArb, passwordEncoderArb, passwordVerifierArb) { passwordValue, encoder, verifier ->
+    val encoder = BcryptPasswordService
+    val verifier = BcryptPasswordService
+
+    test("password with Encoded") {
+        checkAll(passwordValueArb) { passwordValue ->
             // setup - construct password
             val password = Password(passwordValue, encoder)
 
@@ -32,13 +34,8 @@ class PasswordTest : BaseSpec(body = {
         }
     }
 
-    test("checkPassword 성공/실패") {
-        checkAll(
-            passwordValueArb,
-            passwordEncoderArb,
-            passwordVerifierArb,
-            Arb.string()
-        ) { passwordValue, encoder, verifier, arbString ->
+    test("checkPassword") {
+        checkAll(passwordValueArb, Arb.string()) { passwordValue, arbString ->
             // setup - construct password
             val password = Password(passwordValue, encoder)
 
