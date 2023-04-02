@@ -1,9 +1,11 @@
 package ndy.test.spec
 
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.scopes.AbstractContainerScope
 import io.kotest.core.test.TestScope
 
+@KotestTestScope
 class BaseSpecContainerScope(
     testScope: TestScope,
 ) : AbstractContainerScope(testScope) {
