@@ -49,9 +49,9 @@ class PasswordTest : BaseSpec(body = {
         }
     }
 
-    test("cannot create password with length greater than $MAX_USER_PASSWORD_LENGTH") {
+    test("cannot create password with length greater than ${Password.MAX_LENGTH}") {
         // setup
-        val tooLongPasswordValue = Random.azstring(MAX_USER_PASSWORD_LENGTH + 1)
+        val tooLongPasswordValue = Random.azstring(Password.MAX_LENGTH + 1)
 
         // assert
         shouldThrow<RealworldRuntimeException> { Password(tooLongPasswordValue, null) }
