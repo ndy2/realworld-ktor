@@ -9,7 +9,6 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.resolution.GlobalArbResolver
 import ndy.test.generator.ProfileArbs
 import ndy.test.generator.UserArbs
-import org.koin.test.KoinTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.withNullability
@@ -22,7 +21,7 @@ import kotlin.reflect.full.withNullability
 abstract class BaseSpec(
     vararg extensions: Extension = emptyArray(),
     body: FunSpec.() -> Unit = {}
-) : FunSpec(body), KoinTest {
+) : FunSpec(body) {
 
     private val extensions: List<Extension> = extensions.toList()
 

@@ -15,6 +15,7 @@ import ndy.api.dto.UserResponse
 import ndy.api.resources.Profiles
 import ndy.api.resources.Users
 import ndy.plugins.TOKEN_SCHEMA
+import ndy.test.spec.HttpClientContext
 
 /**
  * Contains some helper functions that create/setup data for routeTests
