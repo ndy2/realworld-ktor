@@ -14,7 +14,7 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.test.util.transactionTest
+import ndy.test.util.transactionalTest
 
 class ProfileTableTest : BaseSpec(DB, body = {
 
@@ -22,7 +22,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
     val userRepository = UserTable
 
     with(sut) {
-        transactionTest("returns saved profile and find it") {
+        transactionalTest("returns saved profile and find it") {
             checkAll<User, Username> { user, username ->
                 // setup - assume not duplicated username & id
                 val userId = userRepository.save(user).id
@@ -52,7 +52,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
             }
         }
 
-        transactionTest("update profile") {
+        transactionalTest("update profile") {
             checkAll<User, Username, Bio?, Image?, Username?> { user, username, updateBio, updateImage, updateUsername ->
                 // setup - assume non duplicated username & userId
                 val userId = userRepository.save(user).id
@@ -79,7 +79,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
             }
         }
 
-        transactionTest("exist by username") {
+        transactionalTest("exist by username") {
             checkAll<User, Username, Username> { user, username, notSavedUsername ->
                 // setup - save a profile
                 val userId = userRepository.save(user).id
@@ -92,7 +92,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
             }
         }
 
-        transactionTest("find by username") {
+        transactionalTest("find by username") {
             checkAll<User, Username, Username> { user, username, notSavedUsername ->
                 // setup - save a profile
                 val userId = userRepository.save(user).id

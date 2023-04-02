@@ -12,13 +12,13 @@ import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.test.util.transactionTest
+import ndy.test.util.transactionalTest
 
 class UserTableTest : BaseSpec(DB, body = {
 
     val sut = UserTable
 
-    transactionTest("returns saved user and find it by id") {
+    transactionalTest("returns saved user and find it by id") {
         checkAll<User> { user ->
             // action
             val savedUser = sut.save(user)
@@ -44,7 +44,7 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    transactionTest("update user") {
+    transactionalTest("update user") {
         checkAll<User, Email?, Password?> { user, updateEmail, updatePassword ->
             // setup
             val savedUserId = sut.save(user).id
@@ -65,7 +65,7 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    transactionTest("findUserById with Profile") {
+    transactionalTest("findUserById with Profile") {
         checkAll<User, Username> { user, username ->
             // setup
             val savedUser = sut.save(user)
@@ -89,7 +89,7 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    transactionTest("findUserByEmailWithProfile") {
+    transactionalTest("findUserByEmailWithProfile") {
         checkAll<User, Username> { user, username ->
             // action
             val savedUser = sut.save(user)

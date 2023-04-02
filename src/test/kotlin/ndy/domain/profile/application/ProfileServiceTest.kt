@@ -18,7 +18,7 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import ndy.test.util.transactionTest
+import ndy.test.util.transactionalTest
 
 class ProfileServiceTest : BaseSpec(DB, body = {
 
@@ -31,7 +31,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
     val userRepository = UserTable
     with(ProfileTable) {
 
-        transactionTest("register a profile and get it's result") {
+        transactionalTest("register a profile and get it's result") {
             checkAll(userArb, usernameValueArb) { user, usernameValue ->
                 // setup
                 val userId = userRepository.save(user).id
@@ -50,7 +50,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             }
         }
 
-        transactionTest("register a profile and find it with userId") {
+        transactionalTest("register a profile and find it with userId") {
             checkAll(userArb, usernameValueArb) { user, usernameValue ->
                 // setup
                 val userId = userRepository.save(user).id
@@ -70,7 +70,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             }
         }
 
-        transactionTest("update profile") {
+        transactionalTest("update profile") {
             checkAll(
                 /* registered user/profile arbs */
                 userArb,
@@ -105,7 +105,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
             }
         }
 
-        transactionTest("exist by username") {
+        transactionalTest("exist by username") {
             checkAll(
                 userArb,
                 usernameValueArb,

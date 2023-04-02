@@ -11,7 +11,7 @@ import ndy.global.context.AuthenticatedUserContext
 import ndy.infra.tables.FollowTable
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
-import ndy.test.util.transactionTest
+import ndy.test.util.transactionalTest
 import kotlin.random.Random
 import kotlin.random.nextULong
 
@@ -38,7 +38,7 @@ class FollowServiceTest : BaseSpec(DB, body = {
         }
     }
 
-    transactionTest("save n, delete m and check exists for all saved entries") {
+    transactionalTest("save n, delete m and check exists for all saved entries") {
         checkAll(Arb.int(4, 10), Arb.int(0, 5)) { n, m ->
             // setup
             assume(n >= m)
@@ -57,9 +57,9 @@ class FollowServiceTest : BaseSpec(DB, body = {
 
             // assert
             // @formatter:off
-                (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe false }}
-                (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe true }}
-                 // @formatter:on
+            (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe false }}
+            (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe true }}
+            // @formatter:on
         }
     }
 })
