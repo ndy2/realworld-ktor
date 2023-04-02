@@ -4,13 +4,13 @@ import ndy.domain.tag.domain.Tag
 import ndy.domain.tag.domain.TagId
 import ndy.domain.tag.domain.TagRepository
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.util.mandatoryTransaction
-import ndy.global.util.requiresNewTransaction
+import ndy.global.util.Propagation.MANDATORY
+import ndy.global.util.transactional
 
 class TagService(
     private val repository: TagRepository
 ) {
-    suspend fun getAll() = requiresNewTransaction {
+    suspend fun getAll() = transactional {
         // find all tags
         val tags = repository.findAll()
 
@@ -19,7 +19,7 @@ class TagService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun getOrSaveList(names: List<String>) = mandatoryTransaction {
+    suspend fun getOrSaveList(names: List<String>) = transactional(MANDATORY) {
         // 1. get all existed tags
         val existedTags = repository.findAllWhereNameIn(names)
 
@@ -32,7 +32,7 @@ class TagService(
         }
     }
 
-    suspend fun getByTagIds(tagIds: List<TagId>, firstTagId: TagId? = null) = mandatoryTransaction {
+    suspend fun getByTagIds(tagIds: List<TagId>, firstTagId: TagId? = null) = transactional(MANDATORY) {
         // find all tags
         val tags = repository.findAllWhereIdIn(tagIds)
 
@@ -52,7 +52,7 @@ class TagService(
         return result.toList().map(TagResult::from)
     }
 
-    fun getIdByName(tagName: String): TagId? {
-        return repository.findIdByName(tagName)
+    suspend fun getIdByName(tagName: String) = transactional(MANDATORY) {
+        repository.findIdByName(tagName)
     }
 }

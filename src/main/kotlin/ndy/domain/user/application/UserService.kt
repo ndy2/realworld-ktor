@@ -5,7 +5,7 @@ import ndy.domain.user.domain.*
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.util.authenticationFail
 import ndy.global.util.notFound
-import ndy.global.util.requiresNewTransaction
+import ndy.global.util.transactional
 
 class UserService(
     private val repository: UserRepository,
@@ -13,7 +13,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val passwordVerifier: PasswordVerifier,
 ) {
-    suspend fun login(email: String, password: String) = requiresNewTransaction {
+    suspend fun login(email: String, password: String) = transactional {
         // 1. find user
         val (user, profile) = repository.findUserByEmailWithProfile(Email(email)) ?: authenticationFail("login failure")
 
@@ -27,7 +27,7 @@ class UserService(
         UserResult.from(user, profile, token)
     }
 
-    suspend fun register(username: String, email: String, password: String) = requiresNewTransaction {
+    suspend fun register(username: String, email: String, password: String) = transactional {
         // 1. create User
         val user = User(
             email = Email(email),
@@ -51,7 +51,7 @@ class UserService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun getById() = requiresNewTransaction {
+    suspend fun getById() = transactional {
         // 1. find user with profile
         val (user, profile) = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
 
@@ -63,7 +63,7 @@ class UserService(
     suspend fun update(
         email: String?, password: String?,
         username: String?, bio: String?, image: String?
-    ) = requiresNewTransaction {
+    ) = transactional {
         // 1. get origUser
         val origUser = getById()
 

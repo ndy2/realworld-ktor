@@ -11,10 +11,28 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
  * see - https://github.com/JetBrains/Exposed/wiki/Transactions#working-with-coroutines
  * see - https://ktor.io/docs/interactive-website-add-persistence.html#queries
  */
+suspend inline fun <T> transactional(
+    propagation: Propagation = Propagation.REQUIRED,
+    crossinline block: suspend () -> T
+): T {
+    return when (propagation) {
+        Propagation.REQUIRED -> requiredTransaction(block)
+        Propagation.REQUIRES_NEW -> requiresNewTransaction(block)
+        Propagation.MANDATORY -> mandatoryTransaction(block)
+    }
+}
+
+enum class Propagation {
+    REQUIRED,
+    REQUIRES_NEW,
+    MANDATORY,
+}
+
 // run with new transaction
 suspend inline fun <T> requiresNewTransaction(crossinline block: suspend () -> T): T {
     return newSuspendedTransaction(Dispatchers.IO) { block() }
 }
+
 
 // throw error if there is no current transaction
 suspend inline fun <T> mandatoryTransaction(crossinline block: suspend () -> T): T {
@@ -28,3 +46,4 @@ suspend inline fun <T> requiredTransaction(crossinline block: suspend () -> T): 
     return if (TransactionManager.currentOrNull() == null) requiresNewTransaction(block)
     else block()
 }
+

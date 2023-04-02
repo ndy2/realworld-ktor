@@ -8,7 +8,6 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.User
-import ndy.global.util.requiresNewTransaction
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
@@ -48,17 +47,17 @@ class UserTableTest : BaseSpec(DB, body = {
     transactionTest("update user") {
         checkAll<User, Email?, Password?> { user, updateEmail, updatePassword ->
             // setup
-            val savedUserId = requiresNewTransaction { sut.save(user).id }
+            val savedUserId = sut.save(user).id
 
             // action
-            val count = requiresNewTransaction { sut.updateById(savedUserId, updateEmail, updatePassword) }
+            val count = sut.updateById(savedUserId, updateEmail, updatePassword)
 
             // assert - update count
             if (listOf(updateEmail, updatePassword).any { it != null }) count shouldBe 1
             else count shouldBe 0
 
             // assert - properly updated
-            val foundUser = requiresNewTransaction { sut.findUserById(savedUserId) }
+            val foundUser = sut.findUserById(savedUserId)
             assertSoftly(foundUser!!) {
                 this.email shouldBeUpdatedToIf (updateEmail isNotNullOr email)
                 this.password shouldBeUpdatedToIf (updatePassword isNotNullOr password)
@@ -69,14 +68,14 @@ class UserTableTest : BaseSpec(DB, body = {
     transactionTest("findUserById with Profile") {
         checkAll<User, Username> { user, username ->
             // setup
-            val savedUser = requiresNewTransaction { sut.save(user) }
-            val savedProfile = requiresNewTransaction { ProfileTable.save(savedUser.id, username) }
+            val savedUser = sut.save(user)
+            val savedProfile = ProfileTable.save(savedUser.id, username)
 
             // action
-            val (user, profile) = requiresNewTransaction { sut.findUserByIdWithProfile(savedUser.id) }!!
+            val (foundUser, profile) = sut.findUserByIdWithProfile(savedUser.id)!!
 
             // assert
-            assertSoftly(user) {
+            assertSoftly(foundUser) {
                 password.encodedPassword // invoke getter
                 this.id shouldBe savedUser.id
                 this.email shouldBe email

@@ -26,12 +26,12 @@ class ArticleService(
     private val favoriteService: FavoriteService,
 ) {
     context (AuthenticatedUserContext/* optional = true */)
-    suspend fun searchByCond(searchCond: ArticleSearchCond) = requiresNewTransaction {
+    suspend fun searchByCond(searchCond: ArticleSearchCond) = transactional {
         // 1. setup find conditions
         val favoritedArticleIds = searchCond.favorited?.let { favoriteService.getAllFavoritedArticleIds(Username(it)) }
         val tagId = searchCond.tag?.let { tagService.getIdByName(it) }
         val searchAuthor = searchCond.author?.let { authorResultOrNull(it) }
-        if (searchCond.author != null && searchAuthor == null) return@requiresNewTransaction emptyList() // by postman api spec
+        if (searchCond.author != null && searchAuthor == null) return@transactional emptyList() // by postman api spec
 
         // 2. find article with author and tagIds
         val (articles, authors, tagIdsList) = repository.findByCond(
@@ -68,7 +68,7 @@ class ArticleService(
 
     // TODO - get feed!
     context (AuthenticatedUserContext)
-    suspend fun getFeed() = requiresNewTransaction {
+    suspend fun getFeed() = transactional {
         listOf(
             ArticleResult(
                 slug = "how-to-train-your-dragon",
@@ -92,7 +92,7 @@ class ArticleService(
 
     context (AuthenticatedUserContext)
     suspend fun create(title: String, description: String, body: String, tagList: List<String>) =
-        requiresNewTransaction {
+        transactional {
             // 1. handle all tags - ask to tagService and get all list of tag Ids
             val tagIds = tagService.getOrSaveList(tagList)
 
@@ -122,7 +122,7 @@ class ArticleService(
         }
 
     context (AuthenticatedUserContext /* optional = true */)
-    suspend fun getBySlug(slug: String) = requiredTransaction {
+    suspend fun getBySlug(slug: String) = transactional {
         // 1. find article with author and tagIds
         val (article, author, tagIds) = repository
             .findWithAuthorAndTagIdsBySlug(slug)
@@ -150,7 +150,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun update(slug: String, title: String?, description: String?, body: String?) = requiresNewTransaction {
+    suspend fun update(slug: String, title: String?, description: String?, body: String?) = transactional {
         // 1. update article with new slug
         val updateSlug = title?.let { createSlug(it) } ?: slug
         val (_, authorId) = repository
@@ -165,7 +165,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun deleteBySlug(slug: String) = requiresNewTransaction {
+    suspend fun deleteBySlug(slug: String) = transactional {
         // 1. check article exists
         val (_, authorId) = repository
             .findBySlug(slug)
@@ -179,7 +179,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun addComment(slug: String, body: String) = requiresNewTransaction {
+    suspend fun addComment(slug: String, body: String) = transactional {
         // 1. check article exists
         val (article, _) = repository.findBySlug(slug)
             ?: notFound(Article::slug, slug)
@@ -195,7 +195,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext /* optional = true */)
-    suspend fun getComments(slug: String) = requiresNewTransaction {
+    suspend fun getComments(slug: String) = transactional {
         // 1. setup -  check articles exists
         val (article, _) = repository.findBySlug(slug)
             ?: notFound(Article::slug, slug)
@@ -213,7 +213,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun deleteComment(slug: String, commentId: ULong) = requiresNewTransaction {
+    suspend fun deleteComment(slug: String, commentId: ULong) = transactional {
         // 1. check articles exists
         val (article, _) = repository.findBySlug(slug)
             ?: notFound(Article::slug, slug)
@@ -223,7 +223,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun favorite(slug: String) = requiresNewTransaction {
+    suspend fun favorite(slug: String) = transactional {
         // 1. get article with author and tagIds
         val (article, author, tagIds) = repository
             .findWithAuthorAndTagIdsBySlug(slug)
@@ -251,7 +251,7 @@ class ArticleService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun unfavorite(slug: String) = requiresNewTransaction {
+    suspend fun unfavorite(slug: String) = transactional {
         // 1. get article with author and tagIds
         val (article, author, tagIds) = repository
             .findWithAuthorAndTagIdsBySlug(slug)

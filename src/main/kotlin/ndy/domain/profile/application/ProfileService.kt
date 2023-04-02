@@ -6,16 +6,15 @@ import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
 import ndy.global.exception.UsernameDuplicatedException
-import ndy.global.util.mandatoryTransaction
+import ndy.global.util.Propagation.MANDATORY
 import ndy.global.util.notFound
-import ndy.global.util.requiredTransaction
-import ndy.global.util.requiresNewTransaction
+import ndy.global.util.transactional
 
 class ProfileService(
     private val repository: ProfileRepository,
     private val followService: FollowService,
 ) {
-    suspend fun register(userId: UserId, username: String) = mandatoryTransaction {
+    suspend fun register(userId: UserId, username: String) = transactional(MANDATORY) {
         // validate
         if (checkUsernameDuplicated(username)) throw UsernameDuplicatedException(username)
 
@@ -26,7 +25,7 @@ class ProfileService(
         ProfileResult.from(profile, false)
     }
 
-    suspend fun getByUserId(userId: UserId) = mandatoryTransaction {
+    suspend fun getByUserId(userId: UserId) = transactional(MANDATORY) {
         // validate/action
         val profile = repository.findByUserId(userId) ?: notFound<User>(userId.value)
 
@@ -34,7 +33,7 @@ class ProfileService(
         ProfileResult.from(profile, false/* always used for current user */)
     }
 
-    suspend fun update(userId: UserId, username: String?, bio: String?, image: String?) = mandatoryTransaction {
+    suspend fun update(userId: UserId, username: String?, bio: String?, image: String?) = transactional(MANDATORY) {
         // validate
         username?.let { if (checkUsernameDuplicated(it)) throw UsernameDuplicatedException(it) }
 
@@ -47,13 +46,13 @@ class ProfileService(
         )
     }
 
-    suspend fun checkUsernameDuplicated(username: String) = requiredTransaction {
+    suspend fun checkUsernameDuplicated(username: String) = transactional {
         // action/return
         repository.existByUsername(Username(username))
     }
 
     context (AuthenticatedUserContext/* optional = true */)
-    suspend fun getByUsername(username: String) = requiredTransaction {
+    suspend fun getByUsername(username: String) = transactional {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
@@ -68,7 +67,7 @@ class ProfileService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun follow(username: String) = requiresNewTransaction {
+    suspend fun follow(username: String) = transactional {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
@@ -81,7 +80,7 @@ class ProfileService(
     }
 
     context (AuthenticatedUserContext)
-    suspend fun unfollow(username: String) = requiresNewTransaction {
+    suspend fun unfollow(username: String) = transactional {
         // validate - user exists & setup - find target userId
         val profile = Username(username)
             .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
