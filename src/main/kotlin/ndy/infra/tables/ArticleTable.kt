@@ -3,12 +3,14 @@ package ndy.infra.tables
 import ndy.domain.article.domain.*
 import ndy.domain.tag.domain.TagId
 import ndy.global.util.now
+import ndy.global.util.selectWhere
 import ndy.global.util.zip
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
@@ -103,10 +105,10 @@ object ArticleTable : ArticleRepository {
         limit: Int
     ): List<ArticleWithAuthorAndTagIds> {
         val (articles, authors) = (Articles innerJoin Profiles)
-            .select {
-                if (idFilter != null) Articles.id inList idFilter.map { it.value } else Op.TRUE
+            .selectWhere(
+                if (idFilter != null) Articles.id inList idFilter.map { it.value } else Op.TRUE,
                 if (authorId != null) Articles.authorId eq authorId.value else Op.TRUE
-            }
+            )
             .limit(limit, offset.toLong())
             .map { it.toArticle() to it.toProfile() }
             .unzip()

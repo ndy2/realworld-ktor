@@ -2,6 +2,7 @@ package ndy.infra.tables
 
 import ndy.domain.article.comment.domain.*
 import ndy.domain.article.domain.ArticleId
+import ndy.global.util.selectWhere
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.ProfileTable.Profiles
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -10,7 +11,6 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
-import org.jetbrains.exposed.sql.select
 
 object CommentTable : CommentRepository {
 
@@ -38,9 +38,9 @@ object CommentTable : CommentRepository {
     }
 
     override fun findWithAuthorByArticleId(articleId: ArticleId): List<CommentWithAuthor> {
-        return (Comments innerJoin Profiles).select {
-            Comments.articleId eq articleId.value
-        }.map { it.toComment() to it.toProfile() }
+        return (Comments innerJoin Profiles)
+            .selectWhere(Comments.articleId eq articleId.value)
+            .map { it.toComment() to it.toProfile() }
     }
 
     override fun deleteByCommentId(commentId: CommentId) {
@@ -48,10 +48,10 @@ object CommentTable : CommentRepository {
     }
 
     override fun existsByIds(commentId: CommentId, authorId: AuthorId, articleId: ArticleId) = Comments
-        .select {
-            Comments.id eq commentId.value
-            Comments.authorId eq commentId.value
+        .selectWhere(
+            Comments.id eq commentId.value,
+            Comments.authorId eq commentId.value,
             Comments.articleId eq articleId.value
-        }
+        )
         .empty().not()
 }
