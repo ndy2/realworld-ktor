@@ -22,7 +22,7 @@ object UserTable : UserRepository {
             it[Users.password] = password.encodedPassword
         }
 
-        return insertStatement.resultedValues?.singleOrNull()?.let(ResultRow::toUser)!!
+        return insertStatement.resultedValues?.single()?.let(ResultRow::toUser)!!
     }
 
     override suspend fun findUserById(id: UserId) = Users

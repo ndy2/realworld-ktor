@@ -20,4 +20,13 @@ object UserArbs {
     /* Password Arbs */
     val passwordValueArb = Arb.string(8..32, Codepoint.ascii())
     val passwordArb = passwordValueArb.map { Password(it, BcryptPasswordService) }
+
+    /* User Arb */
+    val userArb = Arb.bind(emailArb, passwordArb)
+    { email, password ->
+        User(
+            email = email,
+            password = password
+        )
+    }
 }

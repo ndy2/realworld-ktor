@@ -8,8 +8,7 @@ import io.kotest.property.checkAll
 import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
-import ndy.domain.user.domain.Email
-import ndy.domain.user.domain.Password
+import ndy.domain.user.domain.User
 import ndy.global.util.requiresNewTransaction
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
@@ -24,9 +23,9 @@ class ProfileTableTest : BaseSpec(DB, body = {
 
     with(sut) {
         test("returns saved profile and find it") {
-            checkAll<Email, Password, Username> { email, password, username ->
+            checkAll<User, Username> { user, username ->
                 // setup - assume not duplicated username & id
-                val userId = requiresNewTransaction { userRepository.save(email, password) }.id
+                val userId = requiresNewTransaction { userRepository.save(user) }.id
                 assumeNotDuplicated(userId.value, username.value)
 
                 // action - save it
@@ -54,9 +53,9 @@ class ProfileTableTest : BaseSpec(DB, body = {
         }
 
         test("update profile") {
-            checkAll<Email, Password, Username, Bio?, Image?, Username?> { email, password, username, updateBio, updateImage, updateUsername ->
+            checkAll<User, Username, Bio?, Image?, Username?> { user, username, updateBio, updateImage, updateUsername ->
                 // setup - assume non duplicated username & userId
-                val userId = requiresNewTransaction { userRepository.save(email, password) }.id
+                val userId = requiresNewTransaction { userRepository.save(user) }.id
                 assumeNotDuplicated(userId.value, username.value)
                 updateUsername?.let { assumeNotDuplicated(it.value) }
                 assume(username != updateUsername)
@@ -82,9 +81,9 @@ class ProfileTableTest : BaseSpec(DB, body = {
         }
 
         test("exist by username") {
-            checkAll<Email, Password, Username, Username> { email, password, username, notSavedUsername ->
+            checkAll<User, Username, Username> { user, username, notSavedUsername ->
                 // setup - save a profile
-                val userId = requiresNewTransaction { userRepository.save(email, password) }.id
+                val userId = requiresNewTransaction { userRepository.save(user) }.id
                 requiresNewTransaction {
                     assumeNotDuplicated(username.value)
                     sut.save(userId, username)
@@ -99,9 +98,9 @@ class ProfileTableTest : BaseSpec(DB, body = {
         }
 
         test("find by username") {
-            checkAll<Email, Password, Username> { email, password, username ->
+            checkAll<User, Username, Username> { user, username, notSavedUsername ->
                 // setup - save a profile
-                val userId = requiresNewTransaction { userRepository.save(email, password) }.id
+                val userId = requiresNewTransaction { userRepository.save(user) }.id
                 requiresNewTransaction {
                     assumeNotDuplicated(username.value)
                     sut.save(userId, username)
@@ -109,8 +108,10 @@ class ProfileTableTest : BaseSpec(DB, body = {
 
                 // action
                 val profile = requiresNewTransaction { sut.findProfileByUsername(username) }!!
+                val notSavedUsernameProfile = requiresNewTransaction { sut.findProfileByUsername(notSavedUsername) }
 
                 // assert
+                notSavedUsernameProfile shouldBe null
                 assertSoftly(profile) {
                     this.id shouldNotBe null
                     this.userId shouldBe userId
