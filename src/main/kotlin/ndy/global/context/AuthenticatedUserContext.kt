@@ -1,6 +1,5 @@
 package ndy.global.context
 
-import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
@@ -14,52 +13,26 @@ import ndy.global.security.Principal
  */
 interface AuthenticatedUserContext {
 
-    // use it in context of authenticate(optional = false)
+    val authenticated: Boolean
+
     val userId: UserId
 
-    // use it in context of authenticate(optional = true)
-    val userIdNullable: UserId?
-
-    // use it in context of authenticate(optional = false)
     val profileId: ProfileId
-
-    // use it in context of authenticate(optional = true)
-    val profileIdNullable: ProfileId?
 }
 
-fun authenticatedUserContext(call: ApplicationCall) =
-        object : AuthenticatedUserContext {
-            // refer userId with no principal is not allowed
-            override val userId by lazy { (call.authentication.principal() as? Principal)?.userId!! }
-            override val userIdNullable = (call.authentication.principal() as? Principal)?.userId
+fun authenticatedUserContext(authentication: AuthenticationContext) =
+    object : AuthenticatedUserContext {
+        override val authenticated = (authentication.principal() as? Principal) != null
 
-            // refer profileId with no principal is not allowed
-            override val profileId by lazy { (call.authentication.principal() as? Principal)?.profileId!! }
-            override val profileIdNullable = (call.authentication.principal() as? Principal)?.profileId
+        // refer userId with no principal is not allowed
+        override val userId by lazy {
+            (authentication.principal() as? Principal)?.userId
+                ?: error("illegal userId access")
         }
 
-/**
- * context of userId
- * *
- * used in case of calling other domain's service @ service level
- * e.g. userService.register -> profileService.register
- * *
- * this might be bad decision for the complexity or dependency point of view.
- * but I introduced it for just fun! - apply context receiver
- */
-interface UserIdContext {
-    val userId: ULong
-}
-
-context (AuthenticatedUserContext)
-fun userIdContext(): UserIdContext {
-    return object : UserIdContext {
-        override val userId: ULong = this@AuthenticatedUserContext.userId.value
+        // refer profileId with no principal is not allowed
+        override val profileId by lazy {
+            (authentication.principal() as? Principal)?.profileId
+                ?: error("illegal profileId access")
+        }
     }
-}
-
-fun userIdContext(userId: UserId): UserIdContext {
-    return object : UserIdContext {
-        override val userId: ULong = userId.value
-    }
-}

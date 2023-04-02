@@ -10,7 +10,6 @@ import io.kotest.property.checkAll
 import io.ktor.server.config.*
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
-import ndy.global.context.DefaultLoggingContext
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
@@ -20,10 +19,11 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
+import ndy.test.util.loggingContext
 
 class UserServiceTest : BaseSpec(DB, JWT, body = {
 
-    val sut = with(DefaultLoggingContext) {
+    val sut = with(loggingContext()) {
         UserService(
             repository = UserTable,
             profileService = ProfileService(

@@ -89,4 +89,4 @@ suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.run(
     crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit,
     call: ApplicationCall,
     it: T
-) = build(authenticatedUserContext(call), applicationCallContext(call), it)
+) = build(authenticatedUserContext(call.authentication), applicationCallContext(call), it)

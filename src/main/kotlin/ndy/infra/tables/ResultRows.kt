@@ -24,13 +24,6 @@ fun ResultRow.toUser() = User(
     password = Password.withEncoded(this[Users.password]),
 )
 
-fun ResultRow.toUserWithProfile() = User(
-    id = UserId(this[Users.id]),
-    email = Email(this[Users.email]),
-    password = Password.withEncoded(this[Users.password]),
-    profile = this.toProfile()
-)
-
 fun ResultRow.toProfile() = Profile(
     id = ProfileId(this[Profiles.id]),
     userId = UserId(this[Profiles.userId]),

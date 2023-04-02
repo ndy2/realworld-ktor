@@ -33,4 +33,10 @@ object TagTable : TagRepository {
     override fun findAllWhereIdIn(tagIds: List<TagId>) = Tags
         .select { Tags.id inList tagIds.map(TagId::value) }
         .map(ResultRow::toTag)
+
+    override fun findIdByName(tagName: String) = Tags
+        .slice(Tags.id)
+        .select { Tags.name eq tagName }
+        .map { TagId(it[Tags.id]) }
+        .singleOrNull()
 }

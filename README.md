@@ -34,7 +34,7 @@ I will try my best to find out my own "Best Practice" in this project.
   - It provides nice dsl for assertions & property testing.
   - It also supports integration with a lot of other projects - ktor/koin/konform!
   - IDE/plugin support is quite bad for now. It think will be better soon.
-- Context Receiver
+- Kotlin Experimental Features!
   - [context receiver](https://youtu.be/GISPalIVdQY) is still experimental feature in kotlin
   - with **context-receiver**, we can provide much more expressiveness code!
   - see my use cases!
@@ -46,28 +46,33 @@ I will try my best to find out my own "Best Practice" in this project.
 that I used to studied in the `Spring Framework`. Well that must be case by case. In this case I ommited lots of those values and focus on framwork/library usages
 
 ## Current Test with postman - with script provided [@here](https://github.com/gothinkster/realworld/tree/main/api)
-![image](https://user-images.githubusercontent.com/67302707/229202700-d52d39ce-80ca-4d63-ac23-d1b52aeb28f0.png)
+![image](https://user-images.githubusercontent.com/67302707/229292674-c1d761a9-9842-4a13-b2ce-f18d7300ee2b.png)
 
-## Endpoint milestones - See Details [@here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints)
+## Endpoints - See Details [@here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints)
+### Done (Main/Test)
 - [x] Authentication
 - [x] Registration
 - [x] Get Current User
 - [x] Update User
-- [x] Get Profile - test WIP
-- [x] Follow user - test WIP
-- [x] Unfollow user - test WIP
-- [ ] List Articles (a.k.a. filter)
-- [ ] Feed Articles (a.k.a. filter)
+
+### Done (Main), no test code yet
+- [x] Get Profile
+- [x] Follow user
+- [x] Unfollow user
+- [x] List Articles
 - [x] Get Article - no test yet
-- [x] Create Article - no test yet
-- [x] Update Article - no test yet
-- [x] Delete Article - no test yet
-- [X] Add Comments to an Article - no test yet
-- [ ] Get Comments from an Article
-- [ ] Delete Comment
-- [x] Favorite Article - no test yet
-- [x] Unfavorite Article - no test yet
-- [x] Get Tags - no test yet
+- [x] Create Article
+- [x] Update Article
+- [x] Delete Article
+- [X] Add Comments to an Article
+- [x] Get Comments from an Article
+- [x] Delete Comment
+- [x] Favorite Article
+- [x] Unfavorite Article
+- [x] Get Tags
+
+### Not Yet
+- [ ] Feed Articles (a.k.a. filter)
 
 ## Getting started
 

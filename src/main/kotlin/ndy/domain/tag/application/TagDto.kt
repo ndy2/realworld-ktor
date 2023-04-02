@@ -6,7 +6,7 @@ data class TagResult(
     val name: String
 ) {
     companion object {
-        fun ofEntity(entity: Tag) = TagResult(
+        fun from(entity: Tag) = TagResult(
             name = entity.name
         )
     }

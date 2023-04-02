@@ -3,7 +3,6 @@ package ndy.domain.user.application
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.user.domain.*
 import ndy.global.context.AuthenticatedUserContext
-import ndy.global.context.userIdContext
 import ndy.global.util.authenticationFail
 import ndy.global.util.notFound
 import ndy.global.util.requiresNewTransaction
@@ -16,23 +15,16 @@ class UserService(
 ) {
     suspend fun login(email: String, password: String) = requiresNewTransaction {
         // 1. find user
-        val user = repository.findUserByEmailWithProfile(Email(email)) ?: authenticationFail("login failure")
-        require(user.profile != null)
+        val (user, profile) = repository.findUserByEmailWithProfile(Email(email)) ?: authenticationFail("login failure")
 
         // 2. check password
         user.password.checkPassword(password, passwordVerifier)
 
         // 3. create token
-        val token = JwtTokenService.createToken(user)
+        val token = JwtTokenService.createToken(user, profile)
 
         // 4. return
-        UserResult(
-            email = user.email.value,
-            token = token,
-            username = user.profile.username.value,
-            bio = user.profile.bio?.value,
-            image = user.profile.image?.fullPath
-        )
+        UserResult.from(user, profile, token)
     }
 
     suspend fun register(username: String, email: String, password: String) = requiresNewTransaction {
@@ -43,13 +35,13 @@ class UserService(
         )
 
         // 2. save profile
-        with(userIdContext(user.id)) { profileService.register(username) }
+        profileService.register(user.id, username)
 
         // 3. return
         UserResult(
             email = email,
-            username = username,
             token = null,
+            username = username,
             bio = null,
             image = null,
         )
@@ -58,17 +50,10 @@ class UserService(
     context (AuthenticatedUserContext)
     suspend fun getById() = requiresNewTransaction {
         // 1. find user with profile
-        val foundUser = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
-        require(foundUser.profile != null)
+        val (user, profile) = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
 
         // 2. return
-        UserResult(
-            email = foundUser.email.value,
-            username = foundUser.profile.username.value,
-            token = null, /* would be filled @routs */
-            bio = foundUser.profile.bio?.value,
-            image = foundUser.profile.image?.fullPath
-        )
+        UserResult.from(user, profile, null)
     }
 
     context (AuthenticatedUserContext)
@@ -83,7 +68,7 @@ class UserService(
         repository.updateById(userId, email?.let { Email(it) }, password?.let { Password(it) })
 
         // 3. update profile
-        with(userIdContext()) { profileService.update(username, bio, image) }
+        profileService.update(userId, username, bio, image)
 
         // 4. return
         UserResult(

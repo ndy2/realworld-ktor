@@ -3,6 +3,7 @@ package ndy.infra.tables
 import ndy.domain.article.comment.domain.*
 import ndy.domain.article.domain.ArticleId
 import ndy.infra.tables.ArticleTable.Articles
+import ndy.infra.tables.ProfileTable.Profiles
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
@@ -15,8 +16,8 @@ object CommentTable : CommentRepository {
 
     object Comments : Table() {
         val id = ulong("id").autoIncrement()
-        val authorId = ulong("author_id")/*.references(Profiles.id)*/
-        val articleId = ulong("article_id")/*.references(Articles.id)*/
+        val authorId = ulong("author_id").references(Profiles.id)
+        val articleId = ulong("article_id").references(Articles.id)
         val body = varchar("body", 256)
         val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
         val updatedAt = datetime("updated_at")
@@ -37,7 +38,7 @@ object CommentTable : CommentRepository {
     }
 
     override fun findWithAuthorByArticleId(articleId: ArticleId): List<CommentWithAuthor> {
-        return (Comments innerJoin Articles).select {
+        return (Comments innerJoin Profiles).select {
             Comments.articleId eq articleId.value
         }.map { it.toComment() to it.toProfile() }
     }
@@ -45,4 +46,12 @@ object CommentTable : CommentRepository {
     override fun deleteByCommentId(commentId: CommentId) {
         Comments.deleteWhere { id eq commentId.value }
     }
+
+    override fun existsByIds(commentId: CommentId, authorId: AuthorId, articleId: ArticleId) = Comments
+        .select {
+            Comments.id eq commentId.value
+            Comments.authorId eq commentId.value
+            Comments.articleId eq articleId.value
+        }
+        .empty().not()
 }

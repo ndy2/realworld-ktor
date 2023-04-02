@@ -3,6 +3,7 @@ package ndy.infra.tables
 import ndy.domain.article.domain.*
 import ndy.domain.tag.domain.TagId
 import ndy.global.util.now
+import ndy.global.util.zip
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import org.jetbrains.exposed.sql.*
@@ -64,9 +65,7 @@ object ArticleTable : ArticleRepository {
             .singleOrNull() ?: return null
         val articleId = articleWithAuthor.first.id
 
-        val tagIds = ArticleTags
-            .select { ArticleTags.article eq articleId.value }
-            .map { TagId(it[ArticleTags.tag]) }
+        val tagIds = findTagIdsByArticleId(articleId)
         return ArticleWithAuthorAndTagIds(articleWithAuthor.first, articleWithAuthor.second, tagIds)
     }
 
@@ -82,7 +81,7 @@ object ArticleTable : ArticleRepository {
             if (title != null) it[Articles.title] = title
             if (description != null) it[Articles.description] = description
             if (body != null) it[Articles.body] = body
-            it[Articles.updatedAt] = now()
+            it[updatedAt] = now()
         }
 
         return findBySlug(slug)
@@ -95,5 +94,30 @@ object ArticleTable : ArticleRepository {
 
     override fun deleteBySlug(slug: String) = Articles
         .deleteWhere { Articles.slug eq slug }
+
+    override fun findByCond(
+        idFilter: List<ArticleId>?,
+        tagId: TagId?,
+        authorId: AuthorId?,
+        offset: Int,
+        limit: Int
+    ): List<ArticleWithAuthorAndTagIds> {
+        val (articles, authors) = (Articles innerJoin Profiles)
+            .select {
+                if (idFilter != null) Articles.id inList idFilter.map { it.value } else Op.TRUE
+                if (authorId != null) Articles.authorId eq authorId.value else Op.TRUE
+            }
+            .limit(limit, offset.toLong())
+            .map { it.toArticle() to it.toProfile() }
+            .unzip()
+
+        val tagIds = articles.map { findTagIdsByArticleId(it.id) }
+
+        return zip(articles, authors, tagIds)
+    }
+
+    private fun findTagIdsByArticleId(articleId: ArticleId) = ArticleTags
+        .select { ArticleTags.article eq articleId.value }
+        .map { TagId(it[ArticleTags.tag]) }
 
 }

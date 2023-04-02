@@ -72,8 +72,7 @@ class FollowServiceTest : BaseSpec(DB, body = {
 
 fun userContext(profileId: ProfileId) =
     object : AuthenticatedUserContext {
+        override val authenticated = false
         override val userId = UserId(0u)
-        override val userIdNullable = null
         override val profileId = profileId
-        override val profileIdNullable = profileId
     }
