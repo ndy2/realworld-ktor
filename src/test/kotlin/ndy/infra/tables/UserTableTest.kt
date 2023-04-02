@@ -13,13 +13,13 @@ import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
-import transactionTest
+import ndy.test.util.transactionTest
 
 class UserTableTest : BaseSpec(DB, body = {
 
     val sut = UserTable
 
-    test("returns saved user and find it by id") {
+    transactionTest("returns saved user and find it by id") {
         checkAll<User> { user ->
             // action
             val savedUser = sut.save(user)
@@ -45,7 +45,7 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    test("update user") {
+    transactionTest("update user") {
         checkAll<User, Email?, Password?> { user, updateEmail, updatePassword ->
             // setup
             val savedUserId = requiresNewTransaction { sut.save(user).id }
@@ -66,7 +66,7 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    test("findUserById with Profile") {
+    transactionTest("findUserById with Profile") {
         checkAll<User, Username> { user, username ->
             // setup
             val savedUser = requiresNewTransaction { sut.save(user) }
@@ -90,17 +90,17 @@ class UserTableTest : BaseSpec(DB, body = {
         }
     }
 
-    test("findUserByEmailWithProfile") {
+    transactionTest("findUserByEmailWithProfile") {
         checkAll<User, Username> { user, username ->
             // action
-            val savedUser = requiresNewTransaction { sut.save(user) }
-            val savedProfile = requiresNewTransaction { ProfileTable.save(savedUser.id, username) }
+            val savedUser = sut.save(user)
+            val savedProfile = ProfileTable.save(savedUser.id, username)
 
             // action
-            val (user, profile) = requiresNewTransaction { sut.findUserByEmailWithProfile(user.email) }!!
+            val (findUser, profile) = sut.findUserByEmailWithProfile(user.email)!!
 
             // assert
-            assertSoftly(user) {
+            assertSoftly(findUser) {
                 password.encodedPassword // invoke getter
                 this.id shouldBe savedUser.id
                 this.email shouldBe savedUser.email

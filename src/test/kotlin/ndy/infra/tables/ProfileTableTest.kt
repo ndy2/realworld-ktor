@@ -9,12 +9,12 @@ import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.User
-import ndy.global.util.requiresNewTransaction
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
+import ndy.test.util.transactionTest
 
 class ProfileTableTest : BaseSpec(DB, body = {
 
@@ -22,14 +22,14 @@ class ProfileTableTest : BaseSpec(DB, body = {
     val userRepository = UserTable
 
     with(sut) {
-        test("returns saved profile and find it") {
+        transactionTest("returns saved profile and find it") {
             checkAll<User, Username> { user, username ->
                 // setup - assume not duplicated username & id
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
+                val userId = userRepository.save(user).id
                 assumeNotDuplicated(userId.value, username.value)
 
                 // action - save it
-                val savedProfile = requiresNewTransaction { sut.save(userId, username) }
+                val savedProfile = sut.save(userId, username)
 
                 // assert
                 assertSoftly(savedProfile) {
@@ -40,7 +40,7 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 }
 
                 // action - find it
-                val foundProfile = requiresNewTransaction { sut.findById(savedProfile.id) }
+                val foundProfile = sut.findById(savedProfile.id)
 
                 // assert
                 assertSoftly(foundProfile!!) {
@@ -52,26 +52,25 @@ class ProfileTableTest : BaseSpec(DB, body = {
             }
         }
 
-        test("update profile") {
+        transactionTest("update profile") {
             checkAll<User, Username, Bio?, Image?, Username?> { user, username, updateBio, updateImage, updateUsername ->
                 // setup - assume non duplicated username & userId
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
+                val userId = userRepository.save(user).id
                 assumeNotDuplicated(userId.value, username.value)
                 updateUsername?.let { assumeNotDuplicated(it.value) }
                 assume(username != updateUsername)
 
                 // action - save a profile
-                val count = requiresNewTransaction {
-                    sut.save(userId, username)
-                    sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
-                }
+                sut.save(userId, username)
+                val count = sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
+
 
                 // assert - update count
                 if (listOf(updateBio, updateImage, updateUsername).any { it != null }) count shouldBe 1
                 else count shouldBe 0
 
                 // assert - properly updated
-                val foundProfile = requiresNewTransaction { sut.findByUserId(userId) }
+                val foundProfile = sut.findByUserId(userId)
                 assertSoftly(foundProfile!!) {
                     it.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
                     it.bio shouldBe updateBio
@@ -80,35 +79,29 @@ class ProfileTableTest : BaseSpec(DB, body = {
             }
         }
 
-        test("exist by username") {
+        transactionTest("exist by username") {
             checkAll<User, Username, Username> { user, username, notSavedUsername ->
                 // setup - save a profile
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
-                requiresNewTransaction {
-                    assumeNotDuplicated(username.value)
-                    sut.save(userId, username)
-                }
+                val userId = userRepository.save(user).id
+                assumeNotDuplicated(username.value)
+                sut.save(userId, username)
 
                 // action & assert
-                requiresNewTransaction {
-                    sut.existByUsername(username) shouldBe true
-                    sut.existByUsername(notSavedUsername) shouldBe false
-                }
+                sut.existByUsername(username) shouldBe true
+                sut.existByUsername(notSavedUsername) shouldBe false
             }
         }
 
-        test("find by username") {
+        transactionTest("find by username") {
             checkAll<User, Username, Username> { user, username, notSavedUsername ->
                 // setup - save a profile
-                val userId = requiresNewTransaction { userRepository.save(user) }.id
-                requiresNewTransaction {
-                    assumeNotDuplicated(username.value)
-                    sut.save(userId, username)
-                }
+                val userId = userRepository.save(user).id
+                assumeNotDuplicated(username.value)
+                sut.save(userId, username)
 
                 // action
-                val profile = requiresNewTransaction { sut.findProfileByUsername(username) }!!
-                val notSavedUsernameProfile = requiresNewTransaction { sut.findProfileByUsername(notSavedUsername) }
+                val profile = sut.findProfileByUsername(username)!!
+                val notSavedUsernameProfile = sut.findProfileByUsername(notSavedUsername)
 
                 // assert
                 notSavedUsernameProfile shouldBe null
