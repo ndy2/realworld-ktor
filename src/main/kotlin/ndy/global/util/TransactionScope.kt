@@ -6,10 +6,10 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 /**
  * a non-blocking transaction in exposed
- * *
- * namings inspired by `@Transactional - propagation` element of Spring Data
- * see - https://github.com/JetBrains/Exposed/wiki/Transactions#working-with-coroutines
- * see - https://ktor.io/docs/interactive-website-add-persistence.html#queries
+ *
+ * - namings inspired by `@Transactional - propagation` element of Spring Data
+ * - reference - https://github.com/JetBrains/Exposed/wiki/Transactions#working-with-coroutines
+ * - reference - https://ktor.io/docs/interactive-website-add-persistence.html#queries
  */
 suspend inline fun <T> transactional(
     propagation: Propagation = Propagation.REQUIRED,

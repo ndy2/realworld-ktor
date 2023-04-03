@@ -28,6 +28,13 @@ fun checkValidation(condition: Boolean, message: String) {
     }
 }
 
+/**
+ * Check and throw `Konform` validation Result
+ *
+ * - reference - https://github.com/konform-kt/konform
+ * @see validationFail
+ * @see io.konform.validation.ValidationResult
+ */
 fun <T> ValidationResult<T>.checkAndThrow() {
     if (errors.isNotEmpty()) {
         validationFail(errors.joinToString { it.message })

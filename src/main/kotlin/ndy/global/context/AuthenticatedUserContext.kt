@@ -7,9 +7,12 @@ import ndy.global.security.Principal
 
 /**
  * context of authenticated user
- * *
- * see Routes.authenticatedXXX for details
- * reference - https://youtu.be/NxDIq-rFXUM
+ *
+ * - reference - https://youtu.be/NxDIq-rFXUM
+ * @see ndy.global.util.authenticatedGet
+ * @see ndy.global.util.authenticatedPost
+ * @see ndy.global.util.authenticatedPut
+ * @see ndy.global.util.authenticatedDelete
  */
 interface AuthenticatedUserContext {
 
