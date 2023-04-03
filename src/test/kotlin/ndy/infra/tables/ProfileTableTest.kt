@@ -52,20 +52,19 @@ class ProfileTableTest : BaseSpec(DB, body = {
         }
 
         transactionalTest("update profile") {
-            checkAll<User, Username, Bio?, Image?, Username?> { user, username,
-                                                                updateBio, updateImage, updateUsername ->
+            checkAll<User, Username, Bio?, Image?, Username?> { user, username, uBio, uImage, uUsername ->
                 // setup - assume non duplicated username & userId
                 val userId = userRepository.save(user).id
                 assumeNotDuplicated(userId.value, username.value)
-                updateUsername?.let { assumeNotDuplicated(it.value) }
-                assume(username != updateUsername)
+                uUsername?.let { assumeNotDuplicated(it.value) }
+                assume(username != uUsername)
 
                 // action - save a profile
                 sut.save(userId, username)
-                val count = sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
+                val count = sut.updateByUserId(userId, uUsername, uBio, uImage)
 
                 // assert - update count
-                if (listOf(updateBio, updateImage, updateUsername).any { it != null }) {
+                if (listOf(uBio, uImage, uUsername).any { it != null }) {
                     count shouldBe 1
                 } else {
                     count shouldBe 0
@@ -74,9 +73,9 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 // assert - properly updated
                 val foundProfile = sut.findByUserId(userId)
                 assertSoftly(foundProfile!!) {
-                    it.username shouldBeUpdatedToIf (updateUsername isNotNullOr username)
-                    it.bio shouldBe updateBio
-                    it.image shouldBe updateImage
+                    it.username shouldBeUpdatedToIf (uUsername isNotNullOr username)
+                    it.bio shouldBe uBio
+                    it.image shouldBe uImage
                 }
             }
         }
