@@ -7,11 +7,11 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.string
 import io.kotest.property.azstring
 import io.kotest.property.checkAll
+import kotlin.random.Random
 import ndy.domain.user.application.BcryptPasswordService
 import ndy.global.exception.RealworldRuntimeException
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.spec.BaseSpec
-import kotlin.random.Random
 
 class PasswordTest : BaseSpec(body = {
 

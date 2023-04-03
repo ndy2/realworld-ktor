@@ -7,14 +7,14 @@ import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.pair
 import io.kotest.property.assume
 import io.kotest.property.checkAll
+import kotlin.random.Random
+import kotlin.random.nextULong
 import ndy.domain.profile.domain.ProfileId
 import ndy.test.extentions.DB
 import ndy.test.generator.ProfileArbs.usernameArb
 import ndy.test.generator.UserArbs.userArb
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
-import kotlin.random.Random
-import kotlin.random.nextULong
 
 class FollowTableTest : BaseSpec(DB, body = {
 

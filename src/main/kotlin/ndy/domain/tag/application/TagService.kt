@@ -25,10 +25,8 @@ class TagService(
 
         // 2. iterate names
         names.map { name ->
-            // if it's existed get its id
-            existedTags.find { it.name == name }?.id
-                // else save new tag
-                ?: repository.save(Tag(name = name)).id
+            // if it's existed get its id else save new tag
+            existedTags.find { it.name == name }?.id ?: repository.save(Tag(name = name)).id
         }
     }
 
