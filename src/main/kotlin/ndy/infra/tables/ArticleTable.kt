@@ -1,5 +1,16 @@
 package ndy.infra.tables
 
+import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleId
 import ndy.domain.article.domain.ArticleRepository
@@ -12,17 +23,6 @@ import ndy.global.util.selectWhere
 import ndy.global.util.zip
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
-import org.jetbrains.exposed.sql.kotlin.datetime.datetime
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
 
 object ArticleTable : ArticleRepository {
 
@@ -72,9 +72,9 @@ object ArticleTable : ArticleRepository {
 
     override fun findWithAuthorAndTagIdsBySlug(slug: String): ArticleWithAuthorAndTagIds? {
         val articleWithAuthor = (Articles innerJoin Profiles)
-            .select { Articles.slug eq slug }
-            .map { it.toArticle() to it.toProfile() }
-            .singleOrNull() ?: return null
+                .select { Articles.slug eq slug }
+                .map { it.toArticle() to it.toProfile() }
+                .singleOrNull() ?: return null
         val articleId = articleWithAuthor.first.id
 
         val tagIds = findTagIdsByArticleId(articleId)
@@ -82,11 +82,11 @@ object ArticleTable : ArticleRepository {
     }
 
     override fun updateBySlug(
-        slug: String,
-        updatedSlug: String,
-        title: String?,
-        description: String?,
-        body: String?
+            slug: String,
+            updatedSlug: String,
+            title: String?,
+            description: String?,
+            body: String?
     ): ArticleWithAuthorId? {
         Articles.update({ Articles.slug eq slug }) {
             it[Articles.slug] = updatedSlug
@@ -100,28 +100,28 @@ object ArticleTable : ArticleRepository {
     }
 
     override fun findBySlug(slug: String) = Articles
-        .select { Articles.slug eq slug }
-        .map { it.toArticle() to AuthorId(it[Articles.authorId]) }
-        .singleOrNull()
+            .select { Articles.slug eq slug }
+            .map { it.toArticle() to AuthorId(it[Articles.authorId]) }
+            .singleOrNull()
 
     override fun deleteBySlug(slug: String) = Articles
-        .deleteWhere { Articles.slug eq slug }
+            .deleteWhere { Articles.slug eq slug }
 
     override fun findByCond(
-        idFilter: List<ArticleId>?,
-        tagId: TagId?,
-        authorId: AuthorId?,
-        offset: Int,
-        limit: Int
+            idFilter: List<ArticleId>?,
+            tagId: TagId?,
+            authorId: AuthorId?,
+            offset: Int,
+            limit: Int
     ): List<ArticleWithAuthorAndTagIds> {
         val (articles, authors) = (Articles innerJoin Profiles)
-            .selectWhere(
-                if (idFilter != null) Articles.id inList idFilter.map { it.value } else Op.TRUE,
-                if (authorId != null) Articles.authorId eq authorId.value else Op.TRUE
-            )
-            .limit(limit, offset.toLong())
-            .map { it.toArticle() to it.toProfile() }
-            .unzip()
+                .selectWhere(
+                        if (idFilter != null) Articles.id inList idFilter.map { it.value } else Op.TRUE,
+                        if (authorId != null) Articles.authorId eq authorId.value else Op.TRUE
+                )
+                .limit(limit, offset.toLong())
+                .map { it.toArticle() to it.toProfile() }
+                .unzip()
 
         val tagIds = articles.map { findTagIdsByArticleId(it.id) }
 
@@ -129,6 +129,6 @@ object ArticleTable : ArticleRepository {
     }
 
     private fun findTagIdsByArticleId(articleId: ArticleId) = ArticleTags
-        .select { ArticleTags.article eq articleId.value }
-        .map { TagId(it[ArticleTags.tag]) }
+            .select { ArticleTags.article eq articleId.value }
+            .map { TagId(it[ArticleTags.tag]) }
 }

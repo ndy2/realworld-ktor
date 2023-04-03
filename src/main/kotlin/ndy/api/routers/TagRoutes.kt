@@ -3,11 +3,11 @@ package ndy.api.routers
 import io.ktor.server.application.call
 import io.ktor.server.resources.get
 import io.ktor.server.routing.Route
+import org.koin.ktor.ext.inject
 import ndy.api.resources.Tags
 import ndy.domain.tag.application.TagResult
 import ndy.domain.tag.application.TagService
 import ndy.global.util.ok
-import org.koin.ktor.ext.inject
 
 fun Route.tagRouting() {
     val service by inject<TagService>()

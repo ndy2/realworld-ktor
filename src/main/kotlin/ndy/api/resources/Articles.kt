@@ -1,14 +1,14 @@
 package ndy.api.resources
 
-import io.ktor.resources.Resource
+import io.ktor.resources.*
 
 @Resource("/articles")
 class Articles(
-    val tag: String? = null,
-    val author: String? = null,
-    val favorited: String? = null,
-    val limit: Int = 20,
-    val offset: Int = 0
+        val tag: String? = null,
+        val author: String? = null,
+        val favorited: String? = null,
+        val limit: Int = 20,
+        val offset: Int = 0
 ) {
     @Resource("/feed")
     class Feed(val parent: Articles)

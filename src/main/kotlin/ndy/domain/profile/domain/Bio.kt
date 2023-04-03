@@ -6,7 +6,7 @@ import ndy.domain.profile.domain.Bio.Companion.MAX_LENGTH
 import ndy.global.util.checkAndThrow
 
 data class Bio(
-    val value: String
+        val value: String
 ) {
     companion object {
         const val MAX_LENGTH = 512

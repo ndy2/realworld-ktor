@@ -8,7 +8,7 @@ import ndy.global.util.Propagation.MANDATORY
 import ndy.global.util.transactional
 
 class FavoriteService(
-    private val repository: FavoriteRepository
+        private val repository: FavoriteRepository
 ) {
     context (AuthenticatedUserContext)
     suspend fun isFavorite(articleId: ArticleId) = transactional(MANDATORY) {

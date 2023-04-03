@@ -47,9 +47,9 @@ suspend inline fun <reified T : Any> ApplicationCall.extract(key: String) = rece
  * also add `context(AuthenticatedUserContext, ApplicationCallContext)` for flexibility
  */
 inline fun <reified T : Any> Route.authenticatedGet(
-    vararg configurations: String? = arrayOf(null),
-    optional: Boolean = false,
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
+        vararg configurations: String? = arrayOf(null),
+        optional: Boolean = false,
+        crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     get<T> {
         this.run(build, call, it)
@@ -58,9 +58,9 @@ inline fun <reified T : Any> Route.authenticatedGet(
 
 /* combines `authenticate` & `post<T>` */
 inline fun <reified T : Any> Route.authenticatedPost(
-    vararg configurations: String? = arrayOf(null),
-    optional: Boolean = false,
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
+        vararg configurations: String? = arrayOf(null),
+        optional: Boolean = false,
+        crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     post<T> {
         this.run(build, call, it)
@@ -69,9 +69,9 @@ inline fun <reified T : Any> Route.authenticatedPost(
 
 /* combines `authenticate` & `put<T>` */
 inline fun <reified T : Any> Route.authenticatedPut(
-    vararg configurations: String? = arrayOf(null),
-    optional: Boolean = false,
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
+        vararg configurations: String? = arrayOf(null),
+        optional: Boolean = false,
+        crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     put<T> {
         this.run(build, call, it)
@@ -80,9 +80,9 @@ inline fun <reified T : Any> Route.authenticatedPut(
 
 /* combines `authenticate` & `delete<T>`*/
 inline fun <reified T : Any> Route.authenticatedDelete(
-    vararg configurations: String? = arrayOf(null),
-    optional: Boolean = false,
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
+        vararg configurations: String? = arrayOf(null),
+        optional: Boolean = false,
+        crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit
 ) = authenticate(configurations = configurations, optional = optional) {
     delete<T> {
         this.run(build, call, it)
@@ -90,7 +90,7 @@ inline fun <reified T : Any> Route.authenticatedDelete(
 }
 
 suspend inline fun <reified T : Any> PipelineContext<Unit, ApplicationCall>.run(
-    crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit,
-    call: ApplicationCall,
-    it: T
+        crossinline build: suspend context(AuthenticatedUserContext, ApplicationCallContext) (T) -> Unit,
+        call: ApplicationCall,
+        it: T
 ) = build(authenticatedUserContext(call.authentication), applicationCallContext(call), it)

@@ -2,6 +2,10 @@ package ndy.plugins
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
 import ndy.domain.article.application.ArticleService
 import ndy.domain.article.comment.application.CommentService
 import ndy.domain.article.comment.domain.CommentRepository
@@ -27,10 +31,6 @@ import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.TagTable
 import ndy.infra.tables.UserTable
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
-import org.koin.ktor.plugin.Koin
-import org.koin.logger.slf4jLogger
 
 /**
  * Configure DI with Koin!
@@ -45,40 +45,40 @@ fun Application.configureDi() {
     install(Koin) {
         slf4jLogger()
         modules(
-            module {
-                // logging context - used by koin
-                singleOf(::applicationLoggingContext)
+                module {
+                    // logging context - used by koin
+                    singleOf(::applicationLoggingContext)
 
-                // user domain
-                single<UserRepository> { UserTable }
-                single<PasswordEncoder> { BcryptPasswordService }
-                single<PasswordVerifier> { BcryptPasswordService }
-                singleOf(::UserService)
+                    // user domain
+                    single<UserRepository> { UserTable }
+                    single<PasswordEncoder> { BcryptPasswordService }
+                    single<PasswordVerifier> { BcryptPasswordService }
+                    singleOf(::UserService)
 
-                // profile domain
-                single<ProfileRepository> { ProfileTable }
-                singleOf(::ProfileService)
+                    // profile domain
+                    single<ProfileRepository> { ProfileTable }
+                    singleOf(::ProfileService)
 
-                // follow
-                single<FollowRepository> { FollowTable }
-                singleOf(::FollowService)
+                    // follow
+                    single<FollowRepository> { FollowTable }
+                    singleOf(::FollowService)
 
-                // article domain
-                single<ArticleRepository> { ArticleTable }
-                singleOf(::ArticleService)
+                    // article domain
+                    single<ArticleRepository> { ArticleTable }
+                    singleOf(::ArticleService)
 
-                // comment
-                single<CommentRepository> { CommentTable }
-                singleOf(::CommentService)
+                    // comment
+                    single<CommentRepository> { CommentTable }
+                    singleOf(::CommentService)
 
-                // favorite
-                single<FavoriteRepository> { FavoriteTable }
-                singleOf(::FavoriteService)
+                    // favorite
+                    single<FavoriteRepository> { FavoriteTable }
+                    singleOf(::FavoriteService)
 
-                // tag domain
-                single<TagRepository> { TagTable }
-                singleOf(::TagService)
-            }
+                    // tag domain
+                    single<TagRepository> { TagTable }
+                    singleOf(::TagService)
+                }
         )
     }
 }

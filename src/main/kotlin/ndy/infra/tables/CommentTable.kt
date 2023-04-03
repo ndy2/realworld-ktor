@@ -1,5 +1,11 @@
 package ndy.infra.tables
 
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import ndy.domain.article.comment.domain.Comment
 import ndy.domain.article.comment.domain.CommentId
 import ndy.domain.article.comment.domain.CommentRepository
@@ -9,12 +15,6 @@ import ndy.domain.article.domain.AuthorId
 import ndy.global.util.selectWhere
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.ProfileTable.Profiles
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
-import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
 object CommentTable : CommentRepository {
 
@@ -43,8 +43,8 @@ object CommentTable : CommentRepository {
 
     override fun findWithAuthorByArticleId(articleId: ArticleId): List<CommentWithAuthor> {
         return (Comments innerJoin Profiles)
-            .selectWhere(Comments.articleId eq articleId.value)
-            .map { it.toComment() to it.toProfile() }
+                .selectWhere(Comments.articleId eq articleId.value)
+                .map { it.toComment() to it.toProfile() }
     }
 
     override fun deleteByCommentId(commentId: CommentId) {
@@ -52,10 +52,10 @@ object CommentTable : CommentRepository {
     }
 
     override fun existsByIds(commentId: CommentId, authorId: AuthorId, articleId: ArticleId) = Comments
-        .selectWhere(
-            Comments.id eq commentId.value,
-            Comments.authorId eq commentId.value,
-            Comments.articleId eq articleId.value
-        )
-        .empty().not()
+            .selectWhere(
+                    Comments.id eq commentId.value,
+                    Comments.authorId eq commentId.value,
+                    Comments.articleId eq articleId.value
+            )
+            .empty().not()
 }

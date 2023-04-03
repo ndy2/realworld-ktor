@@ -6,7 +6,7 @@ import ndy.global.context.AuthenticatedUserContext
 import ndy.global.exception.ValidationException
 
 class FollowService(
-    private val repository: FollowRepository
+        private val repository: FollowRepository
 ) {
     context (AuthenticatedUserContext)
     suspend fun follow(targetProfileId: ProfileId) {

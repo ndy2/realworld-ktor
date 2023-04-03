@@ -4,6 +4,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.resources.post
 import io.ktor.server.routing.Route
+import org.koin.ktor.ext.inject
 import ndy.api.dto.ProfileResponse
 import ndy.api.resources.Profiles
 import ndy.domain.profile.application.ProfileService
@@ -11,7 +12,6 @@ import ndy.global.util.authenticatedDelete
 import ndy.global.util.authenticatedGet
 import ndy.global.util.authenticatedPost
 import ndy.global.util.ok
-import org.koin.ktor.ext.inject
 
 fun Route.profileRouting() {
     val service by inject<ProfileService>()

@@ -8,10 +8,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.checkAll
-import io.ktor.client.plugins.resources.get
-import io.ktor.client.plugins.resources.post
-import io.ktor.client.plugins.resources.put
-import io.ktor.client.request.setBody
+import io.ktor.client.plugins.resources.*
+import io.ktor.client.request.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import ndy.api.dto.LoginRequest

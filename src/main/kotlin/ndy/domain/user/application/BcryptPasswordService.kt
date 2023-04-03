@@ -1,8 +1,8 @@
 package ndy.domain.user.application
 
+import org.mindrot.jbcrypt.BCrypt
 import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
-import org.mindrot.jbcrypt.BCrypt
 
 object BcryptPasswordService : PasswordEncoder, PasswordVerifier {
 

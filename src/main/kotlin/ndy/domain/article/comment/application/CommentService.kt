@@ -11,15 +11,15 @@ import ndy.global.util.forbiddenIf
 import ndy.global.util.transactional
 
 class CommentService(
-    private val repository: CommentRepository
+        private val repository: CommentRepository
 ) {
     context (AuthenticatedUserContext)
     suspend fun add(articleId: ArticleId, body: String) = transactional(MANDATORY) {
         val comment = Comment.ofCreate(body)
         repository.save(
-            comment = comment,
-            authorId = profileId,
-            articleId = articleId
+                comment = comment,
+                authorId = profileId,
+                articleId = articleId
         )
     }
 

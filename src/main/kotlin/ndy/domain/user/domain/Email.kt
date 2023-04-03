@@ -7,7 +7,7 @@ import io.konform.validation.jsonschema.pattern
 import ndy.global.util.checkAndThrow
 
 data class Email(
-    val value: String
+        val value: String
 ) {
     companion object {
         const val MAX_LENGTH = 128
@@ -23,8 +23,8 @@ private val validateEmail = Validation {
         minLength(8)
         maxLength(Email.MAX_LENGTH)
         pattern(
-            "^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+" +
-                "@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$"
+                "^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+" +
+                        "@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$"
         )
     }
 }

@@ -1,9 +1,8 @@
 package ndy.global.util
 
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-
-import kotlinx.coroutines.Dispatchers
 
 /**
  * a non-blocking transaction in exposed
@@ -13,8 +12,8 @@ import kotlinx.coroutines.Dispatchers
  * - reference - https://ktor.io/docs/interactive-website-add-persistence.html#queries
  */
 suspend inline fun <T> transactional(
-    propagation: Propagation = Propagation.REQUIRED,
-    crossinline block: suspend () -> T
+        propagation: Propagation = Propagation.REQUIRED,
+        crossinline block: suspend () -> T
 ): T {
     return when (propagation) {
         Propagation.REQUIRED -> requiredTransaction(block)

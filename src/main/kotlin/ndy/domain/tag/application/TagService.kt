@@ -8,7 +8,7 @@ import ndy.global.util.Propagation.MANDATORY
 import ndy.global.util.transactional
 
 class TagService(
-    private val repository: TagRepository
+        private val repository: TagRepository
 ) {
     suspend fun getAll() = transactional {
         // find all tags
@@ -43,8 +43,8 @@ class TagService(
     }
 
     private fun moveFirstTag(
-        tags: List<Tag>,
-        firstTagId: TagId?
+            tags: List<Tag>,
+            firstTagId: TagId?
     ): List<TagResult> {
         val firstTag = tags.first { it.id == firstTagId }
         val result = tags.toMutableList()

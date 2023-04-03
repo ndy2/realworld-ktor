@@ -4,6 +4,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.resources.post
 import io.ktor.server.routing.Route
+import org.koin.ktor.ext.inject
 import ndy.api.dto.LoginRequest
 import ndy.api.dto.RegistrationRequest
 import ndy.api.dto.UserResponse
@@ -17,7 +18,6 @@ import ndy.global.util.created
 import ndy.global.util.extract
 import ndy.global.util.ok
 import ndy.global.util.token
-import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {
     val userService by inject<UserService>()
@@ -32,9 +32,9 @@ fun Route.userRouting() {
 
         // action
         val result = userService.register(
-            username = request.username,
-            email = request.email,
-            password = request.password
+                username = request.username,
+                email = request.email,
+                password = request.password
         )
 
         // return
@@ -52,8 +52,8 @@ fun Route.userRouting() {
 
         // action
         val result = userService.login(
-            email = request.email,
-            password = request.password
+                email = request.email,
+                password = request.password
         )
 
         // return
@@ -84,11 +84,11 @@ fun Route.userRouting() {
 
         // action
         val result = userService.update(
-            email = request.email,
-            password = request.password,
-            username = request.username,
-            bio = request.bio,
-            image = request.image
+                email = request.email,
+                password = request.password,
+                username = request.username,
+                bio = request.bio,
+                image = request.image
         )
 
         // return

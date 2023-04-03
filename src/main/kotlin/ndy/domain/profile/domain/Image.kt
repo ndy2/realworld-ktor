@@ -12,9 +12,9 @@ import ndy.global.exception.ValidationException
 import ndy.global.util.checkAndThrow
 
 class Image private constructor(
-    val storePath: String,
-    val fileName: String,
-    val extension: String
+        val storePath: String,
+        val fileName: String,
+        val extension: String
 ) {
     val fullPath = "$storePath/$fileName.$extension"
 
@@ -31,9 +31,9 @@ class Image private constructor(
             if (i1 == -1 || i2 == -1 || i1 >= i2) throw ValidationException("invalid image path")
 
             return Image(
-                storePath = fullPath.substring(0 until i1),
-                fileName = fullPath.substring(i1 + 1 until i2),
-                extension = fullPath.substring(i2 + 1)
+                    storePath = fullPath.substring(0 until i1),
+                    fileName = fullPath.substring(i1 + 1 until i2),
+                    extension = fullPath.substring(i2 + 1)
             )
         }
     }
@@ -43,13 +43,13 @@ class Image private constructor(
     }
 
     override fun equals(other: Any?) =
-        if (this === other) {
-            true
-        } else if (javaClass != other?.javaClass) {
-            false
-        } else {
-            fullPath == (other as Image).fullPath
-        }
+            if (this === other) {
+                true
+            } else if (javaClass != other?.javaClass) {
+                false
+            } else {
+                fullPath == (other as Image).fullPath
+            }
 
     override fun hashCode() = fullPath.hashCode()
     override fun toString() = "Image(fullPath='$fullPath')"

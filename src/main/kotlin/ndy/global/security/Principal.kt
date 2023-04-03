@@ -12,6 +12,6 @@ import ndy.domain.user.domain.UserId
  * @see ndy.global.context.AuthenticatedUserContext
  */
 data class Principal(
-    val userId: UserId,
-    val profileId: ProfileId
+        val userId: UserId,
+        val profileId: ProfileId
 ) : io.ktor.server.auth.Principal

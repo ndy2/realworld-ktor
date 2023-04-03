@@ -35,8 +35,8 @@ fun Application.configureExceptionHandling() {
             }
 
             call.respond(
-                statusCode,
-                errorResponse(cause.message ?: cause.toString())
+                    statusCode,
+                    errorResponse(cause.message ?: cause.toString())
             )
         }
     }

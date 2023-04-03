@@ -24,18 +24,18 @@ interface AuthenticatedUserContext {
 }
 
 fun authenticatedUserContext(authentication: AuthenticationContext) =
-    object : AuthenticatedUserContext {
-        override val authenticated = (authentication.principal() as? Principal) != null
+        object : AuthenticatedUserContext {
+            override val authenticated = (authentication.principal() as? Principal) != null
 
-        // refer userId with no principal is not allowed
-        override val userId by lazy {
-            (authentication.principal() as? Principal)?.userId
-                ?: error("illegal userId access")
-        }
+            // refer userId with no principal is not allowed
+            override val userId by lazy {
+                (authentication.principal() as? Principal)?.userId
+                        ?: error("illegal userId access")
+            }
 
-        // refer profileId with no principal is not allowed
-        override val profileId by lazy {
-            (authentication.principal() as? Principal)?.profileId
-                ?: error("illegal profileId access")
+            // refer profileId with no principal is not allowed
+            override val profileId by lazy {
+                (authentication.principal() as? Principal)?.profileId
+                        ?: error("illegal profileId access")
+            }
         }
-    }

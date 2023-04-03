@@ -1,5 +1,10 @@
 package ndy.infra.tables
 
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Profile
@@ -8,11 +13,6 @@ import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
 import ndy.infra.tables.UserTable.Users
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
 
 object ProfileTable : ProfileRepository {
 
@@ -36,14 +36,14 @@ object ProfileTable : ProfileRepository {
     }
 
     override suspend fun findById(id: ProfileId) = Profiles
-        .select { Profiles.id eq id.value }
-        .map(ResultRow::toProfile)
-        .singleOrNull()
+            .select { Profiles.id eq id.value }
+            .map(ResultRow::toProfile)
+            .singleOrNull()
 
     override suspend fun findByUserId(userId: UserId) = Profiles
-        .select { Profiles.userId eq userId.value }
-        .map(ResultRow::toProfile)
-        .singleOrNull()
+            .select { Profiles.userId eq userId.value }
+            .map(ResultRow::toProfile)
+            .singleOrNull()
 
     override suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
         return if (listOf(username, bio, image).any { it != null }) {
@@ -58,11 +58,11 @@ object ProfileTable : ProfileRepository {
     }
 
     override suspend fun existByUsername(username: Username) = Profiles
-        .select { Profiles.username eq username.value }
-        .empty().not()
+            .select { Profiles.username eq username.value }
+            .empty().not()
 
     override suspend fun findProfileByUsername(username: Username) = Profiles
-        .select { Profiles.username eq username.value }
-        .map(ResultRow::toProfile)
-        .singleOrNull()
+            .select { Profiles.username eq username.value }
+            .map(ResultRow::toProfile)
+            .singleOrNull()
 }

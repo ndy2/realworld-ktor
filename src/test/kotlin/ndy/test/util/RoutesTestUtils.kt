@@ -2,16 +2,13 @@ package ndy.test.util
 
 import io.kotest.assertions.ktor.client.shouldHaveStatus
 import io.kotest.property.assume
-import io.ktor.client.call.body
-import io.ktor.client.plugins.resources.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMessageBuilder
+import io.ktor.client.call.*
+import io.ktor.client.plugins.resources.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.http.contentType
 import ndy.api.dto.LoginRequest
 import ndy.api.dto.RegistrationRequest
 import ndy.api.dto.UserResponse

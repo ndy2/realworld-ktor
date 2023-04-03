@@ -13,10 +13,10 @@ import ndy.global.util.notFound
 import ndy.global.util.transactional
 
 class UserService(
-    private val repository: UserRepository,
-    private val profileService: ProfileService,
-    private val passwordEncoder: PasswordEncoder,
-    private val passwordVerifier: PasswordVerifier
+        private val repository: UserRepository,
+        private val profileService: ProfileService,
+        private val passwordEncoder: PasswordEncoder,
+        private val passwordVerifier: PasswordVerifier
 ) {
     suspend fun login(email: String, password: String) = transactional {
         // 1. find user
@@ -35,8 +35,8 @@ class UserService(
     suspend fun register(username: String, email: String, password: String) = transactional {
         // 1. create User
         val user = User(
-            email = Email(email),
-            password = Password(password, passwordEncoder)
+                email = Email(email),
+                password = Password(password, passwordEncoder)
         )
 
         // 2. save user
@@ -47,11 +47,11 @@ class UserService(
 
         // 4. return
         UserResult(
-            email = email,
-            token = null,
-            username = username,
-            bio = null,
-            image = null
+                email = email,
+                token = null,
+                username = username,
+                bio = null,
+                image = null
         )
     }
 
@@ -66,11 +66,11 @@ class UserService(
 
     context (AuthenticatedUserContext)
     suspend fun update(
-        email: String?,
-        password: String?,
-        username: String?,
-        bio: String?,
-        image: String?
+            email: String?,
+            password: String?,
+            username: String?,
+            bio: String?,
+            image: String?
     ) = transactional {
         // 1. get origUser
         val origUser = getById()
@@ -83,11 +83,11 @@ class UserService(
 
         // 4. return
         UserResult(
-            email = email ?: origUser.email,
-            username = username ?: origUser.username,
-            token = null, /* would be filled @routs */
-            bio = bio ?: origUser.bio,
-            image = image ?: origUser.image
+                email = email ?: origUser.email,
+                username = username ?: origUser.username,
+                token = null, /* would be filled @routs */
+                bio = bio ?: origUser.bio,
+                image = image ?: origUser.image
         )
     }
 }

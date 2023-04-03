@@ -3,8 +3,6 @@ plugins {
     id("io.ktor.plugin") version "2.2.4"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("io.kotest") version "0.4.10"
-    id("org.ec4j.editorconfig") version "0.0.3"
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     jacoco
 }
 
@@ -60,11 +58,6 @@ tasks.jacocoTestReport {
     // print report location at first & last
     doFirst { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
     doLast { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
-}
-
-configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    version.set("0.48.2")
-    debug.set(true)
 }
 
 // see buildSrc/src/main/kotlin/Dependencies

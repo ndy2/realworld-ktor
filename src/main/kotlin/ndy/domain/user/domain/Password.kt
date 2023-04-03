@@ -10,8 +10,8 @@ import kotlin.reflect.KProperty
  */
 /* default constructor with rawPassword & encoder - typically used in user registration process */
 class Password(
-    rawPassword: String? = null,
-    passwordEncoder: PasswordEncoder? = null
+        rawPassword: String? = null,
+        passwordEncoder: PasswordEncoder? = null
 ) {
     companion object {
         const val MAX_LENGTH = 32
@@ -39,13 +39,13 @@ class Password(
     }
 
     override fun equals(other: Any?) =
-        if (this === other) {
-            true
-        } else if (javaClass != other?.javaClass) {
-            false
-        } else {
-            encodedPassword == (other as Password).encodedPassword
-        }
+            if (this === other) {
+                true
+            } else if (javaClass != other?.javaClass) {
+                false
+            } else {
+                encodedPassword == (other as Password).encodedPassword
+            }
 
     override fun hashCode() = encodedPassword.hashCode()
     override fun toString() = "Password(encodedPassword='[ENCRYPTED]')"

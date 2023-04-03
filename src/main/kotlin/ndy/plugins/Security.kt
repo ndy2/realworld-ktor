@@ -25,11 +25,11 @@ fun Application.configureSecurity() {
 
             realm = EnvConfig.getString("jwt.realm")
             verifier(
-                JWT
-                    .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
-                    .withAudience(EnvConfig.getString("jwt.audience"))
-                    .withIssuer(EnvConfig.getString("jwt.issuer"))
-                    .build()
+                    JWT
+                            .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
+                            .withAudience(EnvConfig.getString("jwt.audience"))
+                            .withIssuer(EnvConfig.getString("jwt.issuer"))
+                            .build()
             )
 
             validate {

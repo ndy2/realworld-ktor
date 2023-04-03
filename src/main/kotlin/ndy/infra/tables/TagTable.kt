@@ -1,13 +1,13 @@
 package ndy.infra.tables
 
-import ndy.domain.tag.domain.Tag
-import ndy.domain.tag.domain.TagId
-import ndy.domain.tag.domain.TagRepository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
+import ndy.domain.tag.domain.Tag
+import ndy.domain.tag.domain.TagId
+import ndy.domain.tag.domain.TagRepository
 
 object TagTable : TagRepository {
 
@@ -27,20 +27,20 @@ object TagTable : TagRepository {
     }
 
     override fun findAll() = Tags
-        .selectAll()
-        .map(ResultRow::toTag)
+            .selectAll()
+            .map(ResultRow::toTag)
 
     override fun findAllWhereNameIn(names: List<String>) = Tags
-        .select { Tags.name inList names }
-        .map(ResultRow::toTag)
+            .select { Tags.name inList names }
+            .map(ResultRow::toTag)
 
     override fun findAllWhereIdIn(tagIds: List<TagId>) = Tags
-        .select { Tags.id inList tagIds.map(TagId::value) }
-        .map(ResultRow::toTag)
+            .select { Tags.id inList tagIds.map(TagId::value) }
+            .map(ResultRow::toTag)
 
     override fun findIdByName(tagName: String) = Tags
-        .slice(Tags.id)
-        .select { Tags.name eq tagName }
-        .map { TagId(it[Tags.id]) }
-        .singleOrNull()
+            .slice(Tags.id)
+            .select { Tags.name eq tagName }
+            .map { TagId(it[Tags.id]) }
+            .singleOrNull()
 }

@@ -1,6 +1,6 @@
 package ndy.api.resources
 
-import io.ktor.resources.Resource
+import io.ktor.resources.*
 
 @Resource("/users")
 class Users {

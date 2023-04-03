@@ -26,4 +26,4 @@ fun FieldSet.selectWhere(vararg ops: Op<Boolean>): Query = Query(this, and(*ops)
  * execute a deleteStatement from this Table with apply `and` for all provided ops
  */
 fun <T : Table> T.deleteWhere(vararg ops: Op<Boolean>) =
-    DeleteStatement.where(TransactionManager.current(), this@deleteWhere, and(*ops), false, null, null)
+        DeleteStatement.where(TransactionManager.current(), this@deleteWhere, and(*ops), false, null, null)

@@ -21,6 +21,6 @@ interface ApplicationCallContext {
 }
 
 fun applicationCallContext(call: ApplicationCall) =
-    object : ApplicationCallContext {
-        override val call = call
-    }
+        object : ApplicationCallContext {
+            override val call = call
+        }

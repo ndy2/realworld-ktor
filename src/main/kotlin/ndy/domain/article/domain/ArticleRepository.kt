@@ -18,11 +18,11 @@ interface ArticleRepository {
      * @return p?.second authorId
      */
     fun updateBySlug(
-        slug: String,
-        updatedSlug: String,
-        title: String?,
-        description: String?,
-        body: String?
+            slug: String,
+            updatedSlug: String,
+            title: String?,
+            description: String?,
+            body: String?
     ): ArticleWithAuthorId?
 
     fun findBySlug(slug: String): ArticleWithAuthorId?
@@ -30,10 +30,10 @@ interface ArticleRepository {
     fun deleteBySlug(slug: String): Int
 
     fun findByCond(
-        idFilter: List<ArticleId>?,
-        tagId: TagId?,
-        authorId: AuthorId?,
-        offset: Int,
-        limit: Int
+            idFilter: List<ArticleId>?,
+            tagId: TagId?,
+            authorId: AuthorId?,
+            offset: Int,
+            limit: Int
     ): List<ArticleWithAuthorAndTagIds>
 }

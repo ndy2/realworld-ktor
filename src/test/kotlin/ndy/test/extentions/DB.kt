@@ -4,6 +4,9 @@ import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
 import ndy.infra.tables.ArticleTable.ArticleTags
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.CommentTable.Comments
@@ -12,9 +15,6 @@ import ndy.infra.tables.FollowTable.Follows
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import ndy.infra.tables.UserTable.Users
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
 
 object DB : BeforeEachListener, AfterEachListener {
     private val database = Database.connect(

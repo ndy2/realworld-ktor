@@ -1,5 +1,9 @@
 package ndy.infra.tables
 
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import ndy.domain.article.domain.ArticleId
 import ndy.domain.article.favorite.domain.FavoriteRepository
 import ndy.domain.profile.domain.ProfileId
@@ -8,10 +12,6 @@ import ndy.global.util.deleteWhere
 import ndy.global.util.selectWhere
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.ProfileTable.Profiles
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 
 object FavoriteTable : FavoriteRepository {
 
@@ -29,26 +29,26 @@ object FavoriteTable : FavoriteRepository {
 
     override suspend fun delete(profileId: ProfileId, articleId: ArticleId) {
         Favorites.deleteWhere(
-            Favorites.profileId eq profileId.value,
-            Favorites.articleId eq articleId.value
+                Favorites.profileId eq profileId.value,
+                Favorites.articleId eq articleId.value
         )
     }
 
     override suspend fun exists(profileId: ProfileId, articleId: ArticleId) = Favorites
-        .selectWhere(
-            Favorites.profileId eq profileId.value,
-            Favorites.articleId eq articleId.value
-        )
-        .empty().not()
+            .selectWhere(
+                    Favorites.profileId eq profileId.value,
+                    Favorites.articleId eq articleId.value
+            )
+            .empty().not()
 
     override suspend fun countByArticleId(articleId: ArticleId) = Favorites
-        .select { Favorites.articleId eq articleId.value }
-        .count()
+            .select { Favorites.articleId eq articleId.value }
+            .count()
 
     override suspend fun findAllFavoritedArticleIds(username: Username): List<ArticleId> {
         return (Favorites innerJoin Profiles)
-            .slice(Favorites.articleId)
-            .select { Profiles.username eq username.value }
-            .map { ArticleId(it[Favorites.articleId]) }
+                .slice(Favorites.articleId)
+                .select { Profiles.username eq username.value }
+                .map { ArticleId(it[Favorites.articleId]) }
     }
 }

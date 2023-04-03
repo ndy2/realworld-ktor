@@ -1,16 +1,16 @@
 package ndy.infra.tables
 
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
 import ndy.domain.user.domain.UserRepository
 import ndy.infra.tables.ProfileTable.Profiles
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
 
 object UserTable : UserRepository {
 
@@ -34,14 +34,14 @@ object UserTable : UserRepository {
     }
 
     override suspend fun findUserById(id: UserId) = Users
-        .select { Users.id eq id.value }
-        .map(ResultRow::toUser)
-        .singleOrNull()
+            .select { Users.id eq id.value }
+            .map(ResultRow::toUser)
+            .singleOrNull()
 
     override suspend fun findUserByEmail(email: Email) = Users
-        .select { Users.email eq email.value }
-        .map(ResultRow::toUser)
-        .singleOrNull()
+            .select { Users.email eq email.value }
+            .map(ResultRow::toUser)
+            .singleOrNull()
 
     override suspend fun updateById(id: UserId, email: Email?, password: Password?): Int {
         return if (listOf(email, password).any { it != null }) {
@@ -55,14 +55,14 @@ object UserTable : UserRepository {
     }
 
     override suspend fun findUserByIdWithProfile(id: UserId) =
-        (Users innerJoin Profiles)
-            .select { Users.id eq id.value }
-            .map { it.toUser() to it.toProfile() }
-            .singleOrNull()
+            (Users innerJoin Profiles)
+                    .select { Users.id eq id.value }
+                    .map { it.toUser() to it.toProfile() }
+                    .singleOrNull()
 
     override suspend fun findUserByEmailWithProfile(email: Email) =
-        (Users innerJoin Profiles)
-            .select { Users.email eq email.value }
-            .map { it.toUser() to it.toProfile() }
-            .singleOrNull()
+            (Users innerJoin Profiles)
+                    .select { Users.email eq email.value }
+                    .map { it.toUser() to it.toProfile() }
+                    .singleOrNull()
 }

@@ -10,7 +10,7 @@ import ndy.domain.profile.domain.Username.Companion.PATTERN
 import ndy.global.util.checkAndThrow
 
 data class Username(
-    val value: String
+        val value: String
 ) {
     companion object {
         const val MIN_LENGTH = 4

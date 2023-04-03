@@ -15,8 +15,8 @@ import ndy.global.util.notFound
 import ndy.global.util.transactional
 
 class ProfileService(
-    private val repository: ProfileRepository,
-    private val followService: FollowService
+        private val repository: ProfileRepository,
+        private val followService: FollowService
 ) {
     suspend fun register(userId: UserId, username: String) = transactional(MANDATORY) {
         // 1. validate
@@ -43,10 +43,10 @@ class ProfileService(
 
         // 2. action/return
         repository.updateByUserId(
-            userId,
-            username?.let { Username(it) },
-            bio?.let { Bio(it) },
-            image?.let { Image.ofFullPath(it) }
+                userId,
+                username?.let { Username(it) },
+                bio?.let { Bio(it) },
+                image?.let { Image.ofFullPath(it) }
         )
     }
 
@@ -59,15 +59,15 @@ class ProfileService(
     suspend fun getByUsername(username: String) = transactional {
         // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
-            .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
+                .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
         // 2. action - check following
         val following =
-            if (authenticated) {
-                followService.isFollowing(targetProfileId = profile.id)
-            } else {
-                false
-            }
+                if (authenticated) {
+                    followService.isFollowing(targetProfileId = profile.id)
+                } else {
+                    false
+                }
 
         // 3. return
         ProfileResult.from(profile, following)
@@ -77,7 +77,7 @@ class ProfileService(
     suspend fun follow(username: String) = transactional {
         // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
-            .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
+                .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
         // 2. action
         followService.follow(targetProfileId = profile.id)
@@ -90,7 +90,7 @@ class ProfileService(
     suspend fun unfollow(username: String) = transactional {
         // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
-            .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
+                .run { repository.findProfileByUsername(this) ?: notFound(Profile::username, this) }
 
         // 2. action
         followService.unfollow(targetProfileId = profile.id)

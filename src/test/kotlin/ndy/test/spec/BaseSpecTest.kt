@@ -1,19 +1,16 @@
 package ndy.test.spec
 
 import io.kotest.core.test.TestScope
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.resources.Resources
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.path
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.testing.testApplication
-import ndy.global.util.transactional
-
+import io.ktor.client.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.resources.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.testing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import ndy.global.util.transactional
 
 /**
  * BaseSpec Style Integration Test

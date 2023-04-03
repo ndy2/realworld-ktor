@@ -2,6 +2,7 @@ package ndy.api.routers
 
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.routing.Route
+import org.koin.ktor.ext.inject
 import ndy.api.dto.ArticleCreateRequest
 import ndy.api.dto.ArticleResponse
 import ndy.api.dto.ArticleResponseList
@@ -18,7 +19,6 @@ import ndy.global.util.authenticatedPut
 import ndy.global.util.extract
 import ndy.global.util.noContent
 import ndy.global.util.ok
-import org.koin.ktor.ext.inject
 
 fun Route.articleRouting() {
     val service by inject<ArticleService>()
@@ -31,11 +31,11 @@ fun Route.articleRouting() {
         // bind
         val queryParams = it
         val searchCond = ArticleSearchCond(
-            tag = queryParams.tag,
-            author = queryParams.author,
-            favorited = queryParams.favorited,
-            limit = queryParams.limit,
-            offset = queryParams.offset
+                tag = queryParams.tag,
+                author = queryParams.author,
+                favorited = queryParams.favorited,
+                limit = queryParams.limit,
+                offset = queryParams.offset
         )
 
         // action
@@ -85,10 +85,10 @@ fun Route.articleRouting() {
 
         // action
         val result = service.create(
-            title = request.title,
-            description = request.description,
-            body = request.body,
-            tagList = request.tagList
+                title = request.title,
+                description = request.description,
+                body = request.body,
+                tagList = request.tagList
         )
 
         // response
@@ -107,10 +107,10 @@ fun Route.articleRouting() {
 
         // action
         val result = service.update(
-            slug = slug,
-            title = request.title,
-            description = request.description,
-            body = request.body
+                slug = slug,
+                title = request.title,
+                description = request.description,
+                body = request.body
         )
 
         // response

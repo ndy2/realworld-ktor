@@ -7,7 +7,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
-import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.config.*
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
 import ndy.infra.tables.FollowTable
