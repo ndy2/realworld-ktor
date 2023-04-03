@@ -8,7 +8,6 @@ typealias AuthorId = ProfileId
 typealias Author = Profile
 typealias CommentWithAuthor = Pair<Comment, Author>
 
-
 interface CommentRepository {
 
     fun save(comment: Comment, authorId: AuthorId, articleId: ArticleId): Comment

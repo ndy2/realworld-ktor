@@ -22,7 +22,6 @@ class BioTest : BaseSpec(body = {
         checkAll(bioValueArb) { shouldNotThrow<RealworldRuntimeException> { Bio(it) } }
 
         // fail if too long
-        checkAll(Arb.string(Bio.MAX_LENGTH + 1, 1000))
-        { shouldThrow<RealworldRuntimeException> { Bio(it) } }
+        checkAll(Arb.string(Bio.MAX_LENGTH + 1, 1000)) { shouldThrow<RealworldRuntimeException> { Bio(it) } }
     }
 })

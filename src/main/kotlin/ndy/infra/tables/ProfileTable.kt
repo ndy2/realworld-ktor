@@ -37,13 +37,15 @@ object ProfileTable : ProfileRepository {
         .singleOrNull()
 
     override suspend fun updateByUserId(userId: UserId, username: Username?, bio: Bio?, image: Image?): Int {
-        return if (listOf(username, bio, image).any { it != null })
+        return if (listOf(username, bio, image).any { it != null }) {
             Profiles.update({ Profiles.userId eq userId.value }) {
                 if (username != null) it[Profiles.username] = username.value
                 if (bio != null) it[Profiles.bio] = bio.value
                 if (image != null) it[Profiles.image] = image.fullPath
             }
-        else 0
+        } else {
+            0
+        }
     }
 
     override suspend fun existByUsername(username: Username) = Profiles

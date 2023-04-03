@@ -78,7 +78,7 @@ class ProfileServiceTest : BaseSpec(DB, body = {
                 /* update request arbs */
                 bioValueArb.orNull(),
                 imageFullPathArb.orNull(),
-                usernameValueArb.orNull(),
+                usernameValueArb.orNull()
             ) { user, username,
                 updateBio, updateImage, updateUsername ->
                 // setup
@@ -144,7 +144,6 @@ class ProfileServiceTest : BaseSpec(DB, body = {
 
     xcontext("follow") {
         context("success if username is valid") {
-
         }
         test("fail if username is invalid") {
         }
@@ -152,7 +151,6 @@ class ProfileServiceTest : BaseSpec(DB, body = {
 
     xcontext("unfollow") {
         context("success if username is valid") {
-
         }
         test("fail if username is invalid") {
         }

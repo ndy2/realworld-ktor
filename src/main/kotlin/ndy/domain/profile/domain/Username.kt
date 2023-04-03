@@ -15,7 +15,7 @@ data class Username(
     companion object {
         const val MIN_LENGTH = 4
         const val MAX_LENGTH = 64
-        const val PATTERN = "^[a-zA-Z0-9_-]*\$"  // alphanumeric with `_` and `-`
+        const val PATTERN = "^[a-zA-Z0-9_-]*\$" // alphanumeric with `_` and `-`
     }
 
     init {

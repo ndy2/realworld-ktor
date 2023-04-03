@@ -21,7 +21,7 @@ import org.jetbrains.exposed.sql.ResultRow
 fun ResultRow.toUser() = User(
     id = UserId(this[Users.id]),
     email = Email(this[Users.email]),
-    password = Password.withEncoded(this[Users.password]),
+    password = Password.withEncoded(this[Users.password])
 )
 
 fun ResultRow.toProfile() = Profile(
@@ -29,7 +29,7 @@ fun ResultRow.toProfile() = Profile(
     userId = UserId(this[Profiles.userId]),
     username = Username(this[Profiles.username]),
     bio = this[Profiles.bio]?.let { Bio(it) },
-    image = this[Profiles.image]?.let { Image.ofFullPath(it) },
+    image = this[Profiles.image]?.let { Image.ofFullPath(it) }
 )
 
 fun ResultRow.toArticle() = Article(
@@ -39,17 +39,17 @@ fun ResultRow.toArticle() = Article(
     description = this[Articles.description],
     body = this[Articles.body],
     createdAt = this[Articles.createdAt],
-    updatedAt = this[Articles.updatedAt],
+    updatedAt = this[Articles.updatedAt]
 )
 
 fun ResultRow.toComment() = Comment(
     id = CommentId(this[Comments.id]),
     body = this[Comments.body],
     createdAt = this[Comments.createdAt],
-    updatedAt = this[Comments.updatedAt],
+    updatedAt = this[Comments.updatedAt]
 )
 
 fun ResultRow.toTag() = Tag(
     id = TagId(this[Tags.id]),
-    name = this[Tags.name],
+    name = this[Tags.name]
 )

@@ -9,14 +9,14 @@ data class ArticleCreateRequest(
     val title: String,
     val description: String,
     val body: String,
-    val tagList: List<String>,
+    val tagList: List<String>
 )
 
 @Serializable
 data class ArticleUpdateRequest(
     val title: String?,
     val description: String?,
-    val body: String?,
+    val body: String?
 )
 
 @Serializable
@@ -30,7 +30,7 @@ data class ArticleResponse(
     val updatedAt: String,
     val favorited: Boolean,
     val favoritesCount: Int,
-    val author: AuthorResponse,
+    val author: AuthorResponse
 ) {
     companion object {
         fun ofResult(result: ArticleResult) = ArticleResponse(
@@ -43,7 +43,7 @@ data class ArticleResponse(
             updatedAt = "${result.updatedAt}Z",
             favorited = result.favorited,
             favoritesCount = result.favoritesCount,
-            author = AuthorResponse.ofResult(result.author),
+            author = AuthorResponse.ofResult(result.author)
         )
     }
 
@@ -52,14 +52,14 @@ data class ArticleResponse(
         val username: String,
         val bio: String?,
         val image: String?,
-        val following: Boolean,
+        val following: Boolean
     ) {
         companion object {
             fun ofResult(result: AuthorResult) = AuthorResponse(
                 username = result.username,
                 bio = result.bio,
                 image = result.image,
-                following = result.following,
+                following = result.following
             )
         }
     }
@@ -68,5 +68,5 @@ data class ArticleResponse(
 @Serializable
 data class ArticleResponseList(
     val articles: List<ArticleResponse>,
-    val articlesCount: Int,
+    val articlesCount: Int
 )

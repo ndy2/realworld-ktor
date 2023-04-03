@@ -3,6 +3,8 @@ plugins {
     id("io.ktor.plugin") version "2.2.4"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("io.kotest") version "0.4.10"
+    id("org.ec4j.editorconfig") version "0.0.3"
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     jacoco
 }
 
@@ -19,7 +21,7 @@ repositories {
     mavenCentral()
 }
 
-//https://youtu.be/GISPalIVdQY
+// https://youtu.be/GISPalIVdQY
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xcontext-receivers")
 }
@@ -38,25 +40,29 @@ tasks.jacocoTestReport {
         xml.required.set(false)
     }
 
-    classDirectories.setFrom(files(classDirectories.files.map {
-        fileTree(it).apply {
-            exclude(
-                "ndy/api/dto/**/*.*",
-                "ndy/api/resources/**/*.*",
-                "ndy/global/**/*.*",
-                "ndy/plugins/**/*.*",
-                "ndy/**/*Result.*",
-                "ndy/ApplicationKt.class",
-            )
-        }
-    }))
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it).apply {
+                    exclude(
+                        "ndy/api/dto/**/*.*",
+                        "ndy/api/resources/**/*.*",
+                        "ndy/global/**/*.*",
+                        "ndy/plugins/**/*.*",
+                        "ndy/**/*Result.*",
+                        "ndy/ApplicationKt.class"
+                    )
+                }
+            }
+        )
+    )
 
     // print report location at first & last
     doFirst { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
     doLast { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
 }
 
-//see buildSrc/src/main/kotlin/Dependencies
+// see buildSrc/src/main/kotlin/Dependencies
 dependencies {
     applyAll()
 }

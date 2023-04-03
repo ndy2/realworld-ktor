@@ -11,7 +11,7 @@ data class ArticleSearchCond(
     val author: String?,
     val favorited: String?,
     val limit: Int,
-    val offset: Int,
+    val offset: Int
 )
 
 data class ArticleResult(
@@ -24,7 +24,7 @@ data class ArticleResult(
     val updatedAt: LocalDateTime,
     val favorited: Boolean,
     val favoritesCount: Int,
-    val author: AuthorResult,
+    val author: AuthorResult
 ) {
     companion object {
         fun from(
@@ -33,7 +33,7 @@ data class ArticleResult(
             favorited: Boolean,
             favoritesCount: Int,
             author: Author,
-            following: Boolean,
+            following: Boolean
         ) = ArticleResult(
             slug = article.slug,
             title = article.title,
@@ -53,7 +53,7 @@ data class ArticleResult(
             favorited: Boolean,
             favoritesCount: Int,
             author: ProfileResult,
-            following: Boolean,
+            following: Boolean
         ) = ArticleResult(
             slug = article.slug,
             title = article.title,
@@ -73,7 +73,7 @@ data class AuthorResult(
     val username: String,
     val bio: String?,
     val image: String?,
-    val following: Boolean,
+    val following: Boolean
 ) {
     companion object {
         fun from(author: Author, following: Boolean) = AuthorResult(

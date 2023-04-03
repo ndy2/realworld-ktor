@@ -121,5 +121,4 @@ object ArticleTable : ArticleRepository {
     private fun findTagIdsByArticleId(articleId: ArticleId) = ArticleTags
         .select { ArticleTags.article eq articleId.value }
         .map { TagId(it[ArticleTags.tag]) }
-
 }

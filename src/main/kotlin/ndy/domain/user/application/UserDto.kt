@@ -8,7 +8,7 @@ data class UserResult(
     val token: String?,
     val username: String,
     val bio: String?,
-    val image: String?,
+    val image: String?
 ) {
     companion object {
         fun from(user: User, profile: Profile, token: String?) = UserResult(
@@ -16,7 +16,7 @@ data class UserResult(
             token = token,
             username = profile.username.value,
             bio = profile.bio?.value,
-            image = profile.image?.fullPath,
+            image = profile.image?.fullPath
         )
     }
 }

@@ -27,7 +27,7 @@ class TagService(
         names.map { name ->
             // if it's existed get its id
             existedTags.find { it.name == name }?.id
-            // else save new tag
+                // else save new tag
                 ?: repository.save(Tag(name = name)).id
         }
     }
@@ -37,8 +37,11 @@ class TagService(
         val tags = repository.findAllWhereIdIn(tagIds)
 
         // return
-        if (firstTagId == null) tags.map(TagResult::from)
-        else moveFirstTag(tags, firstTagId)
+        if (firstTagId == null) {
+            tags.map(TagResult::from)
+        } else {
+            moveFirstTag(tags, firstTagId)
+        }
     }
 
     private fun moveFirstTag(

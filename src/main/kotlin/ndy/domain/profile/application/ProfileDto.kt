@@ -7,7 +7,7 @@ data class ProfileResult(
     val username: String,
     val bio: String?,
     val image: String?,
-    val following: Boolean,
+    val following: Boolean
 ) {
     companion object {
         fun from(entity: Profile, following: Boolean) = ProfileResult(

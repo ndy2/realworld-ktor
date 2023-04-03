@@ -19,9 +19,11 @@ data class Email(
 }
 
 private val validateEmail = Validation {
-    Email::value{
+    Email::value {
         minLength(8)
         maxLength(Email.MAX_LENGTH)
-        pattern("^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$")
+        pattern(
+            "^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,8}\$"
+        )
     }
 }

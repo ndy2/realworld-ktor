@@ -18,14 +18,13 @@ import ndy.global.exception.*
  * reference - https://ktor.io/docs/status-pages.html
  */
 fun Application.configureExceptionHandling() {
-
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             val statusCode = when (cause) {
                 is FieldNotFoundException -> BadRequest // 400 - field not found
                 is EntityNotFoundException -> BadRequest // 400 - entity not found
-                is AuthenticationException -> Unauthorized //401
-                is AccessDeniedException -> Forbidden //403
+                is AuthenticationException -> Unauthorized // 401
+                is AccessDeniedException -> Forbidden // 403
                 is NotFoundException -> NotFound // 404 - resource not found
                 is ValidationException -> UnprocessableEntity // 422 - validation failed
                 else -> InternalServerError // 500

@@ -13,7 +13,7 @@ data class LoginRequest(
 data class RegistrationRequest(
     val username: String,
     val email: String,
-    val password: String,
+    val password: String
 )
 
 @Serializable
@@ -22,7 +22,7 @@ data class UserUpdateRequest(
     val password: String?,
     val username: String?,
     val bio: String?,
-    val image: String?,
+    val image: String?
 )
 
 @Serializable
@@ -31,7 +31,7 @@ data class UserResponse(
     val token: String?,
     val username: String,
     val bio: String?,
-    val image: String?,
+    val image: String?
 ) {
     companion object {
         fun ofResult(result: UserResult, token: String? = null) = UserResponse(
@@ -39,7 +39,7 @@ data class UserResponse(
             token = result.token ?: token,
             username = result.username,
             bio = result.bio,
-            image = result.image,
+            image = result.image
         )
     }
 }
