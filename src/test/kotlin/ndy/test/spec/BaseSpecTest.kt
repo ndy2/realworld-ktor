@@ -10,9 +10,10 @@ import io.ktor.http.contentType
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.testApplication
+import ndy.global.util.transactional
+
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import ndy.global.util.transactional
 
 /**
  * BaseSpec Style Integration Test

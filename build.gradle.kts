@@ -62,6 +62,11 @@ tasks.jacocoTestReport {
     doLast { println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html") }
 }
 
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    version.set("0.48.2")
+    debug.set(true)
+}
+
 // see buildSrc/src/main/kotlin/Dependencies
 dependencies {
     applyAll()

@@ -3,6 +3,7 @@ package ndy.test.generator
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.resolution.GlobalArbResolver
+
 import kotlin.reflect.typeOf
 
 inline fun <reified T> registerArb(vararg arbArgs: Arb<*>) {

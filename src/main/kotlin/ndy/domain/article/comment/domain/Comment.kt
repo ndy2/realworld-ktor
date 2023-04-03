@@ -1,8 +1,9 @@
 package ndy.domain.article.comment.domain
 
-import kotlinx.datetime.LocalDateTime
 import ndy.global.util.notUsed
 import ndy.global.util.now
+
+import kotlinx.datetime.LocalDateTime
 
 data class Comment(
     val id: CommentId,

@@ -1,10 +1,11 @@
 package ndy.domain.article.domain
 
-import kotlinx.datetime.LocalDateTime
 import ndy.domain.profile.domain.Profile
 import ndy.domain.profile.domain.ProfileId
 import ndy.global.util.notUsed
 import ndy.global.util.now
+
+import kotlinx.datetime.LocalDateTime
 
 // Profile implies Author @ profile domain
 typealias Author = Profile

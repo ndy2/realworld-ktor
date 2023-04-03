@@ -1,9 +1,10 @@
 package ndy.domain.article.comment.application
 
-import kotlinx.datetime.LocalDateTime
 import ndy.domain.article.comment.domain.Comment
 import ndy.domain.profile.application.ProfileResult
 import ndy.domain.profile.domain.Profile
+
+import kotlinx.datetime.LocalDateTime
 
 data class CommentResult(
     val id: ULong,

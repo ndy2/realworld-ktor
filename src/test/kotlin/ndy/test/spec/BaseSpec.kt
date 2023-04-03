@@ -7,11 +7,12 @@ import io.kotest.property.Arb
 import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.resolution.GlobalArbResolver
+import ndy.test.generator.ProfileArbs
+import ndy.test.generator.UserArbs
+
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.withNullability
-import ndy.test.generator.ProfileArbs
-import ndy.test.generator.UserArbs
 
 /**
  * Custom Spec that extends FunSpec

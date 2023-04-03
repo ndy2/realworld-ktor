@@ -1,7 +1,7 @@
 package ndy
 
-import io.ktor.server.netty.EngineMain.main as netty
 import io.ktor.server.application.Application
+import io.ktor.server.netty.EngineMain.main as netty
 import ndy.plugins.configureDatabases
 import ndy.plugins.configureDi
 import ndy.plugins.configureExceptionHandling

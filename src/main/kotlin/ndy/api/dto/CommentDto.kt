@@ -1,8 +1,9 @@
 package ndy.api.dto
 
-import kotlinx.serialization.Serializable
 import ndy.domain.article.comment.application.CommentResult
 import ndy.domain.article.comment.application.CommentResult.AuthorResult
+
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentAddRequest(

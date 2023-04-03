@@ -1,8 +1,9 @@
 package ndy.domain.user.domain
 
-import kotlin.reflect.KProperty
 import ndy.global.exception.AuthenticationException
 import ndy.global.util.checkValidation
+
+import kotlin.reflect.KProperty
 
 /**
  * Password - 비밀번호

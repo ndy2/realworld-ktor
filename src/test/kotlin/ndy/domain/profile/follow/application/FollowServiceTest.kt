@@ -5,14 +5,15 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 import io.kotest.property.assume
 import io.kotest.property.checkAll
-import kotlin.random.Random
-import kotlin.random.nextULong
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
 import ndy.infra.tables.FollowTable
 import ndy.test.extentions.DB
 import ndy.test.spec.BaseSpec
+
+import kotlin.random.Random
+import kotlin.random.nextULong
 
 class FollowServiceTest : BaseSpec(DB, body = {
 

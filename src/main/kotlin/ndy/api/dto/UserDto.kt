@@ -1,7 +1,8 @@
 package ndy.api.dto
 
-import kotlinx.serialization.Serializable
 import ndy.domain.user.application.UserResult
+
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginRequest(
