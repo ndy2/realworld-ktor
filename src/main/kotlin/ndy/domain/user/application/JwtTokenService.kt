@@ -1,9 +1,9 @@
 package ndy.domain.user.application
 
+import java.util.Date
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import de.sharpmind.ktor.EnvConfig
-import java.util.Date
 import ndy.domain.profile.domain.Profile
 import ndy.domain.user.domain.User
 
