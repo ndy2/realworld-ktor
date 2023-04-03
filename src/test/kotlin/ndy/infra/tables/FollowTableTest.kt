@@ -16,7 +16,6 @@ import ndy.test.util.assumeNotDuplicated
 import kotlin.random.Random
 import kotlin.random.nextULong
 
-@OptIn(ExperimentalStdlibApi::class)
 class FollowTableTest : BaseSpec(DB, body = {
 
     val sut = FollowTable
@@ -34,15 +33,15 @@ class FollowTableTest : BaseSpec(DB, body = {
                     add(followerId to followeeId)
                 }
             }
-            val deleteList = savePair.slice(0..<m)
+            val deleteList = savePair.slice(0 until m)
 
             // action
             savePair.forEach { sut.save(it.first, it.second) }
             deleteList.forEach { sut.delete(it.first, it.second) }
 
             // assert
-            (0..<m).map { savePair[it] }.forEach { sut.exists(it.first, it.second) shouldBe false }
-            (m..<n).map { savePair[it] }.forEach { sut.exists(it.first, it.second) shouldBe true }
+            (0 until m).map { savePair[it] }.forEach { sut.exists(it.first, it.second) shouldBe false }
+            (m until n).map { savePair[it] }.forEach { sut.exists(it.first, it.second) shouldBe true }
         }
     }
 

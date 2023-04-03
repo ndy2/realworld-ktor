@@ -52,7 +52,8 @@ class ProfileTableTest : BaseSpec(DB, body = {
         }
 
         transactionalTest("update profile") {
-            checkAll<User, Username, Bio?, Image?, Username?> { user, username, updateBio, updateImage, updateUsername ->
+            checkAll<User, Username, Bio?, Image?, Username?> { user, username,
+                                                                updateBio, updateImage, updateUsername ->
                 // setup - assume non duplicated username & userId
                 val userId = userRepository.save(user).id
                 assumeNotDuplicated(userId.value, username.value)
@@ -63,10 +64,12 @@ class ProfileTableTest : BaseSpec(DB, body = {
                 sut.save(userId, username)
                 val count = sut.updateByUserId(userId, updateUsername, updateBio, updateImage)
 
-
                 // assert - update count
-                if (listOf(updateBio, updateImage, updateUsername).any { it != null }) count shouldBe 1
-                else count shouldBe 0
+                if (listOf(updateBio, updateImage, updateUsername).any { it != null }) {
+                    count shouldBe 1
+                } else {
+                    count shouldBe 0
+                }
 
                 // assert - properly updated
                 val foundProfile = sut.findByUserId(userId)

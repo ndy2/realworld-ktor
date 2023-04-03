@@ -7,7 +7,7 @@ import io.kotest.core.test.TestScope
 
 @KotestTestScope
 class BaseSpecContainerScope(
-    testScope: TestScope,
+    testScope: TestScope
 ) : AbstractContainerScope(testScope) {
 
     /**

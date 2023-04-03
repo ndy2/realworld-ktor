@@ -1,6 +1,7 @@
 package ndy.plugins
 
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import ndy.domain.article.application.ArticleService
 import ndy.domain.article.comment.application.CommentService
 import ndy.domain.article.comment.domain.CommentRepository
@@ -19,7 +20,13 @@ import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.UserRepository
 import ndy.global.context.applicationLoggingContext
-import ndy.infra.tables.*
+import ndy.infra.tables.ArticleTable
+import ndy.infra.tables.CommentTable
+import ndy.infra.tables.FavoriteTable
+import ndy.infra.tables.FollowTable
+import ndy.infra.tables.ProfileTable
+import ndy.infra.tables.TagTable
+import ndy.infra.tables.UserTable
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin

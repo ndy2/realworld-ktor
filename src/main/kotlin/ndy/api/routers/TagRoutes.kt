@@ -1,8 +1,8 @@
 package ndy.api.routers
 
-import io.ktor.server.application.*
-import io.ktor.server.resources.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.call
+import io.ktor.server.resources.get
+import io.ktor.server.routing.Route
 import ndy.api.resources.Tags
 import ndy.domain.tag.application.TagResult
 import ndy.domain.tag.application.TagService

@@ -1,6 +1,10 @@
 package ndy.global.util
 
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.FieldSet
+import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.DeleteStatement
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 

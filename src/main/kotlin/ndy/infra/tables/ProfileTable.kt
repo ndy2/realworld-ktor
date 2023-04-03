@@ -1,9 +1,18 @@
 package ndy.infra.tables
 
-import ndy.domain.profile.domain.*
+import ndy.domain.profile.domain.Bio
+import ndy.domain.profile.domain.Image
+import ndy.domain.profile.domain.Profile
+import ndy.domain.profile.domain.ProfileId
+import ndy.domain.profile.domain.ProfileRepository
+import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
 import ndy.infra.tables.UserTable.Users
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 object ProfileTable : ProfileRepository {
 

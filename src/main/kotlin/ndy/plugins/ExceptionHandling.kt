@@ -6,11 +6,15 @@ import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.http.HttpStatusCode.Companion.Unauthorized
 import io.ktor.http.HttpStatusCode.Companion.UnprocessableEntity
-import io.ktor.server.application.*
-import io.ktor.server.plugins.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
-import ndy.global.exception.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.NotFoundException
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import ndy.global.exception.AuthenticationException
+import ndy.global.exception.EntityNotFoundException
+import ndy.global.exception.FieldNotFoundException
+import ndy.global.exception.ValidationException
 
 /**
  * Configure Exception Handling with Ktor - StatusPages plugin!

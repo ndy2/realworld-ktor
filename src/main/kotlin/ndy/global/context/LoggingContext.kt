@@ -1,7 +1,8 @@
 package ndy.global.context
 
-import io.ktor.server.application.*
-import io.ktor.util.logging.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.log
+import io.ktor.util.logging.Logger
 
 /**
  * context of logger

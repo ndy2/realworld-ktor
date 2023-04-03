@@ -1,8 +1,9 @@
 package ndy.api.routers
 
-import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.call
 import io.ktor.server.resources.post
-import io.ktor.server.routing.*
+import io.ktor.server.routing.Route
 import ndy.api.dto.ProfileResponse
 import ndy.api.resources.Profiles
 import ndy.domain.profile.application.ProfileService

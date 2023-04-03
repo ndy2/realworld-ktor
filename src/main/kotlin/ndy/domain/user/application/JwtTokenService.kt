@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import de.sharpmind.ktor.EnvConfig
 import ndy.domain.profile.domain.Profile
 import ndy.domain.user.domain.User
-import java.util.*
+import java.util.Date
 
 object JwtTokenService {
 

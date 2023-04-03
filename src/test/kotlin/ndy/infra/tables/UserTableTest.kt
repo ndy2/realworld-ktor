@@ -52,8 +52,11 @@ class UserTableTest : BaseSpec(DB, body = {
             val count = sut.updateById(savedUserId, updateEmail, updatePassword)
 
             // assert - update count
-            if (listOf(updateEmail, updatePassword).any { it != null }) count shouldBe 1
-            else count shouldBe 0
+            if (listOf(updateEmail, updatePassword).any { it != null }) {
+                count shouldBe 1
+            } else {
+                count shouldBe 0
+            }
 
             // assert - properly updated
             val foundUser = sut.findUserById(savedUserId)

@@ -1,6 +1,6 @@
 package ndy.global.context
 
-import io.ktor.server.auth.*
+import io.ktor.server.auth.AuthenticationContext
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.security.Principal

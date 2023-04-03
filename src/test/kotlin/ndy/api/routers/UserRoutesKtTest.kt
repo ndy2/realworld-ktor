@@ -8,8 +8,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.checkAll
-import io.ktor.client.plugins.resources.*
-import io.ktor.client.request.*
+import io.ktor.client.plugins.resources.get
+import io.ktor.client.plugins.resources.post
+import io.ktor.client.plugins.resources.put
+import io.ktor.client.request.setBody
 import io.ktor.http.HttpStatusCode.Companion.Created
 import io.ktor.http.HttpStatusCode.Companion.OK
 import ndy.api.dto.LoginRequest
@@ -25,7 +27,13 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.generator.registerArb
 import ndy.test.spec.BaseSpec
-import ndy.test.util.*
+import ndy.test.util.assumeNotDuplicated
+import ndy.test.util.authToken
+import ndy.test.util.extract
+import ndy.test.util.isNotNullOr
+import ndy.test.util.login
+import ndy.test.util.registerUser
+import ndy.test.util.shouldBeUpdatedToIf
 
 class UserRoutesTest : BaseSpec(RequestArb, body = {
 

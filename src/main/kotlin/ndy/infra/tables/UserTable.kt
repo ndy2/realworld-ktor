@@ -1,8 +1,16 @@
 package ndy.infra.tables
 
-import ndy.domain.user.domain.*
+import ndy.domain.user.domain.Email
+import ndy.domain.user.domain.Password
+import ndy.domain.user.domain.User
+import ndy.domain.user.domain.UserId
+import ndy.domain.user.domain.UserRepository
 import ndy.infra.tables.ProfileTable.Profiles
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 object UserTable : UserRepository {
 

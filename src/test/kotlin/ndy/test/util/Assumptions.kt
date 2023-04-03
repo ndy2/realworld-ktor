@@ -5,7 +5,6 @@ import ndy.domain.profile.domain.ProfileRepository
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.UserId
 
-
 context (ProfileRepository)
 suspend fun assumeNotDuplicated(username: String) {
     assume(!existByUsername(Username(username)))

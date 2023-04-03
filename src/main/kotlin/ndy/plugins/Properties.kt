@@ -1,7 +1,7 @@
 package ndy.plugins
 
 import de.sharpmind.ktor.EnvConfig
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
 
 /**
  * Configure environment property available from everywhere.

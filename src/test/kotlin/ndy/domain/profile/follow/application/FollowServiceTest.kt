@@ -14,7 +14,6 @@ import ndy.test.spec.BaseSpec
 import kotlin.random.Random
 import kotlin.random.nextULong
 
-@OptIn(ExperimentalStdlibApi::class)
 class FollowServiceTest : BaseSpec(DB, body = {
 
     val sut = FollowService(FollowTable)
@@ -48,17 +47,19 @@ class FollowServiceTest : BaseSpec(DB, body = {
                     add(followerId to followeeId)
                 }
             }
-            val deleteList = savePair.slice(0..<m)
+            val deleteList = savePair.slice(0 until m)
 
             // action
             savePair.forEach { with(userContext(it.first)) { sut.follow(it.second) } }
             deleteList.forEach { with(userContext(it.first)) { sut.unfollow(it.second) } }
 
             // assert
-            // @formatter:off
-            (0..<m).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe false }}
-            (m..<n).map { savePair[it] }.forEach { with(userContext(it.first)) {sut.isFollowing(it.second) shouldBe true }}
-            // @formatter:on
+            (0 until m)
+                .map { savePair[it] }
+                .forEach { with(userContext(it.first)) { sut.isFollowing(it.second) shouldBe false } }
+            (m until n)
+                .map { savePair[it] }
+                .forEach { with(userContext(it.first)) { sut.isFollowing(it.second) shouldBe true } }
         }
     }
 })

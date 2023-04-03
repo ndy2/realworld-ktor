@@ -1,18 +1,28 @@
 package ndy.infra.tables
 
-import ndy.domain.article.domain.*
+import ndy.domain.article.domain.Article
+import ndy.domain.article.domain.ArticleId
+import ndy.domain.article.domain.ArticleRepository
+import ndy.domain.article.domain.ArticleWithAuthorAndTagIds
+import ndy.domain.article.domain.ArticleWithAuthorId
+import ndy.domain.article.domain.AuthorId
 import ndy.domain.tag.domain.TagId
 import ndy.global.util.now
 import ndy.global.util.selectWhere
 import ndy.global.util.zip
 import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ReferenceOption.CASCADE
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.kotlin.datetime.CurrentDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 object ArticleTable : ArticleRepository {
 

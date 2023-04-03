@@ -21,7 +21,7 @@ object DB : BeforeEachListener, AfterEachListener {
         url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
         user = "root",
         driver = "org.h2.Driver",
-        password = "",
+        password = ""
     )
 
     override suspend fun beforeEach(testCase: TestCase) = transaction(database) {

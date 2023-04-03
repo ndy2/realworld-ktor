@@ -1,6 +1,6 @@
 package ndy.api.resources
 
-import io.ktor.resources.*
+import io.ktor.resources.Resource
 
 @Resource("/articles")
 class Articles(

@@ -1,6 +1,6 @@
 package ndy.global.context
 
-import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationCall
 
 /**
  * context of ApplicationCall

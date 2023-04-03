@@ -1,7 +1,7 @@
 package ndy.plugins
 
 import de.sharpmind.ktor.EnvConfig
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
 import ndy.infra.tables.ArticleTable.ArticleTags
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.CommentTable.Comments

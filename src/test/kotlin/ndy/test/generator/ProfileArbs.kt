@@ -1,11 +1,20 @@
 package ndy.test.generator
 
 import io.kotest.property.Arb
-import io.kotest.property.arbitrary.*
+import io.kotest.property.arbitrary.Codepoint
+import io.kotest.property.arbitrary.alphanumeric
+import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.ascii
+import io.kotest.property.arbitrary.choice
+import io.kotest.property.arbitrary.flatMap
+import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.uLong
 import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
-import ndy.domain.user.domain.*
+import ndy.domain.user.domain.UserId
 
 @Suppress("unused") // non-primitive arbs are registered automatically @BaseSpec#registerCustomArbs
 object ProfileArbs {

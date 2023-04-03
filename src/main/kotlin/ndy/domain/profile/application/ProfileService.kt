@@ -1,6 +1,10 @@
 package ndy.domain.profile.application
 
-import ndy.domain.profile.domain.*
+import ndy.domain.profile.domain.Bio
+import ndy.domain.profile.domain.Image
+import ndy.domain.profile.domain.Profile
+import ndy.domain.profile.domain.ProfileRepository
+import ndy.domain.profile.domain.Username
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId

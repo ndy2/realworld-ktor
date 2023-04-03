@@ -1,7 +1,8 @@
 package ndy.plugins
 
-import io.ktor.server.application.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.Application
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 import ndy.api.routers.articleRouting
 import ndy.api.routers.profileRouting
 import ndy.api.routers.tagRouting

@@ -7,7 +7,6 @@ import io.kotest.core.spec.style.scopes.addContainer
 import io.kotest.core.spec.style.scopes.addTest
 import io.kotest.core.test.TestScope
 
-
 /**
  * supports dsl-methods for the 'BaseSpec' style.
  * -  add integrationTest feature
@@ -28,7 +27,6 @@ interface BaseSpecRootScope : RootScope {
      */
     fun xdescribe(name: String, test: suspend BaseSpecContainerScope.() -> Unit) =
         addContainer(TestName("describe ", name, false), true, null) { BaseSpecContainerScope(this).test() }
-
 
     /**
      * Adds a Root IntegrationTest, with the given name and default config.

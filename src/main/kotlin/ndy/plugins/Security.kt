@@ -3,9 +3,9 @@ package ndy.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import de.sharpmind.ktor.EnvConfig
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
+import io.ktor.server.application.Application
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.jwt.jwt
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.exception.AuthenticationException

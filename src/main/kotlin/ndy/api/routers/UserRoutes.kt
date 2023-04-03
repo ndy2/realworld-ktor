@@ -1,8 +1,9 @@
 package ndy.api.routers
 
-import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.call
 import io.ktor.server.resources.post
-import io.ktor.server.routing.*
+import io.ktor.server.routing.Route
 import ndy.api.dto.LoginRequest
 import ndy.api.dto.RegistrationRequest
 import ndy.api.dto.UserResponse
@@ -10,7 +11,12 @@ import ndy.api.dto.UserUpdateRequest
 import ndy.api.resources.User
 import ndy.api.resources.Users
 import ndy.domain.user.application.UserService
-import ndy.global.util.*
+import ndy.global.util.authenticatedGet
+import ndy.global.util.authenticatedPut
+import ndy.global.util.created
+import ndy.global.util.extract
+import ndy.global.util.ok
+import ndy.global.util.token
 import org.koin.ktor.ext.inject
 
 fun Route.userRouting() {

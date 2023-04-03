@@ -3,7 +3,11 @@ package ndy.infra.tables
 import ndy.domain.tag.domain.Tag
 import ndy.domain.tag.domain.TagId
 import ndy.domain.tag.domain.TagRepository
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 
 object TagTable : TagRepository {
 

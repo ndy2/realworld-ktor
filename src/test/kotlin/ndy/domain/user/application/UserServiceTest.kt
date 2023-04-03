@@ -7,7 +7,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
-import io.ktor.server.config.*
+import io.ktor.server.config.MapApplicationConfig
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
 import ndy.infra.tables.FollowTable
@@ -83,7 +83,7 @@ object JWT : BeforeSpecListener {
                 "envConfig.default.jwt.audience" to "jwt-audience",
                 "envConfig.default.jwt.realm" to "ktor sample app",
                 "envConfig.default.jwt.secret" to "secret",
-                "envConfig.default.jwt.expires" to "60000",
+                "envConfig.default.jwt.expires" to "60000"
             )
         )
     }

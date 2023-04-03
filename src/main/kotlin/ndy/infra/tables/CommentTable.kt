@@ -1,7 +1,11 @@
 package ndy.infra.tables
 
-import ndy.domain.article.comment.domain.*
+import ndy.domain.article.comment.domain.Comment
+import ndy.domain.article.comment.domain.CommentId
+import ndy.domain.article.comment.domain.CommentRepository
+import ndy.domain.article.comment.domain.CommentWithAuthor
 import ndy.domain.article.domain.ArticleId
+import ndy.domain.article.domain.AuthorId
 import ndy.global.util.selectWhere
 import ndy.infra.tables.ArticleTable.Articles
 import ndy.infra.tables.ProfileTable.Profiles

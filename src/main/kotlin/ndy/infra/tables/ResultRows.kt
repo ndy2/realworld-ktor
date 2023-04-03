@@ -4,7 +4,11 @@ import ndy.domain.article.comment.domain.Comment
 import ndy.domain.article.comment.domain.CommentId
 import ndy.domain.article.domain.Article
 import ndy.domain.article.domain.ArticleId
-import ndy.domain.profile.domain.*
+import ndy.domain.profile.domain.Bio
+import ndy.domain.profile.domain.Image
+import ndy.domain.profile.domain.Profile
+import ndy.domain.profile.domain.ProfileId
+import ndy.domain.profile.domain.Username
 import ndy.domain.tag.domain.Tag
 import ndy.domain.tag.domain.TagId
 import ndy.domain.user.domain.Email
