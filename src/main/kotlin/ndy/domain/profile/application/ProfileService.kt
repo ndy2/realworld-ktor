@@ -12,7 +12,7 @@ import ndy.global.util.transactional
 
 class ProfileService(
     private val repository: ProfileRepository,
-    private val followService: FollowService,
+    private val followService: FollowService
 ) {
     suspend fun register(userId: UserId, username: String) = transactional(MANDATORY) {
         // 1. validate
@@ -42,7 +42,7 @@ class ProfileService(
             userId,
             username?.let { Username(it) },
             bio?.let { Bio(it) },
-            image?.let { Image.ofFullPath(it) },
+            image?.let { Image.ofFullPath(it) }
         )
     }
 
@@ -59,8 +59,11 @@ class ProfileService(
 
         // 2. action - check following
         val following =
-            if (authenticated) followService.isFollowing(targetProfileId = profile.id)
-            else false
+            if (authenticated) {
+                followService.isFollowing(targetProfileId = profile.id)
+            } else {
+                false
+            }
 
         // 3. return
         ProfileResult.from(profile, following)

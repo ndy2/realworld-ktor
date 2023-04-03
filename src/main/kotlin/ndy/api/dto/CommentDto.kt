@@ -20,8 +20,9 @@ data class CommentResponse(
     companion object {
         fun ofResult(result: CommentResult) = CommentResponse(
             id = result.id,
-            createdAt = "${result.createdAt}Z", // It is hard to customize serializer for kotlinx.datetime.LocalDateTime ...
+            createdAt = "${result.createdAt}Z",
             updatedAt = "${result.updatedAt}Z",
+            // It is hard to customize serializer for kotlinx.datetime.LocalDateTime ...
             body = result.body,
             author = AuthorResponse.ofResult(result.author)
         )

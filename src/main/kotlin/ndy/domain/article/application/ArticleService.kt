@@ -23,7 +23,7 @@ class ArticleService(
     private val profileService: ProfileService,
     private val followService: FollowService,
     private val commentService: CommentService,
-    private val favoriteService: FavoriteService,
+    private val favoriteService: FavoriteService
 ) {
     context (AuthenticatedUserContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = transactional {
@@ -39,18 +39,24 @@ class ArticleService(
             tagId = tagId,
             authorId = searchAuthor?.id?.let { AuthorId(it) },
             offset = searchCond.offset,
-            limit = searchCond.limit,
+            limit = searchCond.limit
         ).unzip()
 
         // 3. collect additional infos
         val tagsList = tagIdsList.map { tagService.getByTagIds(it, firstTagId = tagId) }
         val favoritedList =
-            if (authenticated) articles.map { favoriteService.isFavorite(it.id) }
-            else falseList(articles.size)
+            if (authenticated) {
+                articles.map { favoriteService.isFavorite(it.id) }
+            } else {
+                falseList(articles.size)
+            }
         val favoriteCountsList = articles.map { favoriteService.getCount(it.id) }
         val followings =
-            if (authenticated) followService.isFollowingList(authors.map { it.id })
-            else falseList(articles.size)
+            if (authenticated) {
+                followService.isFollowingList(authors.map { it.id })
+            } else {
+                falseList(articles.size)
+            }
 
         // 4. return
         (articles.indices).map {
@@ -64,7 +70,6 @@ class ArticleService(
             )
         }
     }
-
 
     // TODO - get feed!
     context (AuthenticatedUserContext)
@@ -101,7 +106,7 @@ class ArticleService(
             val article = Article.ofCreate(
                 title = title,
                 description = description,
-                body = body,
+                body = body
             )
 
             // 3. save it
@@ -205,8 +210,11 @@ class ArticleService(
 
         // 3. get additional infos
         val followings =
-            if (authenticated) followService.isFollowingList(authors.map(Author::id))
-            else falseList(comments.size)
+            if (authenticated) {
+                followService.isFollowingList(authors.map(Author::id))
+            } else {
+                falseList(comments.size)
+            }
 
         // 4. return
         (comments.indices).map { CommentResult.from(comments[it], authors[it], followings[it]) }

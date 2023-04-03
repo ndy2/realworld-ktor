@@ -35,42 +35,43 @@ import org.koin.logger.slf4jLogger
  * reference - https://insert-koin.io/docs/reference/koin-ktor/ktor/
  */
 fun Application.configureDi() {
-
     install(Koin) {
         slf4jLogger()
-        modules(module {
-            // logging context - used by koin
-            singleOf(::applicationLoggingContext)
+        modules(
+            module {
+                // logging context - used by koin
+                singleOf(::applicationLoggingContext)
 
-            // user domain
-            single<UserRepository> { UserTable }
-            single<PasswordEncoder> { BcryptPasswordService }
-            single<PasswordVerifier> { BcryptPasswordService }
-            singleOf(::UserService)
+                // user domain
+                single<UserRepository> { UserTable }
+                single<PasswordEncoder> { BcryptPasswordService }
+                single<PasswordVerifier> { BcryptPasswordService }
+                singleOf(::UserService)
 
-            // profile domain
-            single<ProfileRepository> { ProfileTable }
-            singleOf(::ProfileService)
+                // profile domain
+                single<ProfileRepository> { ProfileTable }
+                singleOf(::ProfileService)
 
-            // follow
-            single<FollowRepository> { FollowTable }
-            singleOf(::FollowService)
+                // follow
+                single<FollowRepository> { FollowTable }
+                singleOf(::FollowService)
 
-            // article domain
-            single<ArticleRepository> { ArticleTable }
-            singleOf(::ArticleService)
+                // article domain
+                single<ArticleRepository> { ArticleTable }
+                singleOf(::ArticleService)
 
-            // comment
-            single<CommentRepository> { CommentTable }
-            singleOf(::CommentService)
+                // comment
+                single<CommentRepository> { CommentTable }
+                singleOf(::CommentService)
 
-            // favorite
-            single<FavoriteRepository> { FavoriteTable }
-            singleOf(::FavoriteService)
+                // favorite
+                single<FavoriteRepository> { FavoriteTable }
+                singleOf(::FavoriteService)
 
-            // tag domain
-            single<TagRepository> { TagTable }
-            singleOf(::TagService)
-        })
+                // tag domain
+                single<TagRepository> { TagTable }
+                singleOf(::TagService)
+            }
+        )
     }
 }

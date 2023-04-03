@@ -13,7 +13,6 @@ import ndy.global.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.profileRouting() {
-
     val service by inject<ProfileService>()
 
     /**

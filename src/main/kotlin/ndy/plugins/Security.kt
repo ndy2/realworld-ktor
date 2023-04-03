@@ -19,7 +19,6 @@ const val TOKEN_SCHEMA = "Token"
  * reference - https://ktor.io/docs/jwt.htm
  */
 fun Application.configureSecurity() {
-
     authentication {
         jwt {
             authSchemes(TOKEN_SCHEMA /* default : "Bearer" */)

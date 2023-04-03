@@ -25,14 +25,13 @@ suspend inline fun <T> transactional(
 enum class Propagation {
     REQUIRED,
     REQUIRES_NEW,
-    MANDATORY,
+    MANDATORY
 }
 
 // run with new transaction
 suspend inline fun <T> requiresNewTransaction(crossinline block: suspend () -> T): T {
     return newSuspendedTransaction(Dispatchers.IO) { block() }
 }
-
 
 // throw error if there is no current transaction
 suspend inline fun <T> mandatoryTransaction(crossinline block: suspend () -> T): T {
@@ -43,7 +42,9 @@ suspend inline fun <T> mandatoryTransaction(crossinline block: suspend () -> T):
 // if there is current transaction - use it
 // else run with new transaction
 suspend inline fun <T> requiredTransaction(crossinline block: suspend () -> T): T {
-    return if (TransactionManager.currentOrNull() == null) requiresNewTransaction(block)
-    else block()
+    return if (TransactionManager.currentOrNull() == null) {
+        requiresNewTransaction(block)
+    } else {
+        block()
+    }
 }
-

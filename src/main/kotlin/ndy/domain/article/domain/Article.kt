@@ -17,13 +17,13 @@ data class Article(
     val description: String,
     val body: String,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 ) {
     companion object {
         fun ofCreate(
             title: String,
             description: String,
-            body: String,
+            body: String
         ) = Article(
             id = ArticleId(0u),
             slug = title.lowercase().replace(" ", "-"),
@@ -31,7 +31,7 @@ data class Article(
             description = description,
             body = body,
             createdAt = now(),
-            updatedAt = notUsed,
+            updatedAt = notUsed
         )
 
         fun createSlug(title: String) = title.lowercase().replace(" ", "-")

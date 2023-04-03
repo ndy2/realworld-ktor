@@ -14,7 +14,6 @@ import ndy.global.context.applicationLoggingContext
  * reference - https://ktor.io/docs/routing-in-ktor.html>routing-in-ktor in ktor docs
  */
 fun Application.configureRouting() {
-
     routing {
         with(this@configureRouting.applicationLoggingContext()) {
             route("/api") {

@@ -10,7 +10,6 @@ import ndy.global.util.*
 import org.koin.ktor.ext.inject
 
 fun Route.articleRouting() {
-
     val service by inject<ArticleService>()
 
     /**
@@ -25,7 +24,7 @@ fun Route.articleRouting() {
             author = queryParams.author,
             favorited = queryParams.favorited,
             limit = queryParams.limit,
-            offset = queryParams.offset,
+            offset = queryParams.offset
         )
 
         // action
@@ -78,7 +77,7 @@ fun Route.articleRouting() {
             title = request.title,
             description = request.description,
             body = request.body,
-            tagList = request.tagList,
+            tagList = request.tagList
         )
 
         // response
@@ -100,7 +99,7 @@ fun Route.articleRouting() {
             slug = slug,
             title = request.title,
             description = request.description,
-            body = request.body,
+            body = request.body
         )
 
         // response
@@ -220,4 +219,3 @@ private suspend inline fun ApplicationCall.okComment(response: CommentResponse) 
 private suspend inline fun ApplicationCall.okCommentList(responseList: List<CommentResponse>) {
     ok(mapOf("comments" to responseList))
 }
-

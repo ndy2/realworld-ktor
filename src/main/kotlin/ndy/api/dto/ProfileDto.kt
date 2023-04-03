@@ -8,7 +8,7 @@ data class ProfileResponse(
     val username: String,
     val bio: String?,
     val image: String?,
-    val following: Boolean,
+    val following: Boolean
 ) {
     companion object {
         fun ofResult(result: ProfileResult) = ProfileResponse(

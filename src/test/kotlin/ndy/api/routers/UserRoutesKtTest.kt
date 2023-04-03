@@ -70,7 +70,6 @@ class UserRoutesTest : BaseSpec(RequestArb, body = {
         }
     }
 
-
     integrationTest("get user") {
         checkAll<RegistrationRequest> { request ->
             // setup
@@ -128,7 +127,7 @@ object RequestArb : BeforeSpecListener {
             passwordValueArb.orNull(),
             usernameValueArb.orNull(),
             bioValueArb.orNull(),
-            imageFullPathArb.orNull(),
+            imageFullPathArb.orNull()
         )
     }
 }

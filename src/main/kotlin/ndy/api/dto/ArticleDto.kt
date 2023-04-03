@@ -39,8 +39,9 @@ data class ArticleResponse(
             description = result.description,
             body = result.body,
             tagList = result.tagList,
-            createdAt = "${result.createdAt}Z", // It is hard to customize serializer for kotlinx.datetime.LocalDateTime ...
+            createdAt = "${result.createdAt}Z",
             updatedAt = "${result.updatedAt}Z",
+            // It is hard to customize serializer for kotlinx.datetime.LocalDateTime ...
             favorited = result.favorited,
             favoritesCount = result.favoritesCount,
             author = AuthorResponse.ofResult(result.author)

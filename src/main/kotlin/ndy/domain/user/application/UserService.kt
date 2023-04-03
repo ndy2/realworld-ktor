@@ -11,7 +11,7 @@ class UserService(
     private val repository: UserRepository,
     private val profileService: ProfileService,
     private val passwordEncoder: PasswordEncoder,
-    private val passwordVerifier: PasswordVerifier,
+    private val passwordVerifier: PasswordVerifier
 ) {
     suspend fun login(email: String, password: String) = transactional {
         // 1. find user
@@ -46,7 +46,7 @@ class UserService(
             token = null,
             username = username,
             bio = null,
-            image = null,
+            image = null
         )
     }
 
@@ -61,8 +61,11 @@ class UserService(
 
     context (AuthenticatedUserContext)
     suspend fun update(
-        email: String?, password: String?,
-        username: String?, bio: String?, image: String?
+        email: String?,
+        password: String?,
+        username: String?,
+        bio: String?,
+        image: String?
     ) = transactional {
         // 1. get origUser
         val origUser = getById()
@@ -79,7 +82,7 @@ class UserService(
             username = username ?: origUser.username,
             token = null, /* would be filled @routs */
             bio = bio ?: origUser.bio,
-            image = image ?: origUser.image,
+            image = image ?: origUser.image
         )
     }
 }

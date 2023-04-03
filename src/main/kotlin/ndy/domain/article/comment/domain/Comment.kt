@@ -8,14 +8,14 @@ data class Comment(
     val id: CommentId,
     val body: String,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 ) {
     companion object {
         fun ofCreate(body: String) = Comment(
             id = CommentId(0u),
             body = body,
             createdAt = now(),
-            updatedAt = notUsed,
+            updatedAt = notUsed
         )
     }
 }

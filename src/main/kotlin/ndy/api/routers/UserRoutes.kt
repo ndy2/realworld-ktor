@@ -28,7 +28,7 @@ fun Route.userRouting() {
         val result = userService.register(
             username = request.username,
             email = request.email,
-            password = request.password,
+            password = request.password
         )
 
         // return
@@ -82,7 +82,7 @@ fun Route.userRouting() {
             password = request.password,
             username = request.username,
             bio = request.bio,
-            image = request.image,
+            image = request.image
         )
 
         // return

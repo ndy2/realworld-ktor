@@ -10,7 +10,6 @@ import ndy.global.util.ok
 import org.koin.ktor.ext.inject
 
 fun Route.tagRouting() {
-
     val service by inject<TagService>()
 
     /**

@@ -31,4 +31,3 @@ fun <A, B, C> zip(aList: List<A>, bList: List<B>, cList: List<C>): List<Triple<A
         }
     }
 }
-
