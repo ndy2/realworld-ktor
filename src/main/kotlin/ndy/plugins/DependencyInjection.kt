@@ -28,11 +28,11 @@ import org.koin.logger.slf4jLogger
 /**
  * Configure DI with Koin!
  * there is no DI feature in Ktor, Let's use Koin!
- * *
+ *
  * Koin has no auto-configuration feature as in Spring Boot
  * register module in below code
- * *
- * see https://insert-koin.io/docs/reference/koin-ktor/ktor/
+ *
+ * reference - https://insert-koin.io/docs/reference/koin-ktor/ktor/
  */
 fun Application.configureDi() {
 

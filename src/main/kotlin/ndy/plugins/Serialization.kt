@@ -14,8 +14,8 @@ import kotlinx.serialization.json.Json
 
 /**
  * configure ContentNegotiation with json-kotlinx
- * *
- * see https://ktor.io/docs/serialization.html
+ *
+ * reference - https://ktor.io/docs/serialization.html
  */
 @OptIn(ExperimentalSerializationApi::class) /* for the usage of explicitNull flag */
 fun Application.configureSerialization() {

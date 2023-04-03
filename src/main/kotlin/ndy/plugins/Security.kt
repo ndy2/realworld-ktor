@@ -15,8 +15,8 @@ const val TOKEN_SCHEMA = "Token"
 
 /**
  * configure jwt in ktor
- * *
- * see https://ktor.io/docs/jwt.htm
+ *
+ * reference - https://ktor.io/docs/jwt.htm
  */
 fun Application.configureSecurity() {
 

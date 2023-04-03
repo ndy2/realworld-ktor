@@ -10,8 +10,8 @@ import ndy.global.context.applicationLoggingContext
 
 /**
  * configure Routing (Controller in Spring)
- * *
- * see - https://ktor.io/docs/routing-in-ktor.html>routing-in-ktor in ktor docs
+ *
+ * reference - https://ktor.io/docs/routing-in-ktor.html>routing-in-ktor in ktor docs
  */
 fun Application.configureRouting() {
 

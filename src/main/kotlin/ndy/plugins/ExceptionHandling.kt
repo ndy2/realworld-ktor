@@ -14,8 +14,8 @@ import ndy.global.exception.*
 
 /**
  * Configure Exception Handling with Ktor - StatusPages plugin!
- * *
- * see https://ktor.io/docs/status-pages.html
+ *
+ * reference - https://ktor.io/docs/status-pages.html
  */
 fun Application.configureExceptionHandling() {
 
