@@ -1,19 +1,16 @@
 package ndy.domain.user.application
 
-import de.sharpmind.ktor.EnvConfig
 import io.kotest.assertions.assertSoftly
-import io.kotest.core.listeners.BeforeSpecListener
-import io.kotest.core.spec.Spec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.checkAll
-import io.ktor.server.config.*
 import ndy.domain.profile.application.ProfileService
 import ndy.domain.profile.follow.application.FollowService
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
-import ndy.test.extentions.DB
+import ndy.test.extentions.Db
+import ndy.test.extentions.Jwt
 import ndy.test.generator.ProfileArbs.usernameValueArb
 import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
@@ -21,17 +18,17 @@ import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.loggingContext
 
-class UserServiceTest : BaseSpec(DB, JWT, body = {
+class UserServiceTest : BaseSpec(Db, Jwt, body = {
 
     val sut = with(loggingContext()) {
         UserService(
-            repository = UserTable,
-            profileService = ProfileService(
-                repository = ProfileTable,
-                followService = FollowService(FollowTable)
-            ),
-            passwordEncoder = BcryptPasswordService,
-            passwordVerifier = BcryptPasswordService
+                repository = UserTable,
+                profileService = ProfileService(
+                        repository = ProfileTable,
+                        followService = FollowService(FollowTable)
+                ),
+                passwordEncoder = BcryptPasswordService,
+                passwordVerifier = BcryptPasswordService
         )
     }
     with(ProfileTable) {
@@ -73,18 +70,3 @@ class UserServiceTest : BaseSpec(DB, JWT, body = {
         }
     }
 })
-
-object JWT : BeforeSpecListener {
-    override suspend fun beforeSpec(spec: Spec) {
-        EnvConfig.initConfig(
-            MapApplicationConfig(
-                "envConfig.default.jwt.domain" to "https://jwt-provider-domain/",
-                "envConfig.default.jwt.issuer" to "ndy2",
-                "envConfig.default.jwt.audience" to "jwt-audience",
-                "envConfig.default.jwt.realm" to "ktor sample app",
-                "envConfig.default.jwt.secret" to "secret",
-                "envConfig.default.jwt.expires" to "60000"
-            )
-        )
-    }
-}

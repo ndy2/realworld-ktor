@@ -8,12 +8,12 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.Email
 import ndy.domain.user.domain.Password
 import ndy.domain.user.domain.User
-import ndy.test.extentions.DB
+import ndy.test.extentions.Db
 import ndy.test.spec.BaseSpec
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
 
-class UserTableTest : BaseSpec(DB, body = {
+class UserTableTest : BaseSpec(Db, body = {
 
     val sut = UserTable
 

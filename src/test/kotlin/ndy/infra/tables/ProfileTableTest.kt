@@ -9,13 +9,13 @@ import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
 import ndy.domain.user.domain.User
-import ndy.test.extentions.DB
+import ndy.test.extentions.Db
 import ndy.test.spec.BaseSpec
 import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
 
-class ProfileTableTest : BaseSpec(DB, body = {
+class ProfileTableTest : BaseSpec(Db, body = {
 
     val sut = ProfileTable
     val userRepository = UserTable

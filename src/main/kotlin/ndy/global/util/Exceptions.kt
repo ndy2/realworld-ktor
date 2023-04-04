@@ -41,6 +41,7 @@ fun checkValidation(condition: Boolean, message: String) {
  */
 fun <T> ValidationResult<T>.checkAndThrow() {
     if (errors.isNotEmpty()) {
+        println("this = $this")
         validationFail(errors.joinToString { it.message })
     }
 }

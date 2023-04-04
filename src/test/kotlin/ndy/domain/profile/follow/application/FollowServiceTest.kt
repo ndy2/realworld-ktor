@@ -9,13 +9,13 @@ import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.context.AuthenticatedUserContext
 import ndy.infra.tables.FollowTable
-import ndy.test.extentions.DB
+import ndy.test.extentions.Db
 import ndy.test.spec.BaseSpec
 
 import kotlin.random.Random
 import kotlin.random.nextULong
 
-class FollowServiceTest : BaseSpec(DB, body = {
+class FollowServiceTest : BaseSpec(Db, body = {
 
     val sut = FollowService(FollowTable)
 

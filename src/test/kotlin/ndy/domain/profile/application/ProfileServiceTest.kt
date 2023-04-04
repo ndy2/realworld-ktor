@@ -9,7 +9,7 @@ import ndy.domain.profile.follow.application.FollowService
 import ndy.infra.tables.FollowTable
 import ndy.infra.tables.ProfileTable
 import ndy.infra.tables.UserTable
-import ndy.test.extentions.DB
+import ndy.test.extentions.Db
 import ndy.test.generator.ProfileArbs.bioValueArb
 import ndy.test.generator.ProfileArbs.imageFullPathArb
 import ndy.test.generator.ProfileArbs.usernameValueArb
@@ -19,13 +19,13 @@ import ndy.test.util.assumeNotDuplicated
 import ndy.test.util.isNotNullOr
 import ndy.test.util.shouldBeUpdatedToIf
 
-class ProfileServiceTest : BaseSpec(DB, body = {
+class ProfileServiceTest : BaseSpec(Db, body = {
 
     val sut = ProfileService(
-        repository = ProfileTable,
-        followService = FollowService(
-            repository = FollowTable
-        )
+            repository = ProfileTable,
+            followService = FollowService(
+                    repository = FollowTable
+            )
     )
     val userRepository = UserTable
     with(ProfileTable) {
