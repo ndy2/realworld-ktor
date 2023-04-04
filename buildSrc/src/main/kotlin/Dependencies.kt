@@ -65,6 +65,9 @@ sealed class Dependencies {
         //https://kotest.io/docs/proptest/property-based-testing.html
         const val PROPERTY = "io.kotest:kotest-property:${Versions.kotestVersion}"
 
+        //https://kotest.io/docs/proptest/property-test-extra-arbs.html
+        const val PROPERTY_ARBS = "io.kotest.extensions:kotest-property-arbs:2.1.2"
+
         //https://kotest.io/docs/assertions/ktor-matchers.html
         const val ASSERTIONS_KTOR = "io.kotest.extensions:kotest-assertions-ktor:2.0.0"
 

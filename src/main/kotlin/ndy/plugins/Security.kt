@@ -1,6 +1,7 @@
 package ndy.plugins
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import de.sharpmind.ktor.EnvConfig
 import io.ktor.server.application.Application
@@ -24,13 +25,7 @@ fun Application.configureSecurity() {
             authSchemes(TOKEN_SCHEMA /* default : "Bearer" */)
 
             realm = EnvConfig.getString("jwt.realm")
-            verifier(
-                    JWT
-                            .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
-                            .withAudience(EnvConfig.getString("jwt.audience"))
-                            .withIssuer(EnvConfig.getString("jwt.issuer"))
-                            .build()
-            )
+            verifier(jwtVerifier)
 
             validate {
                 val userIdClaim = it.payload.getClaim("user_id") ?: throw AuthenticationException("login failure")
@@ -44,3 +39,9 @@ fun Application.configureSecurity() {
         }
     }
 }
+
+val jwtVerifier: JWTVerifier = JWT
+        .require(Algorithm.HMAC256(EnvConfig.getString("jwt.secret")))
+        .withAudience(EnvConfig.getString("jwt.audience"))
+        .withIssuer(EnvConfig.getString("jwt.issuer"))
+        .build()

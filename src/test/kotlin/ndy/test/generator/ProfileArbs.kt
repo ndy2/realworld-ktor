@@ -8,9 +8,9 @@ import io.kotest.property.arbitrary.ascii
 import io.kotest.property.arbitrary.choice
 import io.kotest.property.arbitrary.flatMap
 import io.kotest.property.arbitrary.map
-import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uLong
+import io.kotest.property.arbs.name
 import ndy.domain.profile.domain.Bio
 import ndy.domain.profile.domain.Image
 import ndy.domain.profile.domain.Username
@@ -22,11 +22,7 @@ object ProfileArbs {
     val userIdArb = Arb.uLong(1u, ULong.MAX_VALUE / 2u).map(::UserId)
 
     /* Username Arbs */
-    val usernameValueArb = Arb.string(
-        Username.MIN_LENGTH..Username.MAX_LENGTH,
-        Arb.of((('a'..'z') + ('A'..'Z') + ('0'..'9') + ('_') + ('-')).map { Codepoint(it.code) })
-        // Codepoint of alphanumeric with `_` and `-`
-    )
+    val usernameValueArb = Arb.name().map { it.first.name }
     val usernameArb = usernameValueArb.map { Username(it) }
 
     /* Image Arbs */
