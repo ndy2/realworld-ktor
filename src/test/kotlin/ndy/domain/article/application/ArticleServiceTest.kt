@@ -27,7 +27,7 @@ import ndy.infra.tables.TagTable
 import ndy.infra.tables.UserTable
 import ndy.test.context.withNoToken
 import ndy.test.context.withToken
-import ndy.test.extentions.Db
+import ndy.test.extentions.DbContainer
 import ndy.test.extentions.Jwt
 import ndy.test.generator.ArticleArbs.bodyValueArb
 import ndy.test.generator.ArticleArbs.descriptionValueArb
@@ -38,7 +38,7 @@ import ndy.test.generator.UserArbs.emailValueArb
 import ndy.test.generator.UserArbs.passwordValueArb
 import ndy.test.spec.BaseSpec
 
-class ArticleServiceTest : BaseSpec(Db, Jwt, body = {
+class ArticleServiceTest : BaseSpec(DbContainer, Jwt, body = {
 
     val profileService = ProfileService(ProfileTable, FollowService(FollowTable))
     val userService = UserService(

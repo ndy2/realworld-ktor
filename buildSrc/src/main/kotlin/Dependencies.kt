@@ -94,9 +94,8 @@ sealed class Dependencies {
         //https://github.com/Kotlin/kotlinx.serialization
         const val KOTLINX_SERIALIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
 
-        //https://github.com/SMILEY4/ktor-swagger-ui
-        const val KTOR_SWAGGER_UI = "io.github.smiley4:ktor-swagger-ui:1.4.0"
-        const val KOTLIN_LOGGING_JVM = "io.github.microutils:kotlin-logging-jvm:2.1.23"
+        //https://github.com/ndy2/ktor-context-receiver
+        const val MY_DEP = "com.github.ndy2:ktor-context-receiver:0.1.1"
     }
 }
 

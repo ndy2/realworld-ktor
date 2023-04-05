@@ -4,39 +4,38 @@ package ndy.test.context
 
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
-import ndy.global.context.AuthenticatedUserContext
+import ndy.global.security.Principal
+import ndy.ktor.context.auth.AuthenticationContext
 import ndy.plugins.jwtVerifier
 
 
-inline fun <R> withNoToken(block: AuthenticatedUserContext.() -> R): R {
+inline fun <R> withNoToken(block: AuthenticationContext<Principal>.() -> R): R {
     return with(noAuthContext()) {
         block()
     }
 }
 
-inline fun <R> withToken(token: String, block: AuthenticatedUserContext.() -> R): R {
+inline fun <R> withToken(token: String, block: AuthenticationContext<Principal>.() -> R): R {
     return with(authenticatedUserContext(token)) {
         block()
     }
 }
 
-fun authenticatedUserContext(token: String): AuthenticatedUserContext {
+fun authenticatedUserContext(token: String): AuthenticationContext<Principal> {
     val claims = jwtVerifier.verify(token).claims
 
-    val userId = claims["user_id"]!!.asLong().toULong()
-    val profileId = claims["user_id"]!!.asLong().toULong()
+    val userId = UserId(claims["user_id"]!!.asLong().toULong())
+    val profileId = ProfileId(claims["user_id"]!!.asLong().toULong())
 
-    return object : AuthenticatedUserContext {
-        override val authenticated = true
-        override val userId = UserId(userId)
-        override val profileId = ProfileId(profileId)
+    return object : AuthenticationContext<Principal> {
+        override val authenticated = false
+        override val principal = Principal(userId, profileId)
     }
 }
 
-fun noAuthContext(): AuthenticatedUserContext {
-    return object : AuthenticatedUserContext {
+fun noAuthContext(): AuthenticationContext<Principal> {
+    return object : AuthenticationContext<Principal> {
         override val authenticated = false
-        override val userId: Nothing by lazy { error("no auth") }
-        override val profileId: Nothing by lazy { error("no auth") }
+        override val principal: Nothing by lazy { error("no auth") }
     }
 }

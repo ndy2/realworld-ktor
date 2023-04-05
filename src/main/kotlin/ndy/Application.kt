@@ -10,7 +10,6 @@ import ndy.plugins.configureResources
 import ndy.plugins.configureRouting
 import ndy.plugins.configureSecurity
 import ndy.plugins.configureSerialization
-import ndy.plugins.configureSwagger
 import io.ktor.server.netty.EngineMain.main as netty
 
 fun main(args: Array<String>) = netty(args)
@@ -26,5 +25,4 @@ fun Application.module() {
     configureResources()
     configureExceptionHandling()
     configureRouting()
-    configureSwagger()
 }

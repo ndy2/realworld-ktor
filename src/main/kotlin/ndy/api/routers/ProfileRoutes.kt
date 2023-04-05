@@ -8,10 +8,11 @@ import org.koin.ktor.ext.inject
 import ndy.api.dto.ProfileResponse
 import ndy.api.resources.Profiles
 import ndy.domain.profile.application.ProfileService
-import ndy.global.util.authenticatedDelete
-import ndy.global.util.authenticatedGet
-import ndy.global.util.authenticatedPost
+import ndy.global.security.Principal
 import ndy.global.util.ok
+import ndy.ktor.context.auth.authenticatedDelete
+import ndy.ktor.context.auth.authenticatedGet
+import ndy.ktor.context.auth.authenticatedPost
 
 fun Route.profileRouting() {
     val service by inject<ProfileService>()
@@ -20,7 +21,7 @@ fun Route.profileRouting() {
      * Get Profile
      * GET /api/profiles/{username}
      */
-    authenticatedGet<Profiles.Username>(optional = true) {
+    authenticatedGet<Profiles.Username, Principal>(optional = true) {
         // bind
         val username = it.username
 
@@ -36,7 +37,7 @@ fun Route.profileRouting() {
      * Follow User
      * POST /api/profiles/{username}/follow
      */
-    authenticatedPost<Profiles.Username.Follow> {
+    authenticatedPost<Profiles.Username.Follow, Principal> {
         // bind
         val username = it.parent.username
 
@@ -52,7 +53,7 @@ fun Route.profileRouting() {
      * Unfollow User
      * DELETE /api/profiles/{username}/follow
      */
-    authenticatedDelete<Profiles.Username.Follow> {
+    authenticatedDelete<Profiles.Username.Follow, Principal> {
         // bind
         val username = it.parent.username
 

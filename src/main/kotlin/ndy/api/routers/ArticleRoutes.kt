@@ -12,13 +12,14 @@ import ndy.api.dto.CommentResponse
 import ndy.api.resources.Articles
 import ndy.domain.article.application.ArticleSearchCond
 import ndy.domain.article.application.ArticleService
-import ndy.global.util.authenticatedDelete
-import ndy.global.util.authenticatedGet
-import ndy.global.util.authenticatedPost
-import ndy.global.util.authenticatedPut
+import ndy.global.security.Principal
 import ndy.global.util.extract
 import ndy.global.util.noContent
 import ndy.global.util.ok
+import ndy.ktor.context.auth.authenticatedDelete
+import ndy.ktor.context.auth.authenticatedGet
+import ndy.ktor.context.auth.authenticatedPost
+import ndy.ktor.context.auth.authenticatedPut
 
 fun Route.articleRouting() {
     val service by inject<ArticleService>()
@@ -27,7 +28,7 @@ fun Route.articleRouting() {
      * List Articles
      * GET /api/articles
      */
-    authenticatedGet<Articles>(optional = true) {
+    authenticatedGet<Articles, Principal>(optional = true) {
         // bind
         val queryParams = it
         val searchCond = ArticleSearchCond(
@@ -50,7 +51,7 @@ fun Route.articleRouting() {
      * Feed Articles
      * GET /api/articles/feed
      */
-    authenticatedGet<Articles.Feed> {
+    authenticatedGet<Articles.Feed, Principal> {
         // action
         val resultList = service.getFeed()
 
@@ -63,7 +64,7 @@ fun Route.articleRouting() {
      * Get Article
      * GET /api/articles/{slug}
      */
-    authenticatedGet<Articles.Slug>(optional = true) {
+    authenticatedGet<Articles.Slug, Principal>(optional = true) {
         // bind
         val slug = it.slug
 
@@ -79,7 +80,7 @@ fun Route.articleRouting() {
      * Create Article
      * POST /api/articles
      */
-    authenticatedPost<Articles> {
+    authenticatedPost<Articles, Principal> {
         // bind
         val request = call.extract<ArticleCreateRequest>("article")
 
@@ -100,7 +101,7 @@ fun Route.articleRouting() {
      * Update Article
      * PUT /api/articles/{slug}
      */
-    authenticatedPut<Articles.Slug> {
+    authenticatedPut<Articles.Slug, Principal> {
         // bind
         val slug = it.slug
         val request = call.extract<ArticleUpdateRequest>("article")
@@ -122,7 +123,7 @@ fun Route.articleRouting() {
      * Delete Article
      * DELETE /api/articles/{slug}
      */
-    authenticatedDelete<Articles.Slug> {
+    authenticatedDelete<Articles.Slug, Principal> {
         // bind
         val slug = it.slug
 
@@ -137,7 +138,7 @@ fun Route.articleRouting() {
      * Add Comments to an Article
      * POST /api/articles/{slug}/comments
      */
-    authenticatedPost<Articles.Slug.Comments> {
+    authenticatedPost<Articles.Slug.Comments, Principal> {
         // bind
         val slug = it.parent.slug
         val request = call.extract<CommentAddRequest>("comment")
@@ -154,7 +155,7 @@ fun Route.articleRouting() {
      * Get Comments from an Article
      * GET /api/articles/{slug}/comments
      */
-    authenticatedGet<Articles.Slug.Comments>(optional = true) {
+    authenticatedGet<Articles.Slug.Comments, Principal>(optional = true) {
         // bind
         val slug = it.parent.slug
 
@@ -170,7 +171,7 @@ fun Route.articleRouting() {
      * Delete Comment
      * DELETE /api/articles/{slug}/comments/{id}
      */
-    authenticatedDelete<Articles.Slug.Comments.Id> {
+    authenticatedDelete<Articles.Slug.Comments.Id, Principal> {
         // bind
         val slug = it.parent.parent.slug
         val id = it.id.toULong()
@@ -186,7 +187,7 @@ fun Route.articleRouting() {
      * Favorite Article
      * POST /api/articles/{slug}/favorite
      */
-    authenticatedPost<Articles.Slug.Favorite> {
+    authenticatedPost<Articles.Slug.Favorite, Principal> {
         // bind
         val slug = it.parent.slug
 
@@ -202,7 +203,7 @@ fun Route.articleRouting() {
      * Unfavorite Article
      * DELETE /api/articles/{slug}/favorite
      */
-    authenticatedDelete<Articles.Slug.Favorite> {
+    authenticatedDelete<Articles.Slug.Favorite, Principal> {
         // bind
         val slug = it.parent.slug
 

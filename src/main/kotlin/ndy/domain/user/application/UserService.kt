@@ -7,10 +7,11 @@ import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserRepository
-import ndy.global.context.AuthenticatedUserContext
+import ndy.global.security.Principal
 import ndy.global.util.authenticationFail
 import ndy.global.util.notFound
 import ndy.global.util.transactional
+import ndy.ktor.context.auth.AuthenticationContext
 
 class UserService(
         private val repository: UserRepository,
@@ -55,16 +56,17 @@ class UserService(
         )
     }
 
-    context (AuthenticatedUserContext)
+    context (AuthenticationContext<Principal>)
     suspend fun getById() = transactional {
         // 1. find user with profile
-        val (user, profile) = repository.findUserByIdWithProfile(userId) ?: notFound<User>(userId.value)
+        val (user, profile) = repository.findUserByIdWithProfile(principal.userId)
+                ?: notFound<User>(principal.userId.value)
 
         // 2. return
         UserResult.from(user, profile, null)
     }
 
-    context (AuthenticatedUserContext)
+    context (AuthenticationContext<Principal>)
     suspend fun update(
             email: String?,
             password: String?,
@@ -76,10 +78,10 @@ class UserService(
         val origUser = getById()
 
         // 2. update user
-        repository.updateById(userId, email?.let { Email(it) }, password?.let { Password(it) })
+        repository.updateById(principal.userId, email?.let { Email(it) }, password?.let { Password(it) })
 
         // 3. update profile
-        profileService.update(userId, username, bio, image)
+        profileService.update(principal.userId, username, bio, image)
 
         // 4. return
         UserResult(

@@ -1,7 +1,9 @@
 package ndy.test.extentions
 
 import io.kotest.core.listeners.AfterContainerListener
+import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeContainerListener
+import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import org.jetbrains.exposed.sql.Database
@@ -16,7 +18,31 @@ import ndy.infra.tables.ProfileTable.Profiles
 import ndy.infra.tables.TagTable.Tags
 import ndy.infra.tables.UserTable.Users
 
-object Db : BeforeContainerListener, AfterContainerListener {
+object Db : BeforeEachListener, AfterEachListener {
+    private val database = Database.connect(
+            url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
+            user = "root",
+            driver = "org.h2.Driver",
+            password = ""
+    )
+
+    override suspend fun beforeEach(testCase: TestCase) = transaction(database) {
+        SchemaUtils.create(Articles)
+        SchemaUtils.create(ArticleTags)
+        SchemaUtils.create(Comments)
+        SchemaUtils.create(Favorites)
+        SchemaUtils.create(Follows)
+        SchemaUtils.create(Profiles)
+        SchemaUtils.create(Tags)
+        SchemaUtils.create(Users)
+    }
+
+    override suspend fun afterEach(testCase: TestCase, result: TestResult) = transaction(database) {
+        SchemaUtils.drop(Articles, ArticleTags, Comments, Favorites, Follows, Profiles, Tags, Users)
+    }
+}
+
+object DbContainer : BeforeContainerListener, AfterContainerListener {
     private val database = Database.connect(
             url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
             user = "root",

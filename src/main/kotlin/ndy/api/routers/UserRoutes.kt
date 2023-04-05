@@ -12,12 +12,13 @@ import ndy.api.dto.UserUpdateRequest
 import ndy.api.resources.User
 import ndy.api.resources.Users
 import ndy.domain.user.application.UserService
-import ndy.global.util.authenticatedGet
-import ndy.global.util.authenticatedPut
+import ndy.global.security.Principal
 import ndy.global.util.created
 import ndy.global.util.extract
 import ndy.global.util.ok
 import ndy.global.util.token
+import ndy.ktor.context.auth.authenticatedGet
+import ndy.ktor.context.auth.authenticatedPut
 
 fun Route.userRouting() {
     val userService by inject<UserService>()
@@ -65,7 +66,7 @@ fun Route.userRouting() {
      * Get Current User
      * GET /api/user
      */
-    authenticatedGet<User> {
+    authenticatedGet<User, Principal> {
         // action
         val result = userService.getById()
 
@@ -78,7 +79,7 @@ fun Route.userRouting() {
      * Update User
      * PUT /api/user
      */
-    authenticatedPut<User> {
+    authenticatedPut<User, Principal> {
         // bind
         val request = call.extract<UserUpdateRequest>("user")
 

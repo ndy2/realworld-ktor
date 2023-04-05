@@ -8,11 +8,12 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserId
-import ndy.global.context.AuthenticatedUserContext
 import ndy.global.exception.UsernameDuplicatedException
+import ndy.global.security.Principal
 import ndy.global.util.Propagation.MANDATORY
 import ndy.global.util.notFound
 import ndy.global.util.transactional
+import ndy.ktor.context.auth.AuthenticationContext
 
 class ProfileService(
         private val repository: ProfileRepository,
@@ -55,7 +56,7 @@ class ProfileService(
         repository.existByUsername(Username(username))
     }
 
-    context (AuthenticatedUserContext/* optional = true */)
+    context (AuthenticationContext<Principal>/* optional = true */)
     suspend fun getByUsername(username: String) = transactional {
         // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
@@ -73,7 +74,7 @@ class ProfileService(
         ProfileResult.from(profile, following)
     }
 
-    context (AuthenticatedUserContext)
+    context (AuthenticationContext<Principal>)
     suspend fun follow(username: String) = transactional {
         // 1. validate - user exists & setup - find target userId
         val profile = Username(username)
@@ -86,7 +87,7 @@ class ProfileService(
         ProfileResult.from(profile, true)
     }
 
-    context (AuthenticatedUserContext)
+    context (AuthenticationContext<Principal>)
     suspend fun unfollow(username: String) = transactional {
         // 1. validate - user exists & setup - find target userId
         val profile = Username(username)

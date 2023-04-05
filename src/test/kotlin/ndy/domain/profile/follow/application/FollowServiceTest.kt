@@ -7,8 +7,9 @@ import io.kotest.property.assume
 import io.kotest.property.checkAll
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
-import ndy.global.context.AuthenticatedUserContext
+import ndy.global.security.Principal
 import ndy.infra.tables.FollowTable
+import ndy.ktor.context.auth.AuthenticationContext
 import ndy.test.extentions.Db
 import ndy.test.spec.BaseSpec
 
@@ -56,18 +57,17 @@ class FollowServiceTest : BaseSpec(Db, body = {
 
             // assert
             (0 until m)
-                .map { savePair[it] }
-                .forEach { with(userContext(it.first)) { sut.isFollowing(it.second) shouldBe false } }
+                    .map { savePair[it] }
+                    .forEach { with(userContext(it.first)) { sut.isFollowing(it.second) shouldBe false } }
             (m until n)
-                .map { savePair[it] }
-                .forEach { with(userContext(it.first)) { sut.isFollowing(it.second) shouldBe true } }
+                    .map { savePair[it] }
+                    .forEach { with(userContext(it.first)) { sut.isFollowing(it.second) shouldBe true } }
         }
     }
 })
 
 fun userContext(profileId: ProfileId) =
-    object : AuthenticatedUserContext {
-        override val authenticated = false
-        override val userId = UserId(0u)
-        override val profileId = profileId
-    }
+        object : AuthenticationContext<Principal> {
+            override val authenticated = false
+            override val principal = Principal(UserId(0u), profileId)
+        }

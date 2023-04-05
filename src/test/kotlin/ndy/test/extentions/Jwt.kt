@@ -10,7 +10,7 @@ object Jwt : BeforeContainerListener {
         EnvConfig.initConfig(
                 MapApplicationConfig(
                         "envConfig.default.jwt.domain" to "https://jwt-provider-domain/",
-                        "envConfig.default.jwt.issuer" to "ndy2",
+                        "envConfig.default.jwt.issuer" to "http://realworld.com/",
                         "envConfig.default.jwt.audience" to "jwt-audience",
                         "envConfig.default.jwt.realm" to "ktor sample app",
                         "envConfig.default.jwt.secret" to "secret",
