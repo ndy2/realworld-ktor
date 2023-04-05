@@ -14,13 +14,12 @@ import ndy.domain.profile.domain.Username
 import ndy.domain.profile.follow.application.FollowService
 import ndy.domain.tag.application.TagService
 import ndy.global.exception.FieldNotFoundException
-import ndy.global.security.Principal
+import ndy.global.security.AuthenticationContext
 import ndy.global.util.forbiddenIf
 import ndy.global.util.notFound
 import ndy.global.util.now
 import ndy.global.util.transactional
 import ndy.global.util.unzip
-import ndy.ktor.context.auth.AuthenticationContext
 
 class ArticleService(
         private val repository: ArticleRepository,
@@ -30,7 +29,7 @@ class ArticleService(
         private val commentService: CommentService,
         private val favoriteService: FavoriteService
 ) {
-    context (AuthenticationContext<Principal>/* optional = true */)
+    context (AuthenticationContext/* optional = true */)
     suspend fun searchByCond(searchCond: ArticleSearchCond) = transactional {
         // 1. setup find conditions
         val favoritedArticleIds = searchCond.favorited?.let { favoriteService.getAllFavoritedArticleIds(Username(it)) }
@@ -77,7 +76,7 @@ class ArticleService(
     }
 
     // TODO - get feed!
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun getFeed() = transactional {
         listOf(
                 ArticleResult(
@@ -100,7 +99,7 @@ class ArticleService(
         )
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun create(title: String, description: String, body: String, tagList: List<String>) =
             transactional {
                 // 1. handle all tags - ask to tagService and get all list of tag Ids
@@ -131,7 +130,7 @@ class ArticleService(
                 )
             }
 
-    context (AuthenticationContext<Principal> /* optional = true */)
+    context (AuthenticationContext /* optional = true */)
     suspend fun getBySlug(slug: String) = transactional {
         // 1. find article with author and tagIds
         val (article, author, tagIds) = repository
@@ -159,7 +158,7 @@ class ArticleService(
         )
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun update(slug: String, title: String?, description: String?, body: String?) = transactional {
         // 1. update article with new slug
         val updateSlug = title?.let { createSlug(it) } ?: slug
@@ -174,7 +173,7 @@ class ArticleService(
         getBySlug(slug)
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun deleteBySlug(slug: String) = transactional {
         // 1. check article exists
         val (_, authorId) = repository
@@ -188,7 +187,7 @@ class ArticleService(
         repository.deleteBySlug(slug)
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun addComment(slug: String, body: String) = transactional {
         // 1. check article exists
         val (article, _) = repository.findBySlug(slug)
@@ -204,7 +203,7 @@ class ArticleService(
         CommentResult.from(comment, author)
     }
 
-    context (AuthenticationContext<Principal> /* optional = true */)
+    context (AuthenticationContext /* optional = true */)
     suspend fun getComments(slug: String) = transactional {
         // 1. setup -  check articles exists
         val (article, _) = repository.findBySlug(slug)
@@ -225,7 +224,7 @@ class ArticleService(
         (comments.indices).map { CommentResult.from(comments[it], authors[it], followings[it]) }
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun deleteComment(slug: String, commentId: ULong) = transactional {
         // 1. check articles exists
         val (article, _) = repository.findBySlug(slug)
@@ -235,7 +234,7 @@ class ArticleService(
         commentService.delete(CommentId(commentId), article.id)
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun favorite(slug: String) = transactional {
         // 1. get article with author and tagIds
         val (article, author, tagIds) = repository
@@ -263,7 +262,7 @@ class ArticleService(
         )
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun unfavorite(slug: String) = transactional {
         // 1. get article with author and tagIds
         val (article, author, tagIds) = repository
@@ -291,7 +290,7 @@ class ArticleService(
         )
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     private suspend fun authorResultOrNull(authorName: String) = try {
         profileService.getByUsername(authorName)
     } catch (e: FieldNotFoundException) {

@@ -5,8 +5,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.header
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import ndy.global.security.Principal
-import ndy.ktor.context.auth.AuthenticationContext
+import ndy.global.security.AuthenticationContext
 import ndy.plugins.TOKEN_SCHEMA
 
 suspend inline fun <reified T : Any> ApplicationCall.created(message: T) {
@@ -24,7 +23,7 @@ suspend inline fun ApplicationCall.noContent() {
     respond(Unit)
 }
 
-context (AuthenticationContext<Principal>)
+context (AuthenticationContext)
 fun ApplicationCall.token(): String {
     return request.header("AUTHORIZATION")?.substringAfter("$TOKEN_SCHEMA ") ?: illegalState()
 }

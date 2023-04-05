@@ -3,6 +3,8 @@ package ndy.global.security
 import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 
+typealias AuthenticationContext = ndy.ktor.context.auth.AuthenticationContext<Principal>
+
 /**
  * Principal for authenticated user
  *

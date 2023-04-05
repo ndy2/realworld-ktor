@@ -7,11 +7,10 @@ import ndy.domain.user.domain.PasswordEncoder
 import ndy.domain.user.domain.PasswordVerifier
 import ndy.domain.user.domain.User
 import ndy.domain.user.domain.UserRepository
-import ndy.global.security.Principal
+import ndy.global.security.AuthenticationContext
 import ndy.global.util.authenticationFail
 import ndy.global.util.notFound
 import ndy.global.util.transactional
-import ndy.ktor.context.auth.AuthenticationContext
 
 class UserService(
         private val repository: UserRepository,
@@ -56,7 +55,7 @@ class UserService(
         )
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun getById() = transactional {
         // 1. find user with profile
         val (user, profile) = repository.findUserByIdWithProfile(principal.userId)
@@ -66,7 +65,7 @@ class UserService(
         UserResult.from(user, profile, null)
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun update(
             email: String?,
             password: String?,

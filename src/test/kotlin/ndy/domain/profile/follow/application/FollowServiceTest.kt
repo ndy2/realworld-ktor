@@ -9,7 +9,7 @@ import ndy.domain.profile.domain.ProfileId
 import ndy.domain.user.domain.UserId
 import ndy.global.security.Principal
 import ndy.infra.tables.FollowTable
-import ndy.ktor.context.auth.AuthenticationContext
+import ndy.global.security.AuthenticationContext
 import ndy.test.extentions.Db
 import ndy.test.spec.BaseSpec
 
@@ -67,7 +67,7 @@ class FollowServiceTest : BaseSpec(Db, body = {
 })
 
 fun userContext(profileId: ProfileId) =
-        object : AuthenticationContext<Principal> {
+        object : AuthenticationContext {
             override val authenticated = false
             override val principal = Principal(UserId(0u), profileId)
         }

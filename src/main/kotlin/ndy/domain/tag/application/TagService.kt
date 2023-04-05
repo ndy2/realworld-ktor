@@ -3,10 +3,9 @@ package ndy.domain.tag.application
 import ndy.domain.tag.domain.Tag
 import ndy.domain.tag.domain.TagId
 import ndy.domain.tag.domain.TagRepository
-import ndy.global.security.Principal
+import ndy.global.security.AuthenticationContext
 import ndy.global.util.Propagation.MANDATORY
 import ndy.global.util.transactional
-import ndy.ktor.context.auth.AuthenticationContext
 
 class TagService(
         private val repository: TagRepository
@@ -19,7 +18,7 @@ class TagService(
         tags.map(TagResult::from)
     }
 
-    context (AuthenticationContext<Principal>)
+    context (AuthenticationContext)
     suspend fun getOrSaveList(names: List<String>) = transactional(MANDATORY) {
         // 1. get all existed tags
         val existedTags = repository.findAllWhereNameIn(names)
