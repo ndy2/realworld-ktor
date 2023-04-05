@@ -80,7 +80,7 @@ sealed class Dependencies {
         const val KTOR_ENV_CONFIG = "de.sharpmind.ktor:ktor-env-config:2.0.1" // properties
 
         //https://github.com/qos-ch/logback
-        const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.2.11" // logging
+        const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.4.6" // logging
 
         //https://github.com/jeremyh/jBCrypt
         const val JBCrypt = "org.mindrot:jbcrypt:0.4" // security
@@ -93,6 +93,10 @@ sealed class Dependencies {
 
         //https://github.com/Kotlin/kotlinx.serialization
         const val KOTLINX_SERIALIZATION_JSON = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
+
+        //https://github.com/SMILEY4/ktor-swagger-ui
+        const val KTOR_SWAGGER_UI = "io.github.smiley4:ktor-swagger-ui:1.4.0"
+        const val KOTLIN_LOGGING_JVM = "io.github.microutils:kotlin-logging-jvm:2.1.23"
     }
 }
 
